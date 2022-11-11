@@ -1,8 +1,3 @@
-
-import 'sensing_plugin_platform_interface.dart';
-
 class SensingPlugin {
-  Future<String?> getPlatformVersion() {
-    return SensingPluginPlatform.instance.getPlatformVersion();
-  }
+  // TODO: Add API methods by calling SensingPluginPlatform.instance.apiMethod();
 }
