@@ -1,6 +1,6 @@
 name: sensing_plugin
 description: The sensing plugin for the Smart Sensing Library
-version: 0.0.1
+version: 0.0.0
 homepage:
 
 environment:
