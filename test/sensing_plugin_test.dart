@@ -2,7 +2,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sensing_plugin/sensing_plugin_platform_interface.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
-class MockSensingPluginPlatform with MockPlatformInterfaceMixin implements SensingPluginPlatform {
+class MockSensingPluginPlatform
+    with MockPlatformInterfaceMixin
+    implements SensingPluginPlatform {
   // TODO: Add mocked methods
 }
 

@@ -1,0 +1,44 @@
+image: gitlab.uni-ulm.de:5050/se-anwendungsprojekt-22-23/ci-tools/flutter-devtools:v1.0.1
+
+stages:
+  - analysis
+  - test
+
+flutter-analyze:
+  stage: analysis
+  needs: [ ]
+  script:
+    - flutter analyze --fatal-infos
+
+flutter-format:
+  stage: analysis
+  script:
+    - flutter format . -o write --set-exit-if-changed --fix
+  after_script:
+    - git diff
+
+flutter-format:apply:
+  stage: analysis
+  needs: [ ]
+  when: manual
+#  only:
+#    - merge_requests
+  before_script:
+    # FLUTTER_FORMAT_TOKEN is a group access token which is available as a CI variable
+    - |
+      git remote add ci https://oauth2:${FLUTTER_FORMAT_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git
+      git config user.name "flutter-format bot"
+      git config user.email "noreply+flutter-format-bot@${CI_SERVER_HOST}"
+  script:
+    - |
+      flutter format . -o write --fix
+      git commit -am "style: apply flutter-format"
+      git push ci HEAD:$CI_COMMIT_REF_NAME
+  after_script:
+    - git remote rm ci
+
+flutter-test:
+  stage: test
+  needs: [ ]
+  script:
+    - flutter test
