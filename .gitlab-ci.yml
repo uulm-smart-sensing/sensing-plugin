@@ -8,14 +8,16 @@ flutter-analyze:
   stage: analysis
   needs: [ ]
   script:
+    - bash setup.sh
     - flutter analyze --fatal-infos
 
 flutter-format:
   stage: analysis
+  needs: [ ]
   script:
-    - flutter format . -o write --set-exit-if-changed --fix
-  after_script:
-    - git diff
+    - bash setup.sh
+    - flutter format . -o write --fix
+    - git diff --exit-code
 
 flutter-format:apply:
   stage: analysis
@@ -41,4 +43,5 @@ flutter-test:
   stage: test
   needs: [ ]
   script:
+    - bash setup.sh
     - flutter test

@@ -1,5 +1,10 @@
 include: package:flutter_lints/flutter.yaml
 
+# Exclude generated code
+analyzer:
+  exclude:
+    - 'lib/src/generated/**'
+
 linter:
   rules:
     # Effective Dart rules
