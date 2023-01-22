@@ -16,9 +16,8 @@ flutter-format:
   needs: [ ]
   script:
     - bash setup.sh
-    - flutter format . -o write --set-exit-if-changed --fix
-  after_script:
-    - git diff
+    - flutter format . -o write --fix
+    - git diff --exit-code
 
 flutter-format:apply:
   stage: analysis
