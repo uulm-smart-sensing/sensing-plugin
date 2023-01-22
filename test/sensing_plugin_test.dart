@@ -1,6 +1,8 @@
+// ignore_for_file: prefer_mixin
+
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sensing_plugin/sensing_plugin_platform_interface.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+import 'package:sensing_plugin/sensing_plugin_platform_interface.dart';
 
 class MockSensingPluginPlatform
     with MockPlatformInterfaceMixin
@@ -9,7 +11,7 @@ class MockSensingPluginPlatform
 }
 
 void main() {
-  final SensingPluginPlatform initialPlatform = SensingPluginPlatform.instance;
+  var initialPlatform = SensingPluginPlatform.instance;
 
   test('$DummyPluginPlatform is the default instance', () {
     expect(initialPlatform, isInstanceOf<DummyPluginPlatform>());
