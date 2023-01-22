@@ -1,3 +1,4 @@
+echo "Generating Pigeon code..."
 flutter pub run pigeon \
     --input pigeons/api_sensor_manager.dart \
     --dart_out lib/src/generated/api_sensor_manager.dart \
