@@ -1,10 +1,6 @@
-<a name="readme-top"></a>
-
 # sensing_plugin
 
 The sensing plugin for the Smart Sensing Library
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Getting Started
 
@@ -29,8 +25,6 @@ The sensing plugin for the Smart Sensing Library
     ```
 
 3. Your setup is now complete and you're good to go.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Keeping Pigeon code up to date
 
