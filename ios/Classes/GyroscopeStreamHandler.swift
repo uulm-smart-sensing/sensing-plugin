@@ -28,7 +28,7 @@ public class GyroscopeStreamHandler : NSObject, FlutterStreamHandler {
     
     private func initMotionManager() {
         if motionManager == nil{
-            motionManager = CMMotionManager()
+            motionManager = CMMotionManager()
         }
     }
     
