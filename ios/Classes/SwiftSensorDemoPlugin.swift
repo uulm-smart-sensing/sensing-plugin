@@ -13,13 +13,13 @@ import UIKit
 //  }
 //}
 
-public class SwiftFlutterSensorsPlugin: NSObject, FlutterPlugin {
+public class SwiftSensorDemoPlugin: NSObject, FlutterPlugin {
     private let registrar: FlutterPluginRegistrar
     public let accelerometerStreamHandler = AccelerometerStreamHandler()
     public let gyroscopeStreamHandler = GyroscopeStreamHandler()
 
     public static func register(with registrar: FlutterPluginRegistrar) {
-        let instance = SwiftFlutterSensorsPlugin(registrar: registrar)
+        let instance = SwiftSensorDemoPlugin(registrar: registrar)
         let channel = FlutterMethodChannel(name: "flutter_sensors", binaryMessenger: registrar.messenger())
         registrar.addMethodCallDelegate(instance, channel: channel)
     }
