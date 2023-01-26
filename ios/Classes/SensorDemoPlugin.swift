@@ -13,14 +13,14 @@ import UIKit
 //  }
 //}
 
-public class SwiftSensorDemoPlugin: NSObject, FlutterPlugin, FLTApi2Host {
+public class SensorDemoPlugin: NSObject, FlutterPlugin, FLTApi2Host {
     private let registrar: FlutterPluginRegistrar
     public let accelerometerStreamHandler = AccelerometerStreamHandler()
     public let gyroscopeStreamHandler = GyroscopeStreamHandler()
 
     public static func register(with registrar: FlutterPluginRegistrar) {
         let messenger : FlutterBinaryMessenger = registrar.messenger()
-        let api : FLTApi2Host & NSObjectProtocol = SwiftSensorDemoPlugin.init(registrar: registrar)
+        let api : FLTApi2Host & NSObjectProtocol = SensorDemoPlugin.init(registrar: registrar)
         FLTApi2HostSetup(messenger, api)
         
     }

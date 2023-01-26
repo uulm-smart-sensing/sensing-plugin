@@ -44,7 +44,7 @@ public class AccelerometerStreamHandler : NSObject, FlutterStreamHandler {
                 values.y,
                 values.z
             ]
-            SwiftSensorDemoPlugin.notify(sensorId: AccelerometerStreamHandler.SENSOR_ID, sensorData: dataArray, eventSink: eventSink)
+            SensorDemoPlugin.notify(sensorId: AccelerometerStreamHandler.SENSOR_ID, sensorData: dataArray, eventSink: eventSink)
         })
     }
     

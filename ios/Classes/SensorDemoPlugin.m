@@ -10,6 +10,6 @@
 
 @implementation SensorDemoPlugin
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
-  [SwiftSensorDemoPlugin registerWithRegistrar:registrar];
+  [SensorDemoPlugin registerWithRegistrar:registrar];
 }
 @end

@@ -44,7 +44,7 @@ public class GyroscopeStreamHandler : NSObject, FlutterStreamHandler {
                 values.y,
                 values.z
             ]
-            SwiftSensorDemoPlugin.notify(sensorId: GyroscopeStreamHandler.SENSOR_ID, sensorData: dataArray, eventSink: eventSink)
+            SensorDemoPlugin.notify(sensorId: GyroscopeStreamHandler.SENSOR_ID, sensorData: dataArray, eventSink: eventSink)
         })
     }
     
