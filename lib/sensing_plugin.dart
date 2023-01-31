@@ -1,6 +1,2 @@
-// ignore_for_file: public_member_api_docs
-
-class SensingPlugin {
-  // TODO: Add API methods by calling
-  // SensingPluginPlatform.instance.apiMethod();
-}
+export 'src/generated/api_sensor_manager.dart' show SensorId, Unit;
+export 'src/sensor_manager.dart' show SensorManager;
