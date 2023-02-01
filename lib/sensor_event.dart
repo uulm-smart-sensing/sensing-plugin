@@ -29,4 +29,13 @@ class SensorEvent {
       data: data,
     );
   }
+
+  @override
+  String toString() {
+    return "Sensor " +
+        sensorId.toString() +
+        " provided data (x, y, z) as (" +
+        data.map((i) => i.toString()).join(", ") +
+        ").";
+  }
 }

@@ -13,51 +13,47 @@ import UIKit
 //  }
 //}
 
-public class SwiftSensorDemoPlugin: NSObject, FlutterPlugin {
+public class SensorDemoPlugin: NSObject, FlutterPlugin, FLTApi2Host {
     private let registrar: FlutterPluginRegistrar
     public let accelerometerStreamHandler = AccelerometerStreamHandler()
     public let gyroscopeStreamHandler = GyroscopeStreamHandler()
 
     public static func register(with registrar: FlutterPluginRegistrar) {
-        let instance = SwiftSensorDemoPlugin(registrar: registrar)
-        let channel = FlutterMethodChannel(name: "flutter_sensors", binaryMessenger: registrar.messenger())
-        registrar.addMethodCallDelegate(instance, channel: channel)
+        let messenger : FlutterBinaryMessenger = registrar.messenger()
+        let api : FLTApi2Host & NSObjectProtocol = SensorDemoPlugin.init(registrar: registrar)
+        FLTApi2HostSetup(messenger, api)
+        
     }
     
     init(registrar: FlutterPluginRegistrar) {
-        self.registrar = registrar
+           self.registrar = registrar
+       }
+    
+    public func isSensorAvailableSensorId(_ sensorId: NSNumber, completion: @escaping (NSNumber?, FlutterError?) -> Void) {
+        let id = sensorId as! Int
+        let isAvailable = isSensorAvailable(sensorId: id) as NSNumber
+        // do not provide nil as FlutterError
+        completion(isAvailable, nil)
     }
     
-    public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-        switch call.method {
-        case "is_sensor_available":
-            let dataMap = call.arguments as! NSDictionary
-            let sensorId = dataMap["sensorId"] as! Int
-            let isAvailable = isSensorAvailable(sensorId: sensorId)
-            result(isAvailable)
-            break
-        case "update_sensor_interval":
-            let dataMap = call.arguments as! NSDictionary
-            let sensorId = dataMap["sensorId"] as? Int
-            let interval = dataMap["interval"] as? Double
-            if sensorId != nil && interval != nil {
-                updateSensorInterval(sensorId: sensorId!, interval: interval!)
-            }
-            result(nil)
-            break
-        case "start_event_channel":
-            let dataMap = call.arguments as! NSDictionary
-            let sensorId = dataMap["sensorId"] as? Int
-            let interval = dataMap["interval"] as? Double
-            if sensorId != nil && interval != nil {
-                updateSensorInterval(sensorId: sensorId!, interval: interval!)
-                result(startEventChannel(sensorId: sensorId!, interval: interval!))
-            }
-            result(false)
-            break
-        default:
-            result(FlutterMethodNotImplemented)
+    public func updateSensorIntervalSensorId(_ sensorId: NSNumber, newInterval: NSNumber, completion: @escaping (NSNumber?, FlutterError?) -> Void) {
+        let id = sensorId as! Int
+        let interval = newInterval as! Double
+        let isSensorIntervalUpdated = updateSensorInterval(sensorId: id, interval: interval) as NSNumber
+        // do not provide nil as FlutterError/
+        completion(isSensorIntervalUpdated, nil)
+    }
+    
+    public func startEventChannelSensorId(_ sensorId: NSNumber, interval: NSNumber, completion: @escaping (NSNumber?, FlutterError?) -> Void) {
+        let id = sensorId as! Int
+        let interval = interval as! Double
+        let isSensorIntervalUpdated = updateSensorInterval(sensorId: id, interval: interval)
+        var isStarted = false;
+        if (isSensorIntervalUpdated) {
+            isStarted = startEventChannel(sensorId: id, interval: interval)
         }
+        // do not provide nil as FlutterError/
+        completion(isStarted as NSNumber, nil)
     }
     
     public static func notify(sensorId:Int, sensorData:[Double], eventSink:FlutterEventSink){
@@ -85,28 +81,32 @@ public class SwiftSensorDemoPlugin: NSObject, FlutterPlugin {
         return isAvailable
     }
     
-    private func updateSensorInterval(sensorId: Int, interval: Double){
+    private func updateSensorInterval(sensorId: Int, interval: Double)->Bool{
+        var isUpdated = false;
         switch sensorId {
         case AccelerometerStreamHandler.SENSOR_ID:
             accelerometerStreamHandler.setInterval(interval: interval)
+            isUpdated = true
             break
         case GyroscopeStreamHandler.SENSOR_ID:
             gyroscopeStreamHandler.setInterval(interval: interval)
+            isUpdated = true
             break
         default:
             break
         }
+        return isUpdated
     }
     
     private func startEventChannel(sensorId: Int, interval: Double)->Bool{
         var started = true
         switch sensorId {
         case AccelerometerStreamHandler.SENSOR_ID:
-            let accelerometerEventChannel = FlutterEventChannel(name:"flutter_sensors/\(AccelerometerStreamHandler.SENSOR_ID)", binaryMessenger: registrar.messenger())
+            let accelerometerEventChannel = FlutterEventChannel(name:"sensors/\(AccelerometerStreamHandler.SENSOR_ID)", binaryMessenger: registrar.messenger())
             accelerometerEventChannel.setStreamHandler(accelerometerStreamHandler)
             break
         case GyroscopeStreamHandler.SENSOR_ID:
-            let gyroscopeEventChannel = FlutterEventChannel(name:"flutter_sensors/\(GyroscopeStreamHandler.SENSOR_ID)", binaryMessenger: registrar.messenger())
+            let gyroscopeEventChannel = FlutterEventChannel(name:"sensors/\(GyroscopeStreamHandler.SENSOR_ID)", binaryMessenger: registrar.messenger())
             gyroscopeEventChannel.setStreamHandler(gyroscopeStreamHandler)
             break
         default:

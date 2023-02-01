@@ -28,7 +28,7 @@ public class GyroscopeStreamHandler : NSObject, FlutterStreamHandler {
     
     private func initMotionManager() {
         if motionManager == nil{
-            motionManager = CMMotionManager()
+            motionManager = CMMotionManager()
         }
     }
     
@@ -44,7 +44,7 @@ public class GyroscopeStreamHandler : NSObject, FlutterStreamHandler {
                 values.y,
                 values.z
             ]
-            SwiftSensorDemoPlugin.notify(sensorId: GyroscopeStreamHandler.SENSOR_ID, sensorData: dataArray, eventSink: eventSink)
+            SensorDemoPlugin.notify(sensorId: GyroscopeStreamHandler.SENSOR_ID, sensorData: dataArray, eventSink: eventSink)
         })
     }
     
