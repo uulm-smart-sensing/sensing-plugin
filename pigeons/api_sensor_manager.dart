@@ -19,11 +19,10 @@ abstract class SensorManagerApi {
 
   /// Starts tracking of the sensor with the passed [SensorId].
   ///
-  /// The [Unit] specifies the unit of the sensor output data, which is sent
-  /// via the sensor event channel with every [timeIntervalInMilliseconds] ms.
+  /// The sensor sends data via the event channel every
+  /// [timeIntervalInMilliseconds] ms.
   StateIndicator startSensorTracking(
     SensorId id,
-    Unit unit,
     int timeIntervalInMilliseconds,
   );
 
