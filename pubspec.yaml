@@ -22,7 +22,7 @@ flutter:
   plugin:
     platforms:
       android:
-        package: de.uniulm.sensing_plugin
+        package: de.uni_ulm.sensing_plugin
         pluginClass: SensingPlugin
       ios:
         pluginClass: SensingPlugin

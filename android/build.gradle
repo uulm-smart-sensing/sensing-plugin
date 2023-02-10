@@ -1,4 +1,4 @@
-group 'de.uniulm.sensing_plugin'
+group 'de.uni_ulm.sensing_plugin'
 version '1.0-SNAPSHOT'
 
 buildscript {
