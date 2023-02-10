@@ -51,11 +51,11 @@ public class SwiftSensorDemoPlugin: NSObject, FlutterPlugin, Api2Host {
         var started = true
         switch sensorId {
         case AccelerometerStreamHandler.SENSOR_ID:
-            let accelerometerEventChannel = FlutterEventChannel(name:"flutter_sensors/\(AccelerometerStreamHandler.SENSOR_ID)", binaryMessenger: registrar.messenger())
+            let accelerometerEventChannel = FlutterEventChannel(name:"sensors/\(AccelerometerStreamHandler.SENSOR_ID)", binaryMessenger: registrar.messenger())
             accelerometerEventChannel.setStreamHandler(accelerometerStreamHandler)
             break
         case GyroscopeStreamHandler.SENSOR_ID:
-            let gyroscopeEventChannel = FlutterEventChannel(name:"flutter_sensors/\(GyroscopeStreamHandler.SENSOR_ID)", binaryMessenger: registrar.messenger())
+            let gyroscopeEventChannel = FlutterEventChannel(name:"sensors/\(GyroscopeStreamHandler.SENSOR_ID)", binaryMessenger: registrar.messenger())
             gyroscopeEventChannel.setStreamHandler(gyroscopeStreamHandler)
             break
         default:
