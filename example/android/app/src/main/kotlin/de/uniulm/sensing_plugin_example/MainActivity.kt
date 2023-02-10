@@ -1,4 +1,4 @@
-package de.uni_ulm.sensing_plugin_example
+package de.uniulm.sensing_plugin_example
 
 import io.flutter.embedding.android.FlutterActivity
 

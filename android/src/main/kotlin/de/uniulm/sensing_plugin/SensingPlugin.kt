@@ -1,4 +1,4 @@
-package de.uni_ulm.sensing_plugin
+package de.uniulm.sensing_plugin
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 

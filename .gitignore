@@ -32,7 +32,7 @@ build/
 # Generated platform-specific code
 lib/src/generated/**
 !lib/src/generated/.gitkeep
-android/src/main/kotlin/de/uni_ulm/sensing_plugin/generated/**
-!android/src/main/kotlin/de/uni_ulm/sensing_plugin/generated/.gitkeep
+android/src/main/kotlin/de/uniulm/sensing_plugin/generated/**
+!android/src/main/kotlin/de/uniulm/sensing_plugin/generated/.gitkeep
 ios/Classes/Generated/**
 !ios/Classes/Generated/.gitkeep
