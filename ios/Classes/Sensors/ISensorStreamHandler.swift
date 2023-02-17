@@ -11,7 +11,7 @@ import Foundation
 /**
  Interface for a stream handler
  */
-protocol ISensorStreamHandler : FlutterStreamHandler {
+protocol ISensorStreamHandler : NSObject, FlutterStreamHandler {
     
     /// the Id of the sensor used for identification
     static var sensorId: Int { get }

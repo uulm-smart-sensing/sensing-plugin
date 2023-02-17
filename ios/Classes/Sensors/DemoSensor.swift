@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class DemoSensor : NSObject, ISensorStreamHandler {
+public class DemoSensor : ISensorStreamHandler {
     static var sensorId: Int = 0
     
     func isSensorAvailable() -> Bool {

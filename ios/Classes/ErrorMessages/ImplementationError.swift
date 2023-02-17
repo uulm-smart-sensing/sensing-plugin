@@ -11,6 +11,11 @@ import Foundation
 enum ImplementationError : Error {
     
     /// Indicate that a certain method is not implemented yet
-    /// - parameter methodName Name of the method, which is not being implemented yet
+    /// - parameter methodName Name of the method, which is not implemented yet
     case notImplementedYet(methodName : String)
+    
+    /// Indicate that the requested method is not implemented for the sensor
+    /// - parameter methodName Name of the method, which is not  implemented yet
+    /// - parameter sensorId the id of the sensor, whose method is not implemented
+    case sensorNotImplemented(methodName : String, sensorId: SensorId)
 }
