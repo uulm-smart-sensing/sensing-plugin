@@ -33,14 +33,23 @@ abstract class SensorManagerApi {
 
   @async
 
-  /// Changes the interval of the sensor event channel to
-  /// [timeIntervalInMilliseconds] ms.
-  StateIndicator changeSensorTimeInterval(int timeIntervalInMilliseconds);
+  /// Changes the interval of the sensor event channel with the passed
+  /// [SensorId] to [timeIntervalInMilliseconds] ms.
+  StateIndicator changeSensorTimeInterval(
+    SensorId sensorId,
+    int timeIntervalInMilliseconds,
+  );
 
   @async
 
   /// Retrieves information about the sensor with the passed [SensorId].
   SensorInfo getSensorInfo(SensorId id);
+
+  /// [SensorData] isn't used in any method but returned via the event channel.
+  ///
+  /// For the class to be generated on the platforms it must be referenced in at
+  /// least one method.
+  void dummyMethod(SensorData data);
 }
 
 enum SensorId {
@@ -101,4 +110,17 @@ class SensorInfo {
   Unit unit;
   int accuracy;
   int timeIntervalInMilliseconds;
+}
+
+/// Raw sensor data with information about precision and unit.
+class SensorData {
+  SensorData(
+    this.data,
+    this.maxPrecision,
+    this.unit,
+  );
+
+  List<double?> data;
+  int maxPrecision;
+  Unit unit;
 }
