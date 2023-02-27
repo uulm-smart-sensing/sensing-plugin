@@ -33,9 +33,12 @@ abstract class SensorManagerApi {
 
   @async
 
-  /// Changes the interval of the sensor event channel to
-  /// [timeIntervalInMilliseconds] ms.
-  StateIndicator changeSensorTimeInterval(int timeIntervalInMilliseconds);
+  /// Changes the interval of the sensor event channel with the passed
+  /// [SensorId] to [timeIntervalInMilliseconds] ms.
+  StateIndicator changeSensorTimeInterval(
+    SensorId sensorId,
+    int timeIntervalInMilliseconds,
+  );
 
   @async
 
