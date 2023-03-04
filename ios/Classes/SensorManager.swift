@@ -97,8 +97,14 @@ public class SensorManager: NSObject, FlutterPlugin, SensorManagerApi {
     }
     
     // TODO: implement and document this method
-    func changeSensorTimeInterval(timeIntervalInMilliseconds: Int32, completion: @escaping (Result<StateIndicator, Error>) -> Void) {
-        completion(.failure(ImplementationError.notImplementedYet(methodName: "changeSensorTimeInterval")))
+    func changeSensorTimeInterval(sensorId: SensorId, timeIntervalInMilliseconds: Int32, completion: @escaping (Result<StateIndicator, Error>) -> Void) {
+        // check, whether the sensor with the given Id is implemented
+        if (streamHandlers.keys.contains(sensorId)) {
+            // delegate method to sensor and return its answer
+            let changeTimeInterval = streamHandlers[sensorId]!.changeSensorTimeInterval(timeInterval: timeIntervalInMilliseconds);
+            completion(.success(changeTimeInterval))
+        }
+        completion(.failure(ImplementationError.sensorNotImplemented(methodName: "changeSensorTimeInterval", sensorId: sensorId)))
     }
     
     func getSensorInfo(id: SensorId, completion: @escaping (Result<SensorInfo, Error>) -> Void) {
@@ -109,6 +115,10 @@ public class SensorManager: NSObject, FlutterPlugin, SensorManagerApi {
             completion(.success(sensorInfo))
         }
         completion(.failure(ImplementationError.sensorNotImplemented(methodName: "getSensorInfo", sensorId: id)))
+    }
+    
+    func dummyMethod(data: SensorData) throws {
+        throw ImplementationError.notImplementedYet(methodName: "dummyMethod")
     }
     
 }

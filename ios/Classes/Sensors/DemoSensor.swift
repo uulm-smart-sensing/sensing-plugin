@@ -7,33 +7,33 @@
 
 import Foundation
 
-public class DemoSensor : ISensorStreamHandler {
+public class DemoSensor : NSObject, ISensorStreamHandler {
     static var sensorId: Int = 0
     
     func isSensorAvailable() -> Bool {
-        <#code#>
+        return false
     }
     
     func isSensorUsed() -> Bool {
-        <#code#>
+        return false
     }
     
     func changeSensorTimeInterval(timeInterval: Int32) -> StateIndicator {
-        <#code#>
+        return StateIndicator.init(state: State.fail)
     }
     
     func getSensorInfo() -> SensorInfo {
-        <#code#>
+        return SensorInfo(unit: Unit.unitless, accuracy: 0, timeIntervalInMilliseconds: 0)
     }
     
     // called, when the sensor tracking was started
     public func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
-        <#code#>
+        return nil
     }
     
     // called, when the sensor tracking was stopped
     public func onCancel(withArguments arguments: Any?) -> FlutterError? {
-        <#code#>
+        return nil
     }
     
     
