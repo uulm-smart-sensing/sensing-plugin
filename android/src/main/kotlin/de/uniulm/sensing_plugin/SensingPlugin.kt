@@ -2,7 +2,9 @@ package de.uniulm.sensing_plugin
 
 import android.content.Context
 import android.hardware.SensorManager
+import de.uniulm.sensing_plugin.exceptions.SensorNotRegisteredException
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.*
+import de.uniulm.sensing_plugin.sensors.DummySensor
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.EventChannel
@@ -50,43 +52,52 @@ class SensingPlugin: FlutterPlugin, SensorManagerApi {
         id: SensorId,
         result: Result<Boolean>?
     ) {
-        TODO("Not yet implemented")
+        result!!.success(streamHandlers.containsKey(id))
     }
 
     override fun stopSensorTracking(
         id: SensorId,
         result: Result<StateIndicator>?
     ) {
-        TODO("Not yet implemented")
+        if (streamHandlers.containsKey(id)) {
+            val streamHandler = streamHandlers[id]!!
+            streamHandler.stopListener()
+            streamHandlers.remove(id)
+            val eventChannel = eventChannels[id]!!
+            eventChannel.setStreamHandler(null)
+        }
     }
 
     override fun getSensorInfo(
         id: SensorId,
         result: Result<SensorInfo>?
     ) {
-        TODO("Not yet implemented")
+        if (streamHandlers.containsKey(id)) {
+            val streamHandler = streamHandlers[id]!!
+            result!!.success(streamHandler.getSensorInfo())
+        } else {
+            result!!.error(SensorNotRegisteredException(id))
+        }
     }
 
     override fun changeSensorTimeInterval(
+        id: SensorId,
         timeIntervalInMilliseconds: Long,
         result: Result<StateIndicator>?
     ) {
-        /**
-         * Requires sensor id.
-         */
-//        val state = if (streamHandlers.containsKey(id)) {
-//            val timeIntervalInMicroseconds = timeIntervalInMilliseconds * 1000
-//            streamHandlers[id]!!.changeTimeInterval(timeIntervalInMicroseconds)
-//        } else {
-//            State.FAIL
-//        }
-//
-//        val stateIndicator = StateIndicator.Builder()
-//            .setState(state)
-//            .build()
-//
-//        result!!.success(stateIndicator)
-        TODO("Not yet implemented")
+        val state = if (streamHandlers.containsKey(id)) {
+            val timeIntervalInMicroseconds = timeIntervalInMilliseconds * 1000
+            streamHandlers[id]!!.changeTimeInterval(timeIntervalInMicroseconds)
+            State.SUCCESS
+        } else {
+            State.FAIL
+        }
+
+        val stateIndicator = StateIndicator.Builder()
+            .setState(state)
+            .build()
+
+        result!!.success(stateIndicator)
     }
 
     override fun startSensorTracking(
@@ -94,6 +105,33 @@ class SensingPlugin: FlutterPlugin, SensorManagerApi {
         timeIntervalInMilliseconds: Long,
         result: Result<StateIndicator>?
     ) {
-        TODO("Not yet implemented")
+        val eventChannel = if (!eventChannels.containsKey(id)) {
+            val eventChannel = EventChannel(messenger, "sensors/$id")
+            eventChannels[id] = eventChannel
+            eventChannel
+        } else {
+            eventChannels[id]
+        }
+
+        val state = if (!streamHandlers.containsKey(id)) {
+            val streamHandler = when(id) {
+                SensorId.ACCELEROMETER -> DummySensor(sensorManager, timeIntervalInMilliseconds)
+                else -> throw NotImplementedError()
+            }
+            streamHandlers[id] = streamHandler
+            eventChannel!!.setStreamHandler(streamHandler)
+            State.SUCCESS
+        } else {
+            // TODO: replace with something like State.ALREADY_TRACKING
+            State.FAIL
+        }
+
+        val stateIndicator = StateIndicator.Builder()
+            .setState(state)
+            .build()
+
+        result!!.success(stateIndicator)
     }
+
+    override fun dummyMethod(data: SensorData) { }
 }

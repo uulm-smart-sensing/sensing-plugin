@@ -4,26 +4,31 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorManager
 import de.uniulm.sensing_plugin.SensorStreamHandler
+import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorData
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorInfo
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.Unit
 
 class DummySensor(
     sensorManager: SensorManager,
-    private val intervalInMicroseconds: Long,
+    timeIntervalInMicroseconds: Long,
 ) : SensorStreamHandler(
     sensorManager,
     Sensor.TYPE_ACCELEROMETER,
-    intervalInMicroseconds,
+    timeIntervalInMicroseconds,
 ) {
 
-    override fun createSensorData(event: SensorEvent) {
-        TODO("Not yet implemented")
+    override fun createSensorDataFromEvent(event: SensorEvent): SensorData {
+        return SensorData.Builder()
+            .setData(event.values.map { v -> v.toDouble() })
+            .setMaxPrecision(100)
+            .setUnit(Unit.UNITLESS)
+            .build()
     }
 
     override fun getSensorInfo(): SensorInfo {
         return SensorInfo.Builder()
             .setAccuracy(0)
-            .setTimeIntervalInMilliseconds(intervalInMicroseconds)
+            .setTimeIntervalInMilliseconds(getTimeIntervalInMicroseconds())
             .setUnit(Unit.UNITLESS)
             .build()
     }

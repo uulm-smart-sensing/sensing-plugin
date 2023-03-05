@@ -4,6 +4,7 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorData
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorInfo
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.State
 import io.flutter.plugin.common.EventChannel
@@ -12,7 +13,7 @@ import java.util.*
 abstract class SensorStreamHandler(
     private val sensorManager: SensorManager,
     private val sensorId: Int,
-    private var intervalInMicroseconds: Long
+    private var timeIntervalInMicroseconds: Long
 ) : EventChannel.StreamHandler, SensorEventListener {
 
     private val sensor: Sensor = sensorManager.getDefaultSensor(sensorId)
@@ -20,8 +21,10 @@ abstract class SensorStreamHandler(
     private var lastUpdate: Calendar = Calendar.getInstance()
 
     override fun onListen(arguments: Any?, eventSink: EventChannel.EventSink?) {
-        this.eventSink = eventSink
-        startListener()
+        if (eventSink != null) {
+            this.eventSink = eventSink
+            startListener()
+        }
     }
 
     override fun onCancel(arguments: Any?) {
@@ -29,7 +32,7 @@ abstract class SensorStreamHandler(
     }
 
     private fun startListener() {
-        sensorManager.registerListener(this, sensor, intervalInMicroseconds.toInt())
+        sensorManager.registerListener(this, sensor, timeIntervalInMicroseconds.toInt())
     }
 
     fun stopListener() {
@@ -42,16 +45,16 @@ abstract class SensorStreamHandler(
     override fun onSensorChanged(event: SensorEvent) {
         val currentTime = Calendar.getInstance()
         if (isValidTime(currentTime)) {
-            val sensorData = createSensorData(event)
+            val sensorData = createSensorDataFromEvent(event)
             eventSink?.success(sensorData)
             lastUpdate = currentTime
         }
     }
 
-    abstract fun createSensorData(event: SensorEvent)
+    abstract fun createSensorDataFromEvent(event: SensorEvent) : SensorData
 
     private fun isValidTime(time: Calendar) : Boolean {
-        return (time.timeInMillis - lastUpdate.timeInMillis) * 1000 >= intervalInMicroseconds
+        return (time.timeInMillis - lastUpdate.timeInMillis) * 1000 >= timeIntervalInMicroseconds
     }
 
     fun isAvailable() : Boolean {
@@ -61,6 +64,13 @@ abstract class SensorStreamHandler(
     abstract fun getSensorInfo() : SensorInfo
 
     fun changeTimeInterval(timeIntervalInMicroseconds: Long) : State {
-        TODO("Not yet implemented")
+        this.timeIntervalInMicroseconds = timeIntervalInMicroseconds
+        stopListener()
+        startListener()
+        return State.SUCCESS
+    }
+
+    protected fun getTimeIntervalInMicroseconds() : Long {
+        return timeIntervalInMicroseconds
     }
 }
