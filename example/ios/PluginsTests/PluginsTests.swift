@@ -1,13 +1,14 @@
 //
-//  PluginTests.swift
-//  PluginTests
+//  PluginsTests.swift
+//  PluginsTests
 //
 //  Created by Leonhard Alkewitz on 06.03.23.
 //
 
 import XCTest
+import sensing_plugin
 
-final class PluginTests: XCTestCase {
+final class PluginsTests: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
