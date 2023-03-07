@@ -33,6 +33,7 @@ flutter-format:apply:
       git config user.email "noreply+flutter-format-bot@${CI_SERVER_HOST}"
   script:
     - |
+      bash setup.sh
       flutter format . -o write --fix
       git commit -am "style: apply flutter-format"
       git push ci HEAD:$CI_COMMIT_REF_NAME
