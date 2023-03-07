@@ -1,6 +1,6 @@
 import 'dart:math' show pi;
 
-import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' show visibleForTesting;
 
 import '../generated/api_sensor_manager.dart' show Unit;
 
