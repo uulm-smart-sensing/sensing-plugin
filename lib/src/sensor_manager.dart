@@ -1,12 +1,12 @@
 import 'package:flutter/services.dart';
 
-import 'generated/api_sensor_manager.dart' show SensorManagerApi, SensorId, Unit;
+import 'generated/api_sensor_manager.dart'
+    show SensorManagerApi, SensorId, Unit;
 
 /// Singleton sensor manager class
 class SensorManager {
-final EventChannel _eventChannel = EventChannel('pigeons\api_sensor_manager.dart');
+  final EventChannel _eventChannel = EventChannel('sensors/[$SensorId]');
 
-  Map _id = <SensorId,EventChannel>{} ;
   static final SensorManager _singleton = SensorManager._internal();
 
   /// Get Sensor Manager singleton instance
