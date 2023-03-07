@@ -1,4 +1,4 @@
-image: gitlab.uni-ulm.de:5050/se-anwendungsprojekt-22-23/ci-tools/flutter-devtools:v1.0.1
+image: gitlab.uni-ulm.de:5050/se-anwendungsprojekt-22-23/ci-tools/flutter-devtools:v1.1.0
 
 stages:
   - analysis
