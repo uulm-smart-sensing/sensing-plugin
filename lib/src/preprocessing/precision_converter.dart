@@ -1,5 +1,3 @@
-import 'dart:core';
-
 /// Converts [value] to the same value, but with a precision of
 /// [targetPrecision].
 ///
