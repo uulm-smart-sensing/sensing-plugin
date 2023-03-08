@@ -12,19 +12,20 @@ class SensorManager {
 
   SensorManager._internal();
 
-//get the sensorid and returns a map with id and eventchannel
   //Propose: i don't know if it is better if we cast this method with future
   Map<SensorId, EventChannel> _getsensorId(SensorId id) {
+    //get the sensorid and returns a map with id and eventchannel
     var counterChannel = EventChannel('sensors/[$id]');
     try {
       counterChannel.receiveBroadcastStream();
       return {id: counterChannel};
+      //throws an exception
     } on PlatformException catch (e) {
       throw Exception(e);
     }
   }
 
-// TODO: dummy method
+// TODO: implement and document this method
 //checks if the Sensor is currently used and returns an bool
   bool _isSensorUsed(SensorId id) => false;
 
@@ -32,7 +33,7 @@ class SensorManager {
   bool _isSensorAvailable(SensorId id) =>
       SensorManager()._isSensorAvailable(id);
 
-// TODO: dummy method
+// TODO: implement and document this method
   ///checks if the sensor is being edited and returns an bool
   bool startSensorTracking(
     SensorId id,
@@ -42,7 +43,7 @@ class SensorManager {
   ) =>
       false;
 
-// TODO: dummy method
+// TODO: implement and document this method
   ///checks if the sensor is being edited and returns an bool
   bool editSensor(String id, String units, int precision, Duration interval) =>
       false;
