@@ -15,11 +15,11 @@ class SensorManager {
   //Propose: i don't know if it is better if we cast this method with future
   Map<SensorId, EventChannel> _getsensorId(SensorId id) {
     //get the sensorid and returns a map with id and eventchannel
-    var counterChannel = EventChannel('sensors/[$id]');
+    var channel = EventChannel('sensors/[$id]');
     try {
-      counterChannel.receiveBroadcastStream();
-      return {id: counterChannel};
-      //throws an exception
+      channel.receiveBroadcastStream();
+      return {id: channel};
+      //throws an exception if there is problem on the native side
     } on PlatformException catch (e) {
       throw Exception(e);
     }
