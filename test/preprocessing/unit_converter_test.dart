@@ -5,7 +5,7 @@ import 'package:sensing_plugin/src/preprocessing/unit_converter.dart';
 const delta = 1E-8;
 
 void main() {
-  test('There should be a conversion method for each declared unit.', () {
+  test('There should be a conversion method for each declared unit', () {
     for (var unit in Unit.values) {
       if (!unitConversionMethods.containsKey(unit)) {
         fail("There's no conversion method registered for $unit");
