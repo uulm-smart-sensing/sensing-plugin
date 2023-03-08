@@ -5,25 +5,34 @@ import 'generated/api_sensor_manager.dart'
 
 /// Singleton sensor manager class
 class SensorManager {
-  final EventChannel _eventChannel = EventChannel('sensors/[$SensorId]');
-
   static final SensorManager _singleton = SensorManager._internal();
 
   /// Get Sensor Manager singleton instance
   factory SensorManager() => _singleton;
 
-  SensorManager._internal(
+  SensorManager._internal();
 
-      ///constructor code
-      );
+//get the sensorid and returns a map with id and eventchannel
+  //Propose: i don't know if it is better if we cast this method with future
+  Map<SensorId, EventChannel> _getsensorId(SensorId id) {
+    var counterChannel = EventChannel('sensors/[$id]');
+    try {
+      counterChannel.receiveBroadcastStream();
+      return {id: counterChannel};
+    } on PlatformException catch (e) {
+      throw Exception(e);
+    }
+  }
 
+// TODO: dummy method
 //checks if the Sensor is currently used and returns an bool
   bool _isSensorUsed(SensorId id) => false;
 
-//checks if the Sensor is available and returns the sensor
+//checks if the Sensor is available and returns the SensorID
   bool _isSensorAvailable(SensorId id) =>
       SensorManager()._isSensorAvailable(id);
 
+// TODO: dummy method
   ///checks if the sensor is being edited and returns an bool
   bool startSensorTracking(
     SensorId id,
@@ -33,6 +42,7 @@ class SensorManager {
   ) =>
       false;
 
+// TODO: dummy method
   ///checks if the sensor is being edited and returns an bool
   bool editSensor(String id, String units, int precision, Duration interval) =>
       false;
