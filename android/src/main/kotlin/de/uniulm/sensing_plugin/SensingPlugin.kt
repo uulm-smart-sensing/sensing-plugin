@@ -29,13 +29,6 @@ class SensingPlugin: FlutterPlugin, SensorManagerApi {
         SensorManagerApi.setup(binding.binaryMessenger, null)
     }
 
-    private fun removeAllListeners() {
-        eventChannels.forEach {
-            val streamHandler = streamHandlers[it.key]
-            streamHandler?.stopListener()
-        }
-    }
-
     override fun isSensorAvailable(
         id: SensorId,
         result: Result<Boolean>?
@@ -53,51 +46,6 @@ class SensingPlugin: FlutterPlugin, SensorManagerApi {
         result: Result<Boolean>?
     ) {
         result!!.success(streamHandlers.containsKey(id))
-    }
-
-    override fun stopSensorTracking(
-        id: SensorId,
-        result: Result<StateIndicator>?
-    ) {
-        if (streamHandlers.containsKey(id)) {
-            val streamHandler = streamHandlers[id]!!
-            streamHandler.stopListener()
-            streamHandlers.remove(id)
-            val eventChannel = eventChannels[id]!!
-            eventChannel.setStreamHandler(null)
-        }
-    }
-
-    override fun getSensorInfo(
-        id: SensorId,
-        result: Result<SensorInfo>?
-    ) {
-        if (streamHandlers.containsKey(id)) {
-            val streamHandler = streamHandlers[id]!!
-            result!!.success(streamHandler.getSensorInfo())
-        } else {
-            result!!.error(SensorNotRegisteredException(id))
-        }
-    }
-
-    override fun changeSensorTimeInterval(
-        id: SensorId,
-        timeIntervalInMilliseconds: Long,
-        result: Result<StateIndicator>?
-    ) {
-        val state = if (streamHandlers.containsKey(id)) {
-            val timeIntervalInMicroseconds = timeIntervalInMilliseconds * 1000
-            streamHandlers[id]!!.changeTimeInterval(timeIntervalInMicroseconds)
-            State.SUCCESS
-        } else {
-            State.FAIL
-        }
-
-        val stateIndicator = StateIndicator.Builder()
-            .setState(state)
-            .build()
-
-        result!!.success(stateIndicator)
     }
 
     override fun startSensorTracking(
@@ -133,5 +81,57 @@ class SensingPlugin: FlutterPlugin, SensorManagerApi {
         result!!.success(stateIndicator)
     }
 
+    override fun stopSensorTracking(
+        id: SensorId,
+        result: Result<StateIndicator>?
+    ) {
+        if (streamHandlers.containsKey(id)) {
+            val streamHandler = streamHandlers[id]!!
+            streamHandler.stopListener()
+            streamHandlers.remove(id)
+            val eventChannel = eventChannels[id]!!
+            eventChannel.setStreamHandler(null)
+        }
+    }
+
+    override fun changeSensorTimeInterval(
+        id: SensorId,
+        timeIntervalInMilliseconds: Long,
+        result: Result<StateIndicator>?
+    ) {
+        val state = if (streamHandlers.containsKey(id)) {
+            val timeIntervalInMicroseconds = timeIntervalInMilliseconds * 1000
+            streamHandlers[id]!!.changeTimeInterval(timeIntervalInMicroseconds)
+            State.SUCCESS
+        } else {
+            State.FAIL
+        }
+
+        val stateIndicator = StateIndicator.Builder()
+            .setState(state)
+            .build()
+
+        result!!.success(stateIndicator)
+    }
+
+    override fun getSensorInfo(
+        id: SensorId,
+        result: Result<SensorInfo>?
+    ) {
+        if (streamHandlers.containsKey(id)) {
+            val streamHandler = streamHandlers[id]!!
+            result!!.success(streamHandler.getSensorInfo())
+        } else {
+            result!!.error(SensorNotRegisteredException(id))
+        }
+    }
+
     override fun dummyMethod(data: SensorData) { }
+
+    private fun removeAllListeners() {
+        eventChannels.forEach {
+            val streamHandler = streamHandlers[it.key]
+            streamHandler?.stopListener()
+        }
+    }
 }

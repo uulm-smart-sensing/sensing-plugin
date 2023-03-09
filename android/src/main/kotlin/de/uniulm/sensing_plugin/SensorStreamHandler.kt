@@ -13,12 +13,27 @@ import java.util.*
 abstract class SensorStreamHandler(
     private val sensorManager: SensorManager,
     private val sensorId: Int,
-    private var timeIntervalInMicroseconds: Long
+    private var timeIntervalInMicroseconds: Long,
 ) : EventChannel.StreamHandler, SensorEventListener {
 
     private val sensor: Sensor = sensorManager.getDefaultSensor(sensorId)
     private var eventSink: EventChannel.EventSink? = null
     private var lastUpdate: Calendar = Calendar.getInstance()
+
+    abstract fun createSensorDataFromEvent(event: SensorEvent) : SensorData
+
+    abstract fun getSensorInfo() : SensorInfo
+
+    override fun onAccuracyChanged(sensor: Sensor, i: Int) { }
+
+    override fun onSensorChanged(event: SensorEvent) {
+        val currentTime = Calendar.getInstance()
+        if (isValidTime(currentTime)) {
+            val sensorData = createSensorDataFromEvent(event)
+            eventSink?.success(sensorData)
+            lastUpdate = currentTime
+        }
+    }
 
     override fun onListen(arguments: Any?, eventSink: EventChannel.EventSink?) {
         if (eventSink != null) {
@@ -39,19 +54,12 @@ abstract class SensorStreamHandler(
         sensorManager.unregisterListener(this)
     }
 
-    override fun onAccuracyChanged(sensor: Sensor, i: Int) {
+    fun changeTimeInterval(timeIntervalInMicroseconds: Long) : State {
+        this.timeIntervalInMicroseconds = timeIntervalInMicroseconds
+        stopListener()
+        startListener()
+        return State.SUCCESS
     }
-
-    override fun onSensorChanged(event: SensorEvent) {
-        val currentTime = Calendar.getInstance()
-        if (isValidTime(currentTime)) {
-            val sensorData = createSensorDataFromEvent(event)
-            eventSink?.success(sensorData)
-            lastUpdate = currentTime
-        }
-    }
-
-    abstract fun createSensorDataFromEvent(event: SensorEvent) : SensorData
 
     private fun isValidTime(time: Calendar) : Boolean {
         return (time.timeInMillis - lastUpdate.timeInMillis) * 1000 >= timeIntervalInMicroseconds
@@ -61,16 +69,5 @@ abstract class SensorStreamHandler(
         return sensorManager.getSensorList(sensorId).isNotEmpty()
     }
 
-    abstract fun getSensorInfo() : SensorInfo
-
-    fun changeTimeInterval(timeIntervalInMicroseconds: Long) : State {
-        this.timeIntervalInMicroseconds = timeIntervalInMicroseconds
-        stopListener()
-        startListener()
-        return State.SUCCESS
-    }
-
-    protected fun getTimeIntervalInMicroseconds() : Long {
-        return timeIntervalInMicroseconds
-    }
+    fun getTimeIntervalInMicroseconds() = timeIntervalInMicroseconds
 }
