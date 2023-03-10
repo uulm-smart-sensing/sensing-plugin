@@ -90,16 +90,17 @@ class StateIndicator {
   final State state;
 }
 
-/// Indicate the state of an action.
-///
-/// Success - the action was executed without any error
-/// Warning - the action was successfully executed, but there are some warnings
-///           (e.g. sensor updates not always possible, depending on the device)
-/// Fail - the action could not be done without any error
+/// Indicates the state of an action.
 enum State {
+  /// The action was executed without an error
   success,
+
+  /// The action was executed successfully, but there are some warnings
+  /// (e.g. sensor updates not always possible, depending on the device)
   warning,
-  fail,
+
+  /// The action couldn't be executed without an error
+  failure,
 }
 
 class SensorInfo {
