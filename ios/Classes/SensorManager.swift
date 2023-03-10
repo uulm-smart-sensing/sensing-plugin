@@ -73,8 +73,10 @@ public class SensorManager: NSObject, FlutterPlugin, SensorManagerApi {
                 eventChannels.updateValue(eventChannel, forKey: id)
             }
             
-            // start the sensor tracking by triggering the onListen method of the sensor stream handler
+            // start the sensor tracking by update the sampling interval and triggering the onListen method of the sensor stream handler
             let sensorStreamHandler = streamHandlers[id]!
+            // TODO: add check of result (catching warning from method)
+            sensorStreamHandler.changeSensorTimeInterval(timeInterval: timeIntervalInMilliseconds)
             eventChannels[id]!.setStreamHandler(sensorStreamHandler)
             
             completion(.success(StateIndicator.init(state: State.success)))

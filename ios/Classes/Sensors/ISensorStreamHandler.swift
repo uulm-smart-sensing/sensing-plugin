@@ -45,7 +45,7 @@ protocol ISensorStreamHandler : NSObject, FlutterStreamHandler {
     /**
      Changes the interval at which the sensor provide data
      - Parameters:
-     - timeInterval: required interval in ms
+        - timeInterval: required interval in ms
      - Returns: StateIndicator.sucess if the time interval was changed sucessfully, otherwise StateIndicator.failure
      */
     func changeSensorTimeInterval(timeInterval : Int32) -> StateIndicator
