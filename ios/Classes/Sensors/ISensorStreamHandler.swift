@@ -9,12 +9,25 @@ import Flutter
 import Foundation
 
 /**
- Interface for a stream handler
+ enumeration containing the names respectivly the Ids of all implemented sensors
+ */
+enum SensorIds : CaseIterable {
+    case Accelerometer,
+         Gyroscope,
+         Magnetometer,
+         Heading,
+         Linear_Acceleromter,
+         Barometer,
+         Thermometer
+}
+
+/**
+ Interface for a stream handler of a sensor
  */
 protocol ISensorStreamHandler : NSObject, FlutterStreamHandler {
     
     /// the Id of the sensor used for identification
-    static var sensorId: Int { get }
+    static var sensorId: SensorIds { get }
     
     /**
      Checks, whether the sensor is available and can provide sensor data
@@ -32,13 +45,13 @@ protocol ISensorStreamHandler : NSObject, FlutterStreamHandler {
     /**
      Changes the interval at which the sensor provide data
      - Parameters:
-        - timeInterval: required interval in ms
+     - timeInterval: required interval in ms
      - Returns: StateIndicator.sucess if the time interval was changed sucessfully, otherwise StateIndicator.failure
      */
     func changeSensorTimeInterval(timeInterval : Int32) -> StateIndicator
     
     /**
-    Get the information about this sensor
+     Get the information about this sensor
      - Returns: SensorInfo object containing information about the unit, accuracy and the time interval at which the data from the sensor are provided
      */
     func getSensorInfo() -> SensorInfo
