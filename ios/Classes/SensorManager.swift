@@ -42,6 +42,9 @@ public class SensorManager: NSObject, FlutterPlugin, SensorManagerApi {
     // TODO: add initilization of channels and handlers and document it
     init(registrar: FlutterPluginRegistrar) {
         self.registrar = registrar
+        
+        // add gyroscope as implemented sensor
+        streamHandlers.updateValue(GyroscopeHandler(), forKey: SensorId.gyroscope)
     }
     
     func isSensorAvailable(id: SensorId, completion: @escaping (Result<Bool, Error>) -> Void) {
