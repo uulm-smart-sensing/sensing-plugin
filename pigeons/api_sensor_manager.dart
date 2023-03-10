@@ -18,19 +18,19 @@ abstract class SensorManagerApi {
   /// The sensor sends data via the event channel every
   /// [timeIntervalInMilliseconds] ms.
   @async
-  StateIndicator startSensorTracking(
+  ResultWrapper startSensorTracking(
     SensorId id,
     int timeIntervalInMilliseconds,
   );
 
   /// Stops tracking of the sensor with the passed [SensorId].
   @async
-  StateIndicator stopSensorTracking(SensorId id);
+  ResultWrapper stopSensorTracking(SensorId id);
 
   /// Changes the interval of the sensor event channel with the passed
   /// [SensorId] to [timeIntervalInMilliseconds] ms.
   @async
-  StateIndicator changeSensorTimeInterval(
+  ResultWrapper changeSensorTimeInterval(
     SensorId sensorId,
     int timeIntervalInMilliseconds,
   );
@@ -81,25 +81,37 @@ enum Unit {
   unitless,
 }
 
-/// Stores state enum.
+/// Wrappes [SensorTaskResult] enum.
 ///
 /// Enums aren't yet supported for primitive return types.
-class StateIndicator {
-  StateIndicator(this.state);
+class ResultWrapper {
+  const ResultWrapper(this.state);
 
-  final State state;
+  final SensorTaskResult state;
 }
 
-/// Indicates the state of an action.
-enum State {
-  /// The action was executed without an error
+/// The result of a task executed by a sensor.
+enum SensorTaskResult {
+  /// The task was executed without an error.
   success,
+
+  /// The sensor corresponding to the task was not available.
+  sensorNotAvailable,
+
+  /// The sensor corresponding to the task is already being tracked.
+  alreadyTrackingSensor,
+
+  // The sensor corresponding to the task was not being tracked.
+  notTrackingSensor,
+
+  // The sensor time interval corresponding to the task was invalid.
+  invalidTimeInterval,
 
   /// The action was executed successfully, but there are some warnings
   /// (e.g. sensor updates not always possible, depending on the device)
   warning,
 
-  /// The action couldn't be executed without an error
+  /// The action couldn't be executed without an error.
   failure,
 }
 
