@@ -2,47 +2,41 @@ import 'package:pigeon/pigeon.dart';
 
 @HostApi()
 abstract class SensorManagerApi {
-  @async
-
   /// Checks whether the sensor with the passed [SensorId] is available.
-  bool isSensorAvailable(SensorId id);
-
   @async
+  bool isSensorAvailable(SensorId id);
 
   /// Checks whether the sensor with the passed [SensorId] is currently used.
   ///
   /// 'used' means that tracking for this sensor started in the passed and has
   /// not yet been stopped.
-  bool isSensorUsed(SensorId id);
-
   @async
+  bool isSensorUsed(SensorId id);
 
   /// Starts tracking of the sensor with the passed [SensorId].
   ///
   /// The sensor sends data via the event channel every
   /// [timeIntervalInMilliseconds] ms.
+  @async
   StateIndicator startSensorTracking(
     SensorId id,
     int timeIntervalInMilliseconds,
   );
 
-  @async
-
   /// Stops tracking of the sensor with the passed [SensorId].
-  StateIndicator stopSensorTracking(SensorId id);
-
   @async
+  StateIndicator stopSensorTracking(SensorId id);
 
   /// Changes the interval of the sensor event channel with the passed
   /// [SensorId] to [timeIntervalInMilliseconds] ms.
+  @async
   StateIndicator changeSensorTimeInterval(
     SensorId sensorId,
     int timeIntervalInMilliseconds,
   );
 
-  @async
-
   /// Retrieves information about the sensor with the passed [SensorId].
+  @async
   SensorInfo getSensorInfo(SensorId id);
 
   /// [SensorData] isn't used in any method but returned via the event channel.
