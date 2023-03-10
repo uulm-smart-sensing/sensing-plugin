@@ -29,10 +29,8 @@ class SensingPlugin: FlutterPlugin, SensorManagerApi {
         SensorManagerApi.setup(binding.binaryMessenger, null)
     }
 
-    override fun isSensorAvailable(
-        id: SensorId,
-        result: Result<Boolean>?
-    ) {
+    /** Checks whether the sensor with the passed [SensorId] is available. */
+    override fun isSensorAvailable(id: SensorId, result: Result<Boolean>?) {
         if (streamHandlers.containsKey(id)) {
             val isAvailable = streamHandlers[id]!!.isAvailable()
             result?.success(isAvailable)
@@ -41,6 +39,12 @@ class SensingPlugin: FlutterPlugin, SensorManagerApi {
         }
     }
 
+    /**
+     * Checks whether the sensor with the passed [SensorId] is currently used.
+     *
+     * 'used' means that tracking for this sensor started in the passed and has
+     * not yet been stopped.
+     */
     override fun isSensorUsed(
         id: SensorId,
         result: Result<Boolean>?
@@ -48,6 +52,12 @@ class SensingPlugin: FlutterPlugin, SensorManagerApi {
         result!!.success(streamHandlers.containsKey(id))
     }
 
+    /**
+     * Starts tracking of the sensor with the passed [SensorId].
+     *
+     * The sensor sends data via the event channel every
+     * [timeIntervalInMilliseconds] ms.
+     */
     override fun startSensorTracking(
         id: SensorId,
         timeIntervalInMilliseconds: Long,
@@ -81,6 +91,7 @@ class SensingPlugin: FlutterPlugin, SensorManagerApi {
         result!!.success(stateIndicator)
     }
 
+    /** Stops tracking of the sensor with the passed [SensorId]. */
     override fun stopSensorTracking(
         id: SensorId,
         result: Result<StateIndicator>?
@@ -94,6 +105,10 @@ class SensingPlugin: FlutterPlugin, SensorManagerApi {
         }
     }
 
+    /**
+     * Changes the interval of the sensor event channel with the passed
+     * [SensorId] to [timeIntervalInMilliseconds] ms.
+     */
     override fun changeSensorTimeInterval(
         id: SensorId,
         timeIntervalInMilliseconds: Long,
@@ -114,6 +129,7 @@ class SensingPlugin: FlutterPlugin, SensorManagerApi {
         result!!.success(stateIndicator)
     }
 
+    /** Retrieves information about the sensor with the passed [SensorId]. */
     override fun getSensorInfo(
         id: SensorId,
         result: Result<SensorInfo>?
@@ -126,8 +142,18 @@ class SensingPlugin: FlutterPlugin, SensorManagerApi {
         }
     }
 
+    /**
+     * [SensorData] isn't used in any method but returned via the event channel.
+     *
+     * For the class to be generated on the platforms it must be referenced in at
+     * least one method.
+     */
     override fun dummyMethod(data: SensorData) { }
 
+    /**
+     * Removes the stream handler of each event channels in [eventChannels].
+     * The listener of the stream handler is stopped in the process.
+     */
     private fun removeAllListeners() {
         eventChannels.forEach {
             val streamHandler = streamHandlers[it.key]
