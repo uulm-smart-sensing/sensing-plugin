@@ -43,7 +43,8 @@ abstract class SensorManagerApi {
   ///
   /// For the class to be generated on the platforms it must be referenced in at
   /// least one method.
-  void dummyMethod(SensorData data);
+  // ignore: unused_element
+  void _dummyMethod(SensorData data);
 }
 
 enum SensorId {
