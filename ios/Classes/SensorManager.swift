@@ -19,7 +19,6 @@ import CoreMotion
  
  */
 public class SensorManager: NSObject, FlutterPlugin, SensorManagerApi {
-    // TODO: check error handling in methods
     
     private var eventChannels : [SensorId : FlutterEventChannel] = [:]
     private var streamHandlers : [SensorId : ISensorStreamHandler] = [:]
@@ -38,10 +37,16 @@ public class SensorManager: NSObject, FlutterPlugin, SensorManagerApi {
     
     /**
      initializes the ``SensorManager``
+     
+     Therefor, the `init` method ...
+     - save the registration context for the flutter plugin for later use
+     - register all implemented stream handlers for the sensors
      */
-    // TODO: add initilization of channels and handlers and document it
     init(registrar: FlutterPluginRegistrar) {
         self.registrar = registrar
+        
+        // add gyroscope as implemented sensor
+        streamHandlers.updateValue(GyroscopeHandler(), forKey: SensorId.gyroscope)
     }
     
     func isSensorAvailable(id: SensorId, completion: @escaping (Result<Bool, Error>) -> Void) {
@@ -64,45 +69,48 @@ public class SensorManager: NSObject, FlutterPlugin, SensorManagerApi {
         completion(.failure(ImplementationError.sensorNotImplemented(methodName: "isSensorUsed", sensorId: id)))
     }
     
-    func startSensorTracking(id: SensorId, timeIntervalInMilliseconds: Int32, completion: @escaping (Result<StateIndicator, Error>) -> Void) {
+    func startSensorTracking(id: SensorId, timeIntervalInMilliseconds: Int32, completion: @escaping (Result<ResultWrapper, Error>) -> Void) {
         // check, whether the sensor with the given Id is implemented
         if (streamHandlers.keys.contains(id)) {
             // create and save the corresponding eventchannel, if not exist already
-            if (eventChannels.keys.contains(id)) {
-                var eventChannel = FlutterEventChannel(name:"sensors/\(id)", binaryMessenger: registrar.messenger())
+            if (!eventChannels.keys.contains(id)) {
+                let eventChannel = FlutterEventChannel(name:"sensors/\(id)", binaryMessenger: registrar.messenger())
                 eventChannels.updateValue(eventChannel, forKey: id)
+            } else {
+                completion(.success(ResultWrapper.init(state: SensorTaskResult.alreadyTrackingSensor)))
             }
             
-            // start the sensor tracking by triggering the onListen method of the sensor stream handler
+            // start the sensor tracking by update the sampling interval and triggering the onListen method of the sensor stream handler
             let sensorStreamHandler = streamHandlers[id]!
+            let result : ResultWrapper = sensorStreamHandler.changeSensorTimeInterval(timeInterval: timeIntervalInMilliseconds)
             eventChannels[id]!.setStreamHandler(sensorStreamHandler)
             
-            completion(.success(StateIndicator.init(state: State.success)))
+            completion(.success(result))
         }
-        completion(.failure(ImplementationError.sensorNotImplemented(methodName: "isSensorUsed", sensorId: id)))
+        completion(.failure(ImplementationError.sensorNotImplemented(methodName: "startSensorTracking", sensorId: id)))
     }
     
-    func stopSensorTracking(id: SensorId, completion: @escaping (Result<StateIndicator, Error>) -> Void) {
+    func stopSensorTracking(id: SensorId, completion: @escaping (Result<ResultWrapper, Error>) -> Void) {
         // check, whether the sensor with the given Id is implemented
         if (streamHandlers.keys.contains(id)) {
             // check, whether the sensor with the given Id has a event channel
             if (eventChannels.keys.contains(id)) {
                 eventChannels[id]!.setStreamHandler(nil)
-                completion(.success(StateIndicator.init(state: State.success)))
+                eventChannels.removeValue(forKey: id)
+                completion(.success(ResultWrapper.init(state: SensorTaskResult.success)))
             } else {
-                completion(.success(StateIndicator.init(state: State.fail)))
+                completion(.success(ResultWrapper.init(state: SensorTaskResult.notTrackingSensor)))
             }
         }
-        completion(.failure(ImplementationError.sensorNotImplemented(methodName: "isSensorUsed", sensorId: id)))
+        completion(.failure(ImplementationError.sensorNotImplemented(methodName: "stopSensorTracking", sensorId: id)))
     }
     
-    // TODO: implement and document this method
-    func changeSensorTimeInterval(sensorId: SensorId, timeIntervalInMilliseconds: Int32, completion: @escaping (Result<StateIndicator, Error>) -> Void) {
+    func changeSensorTimeInterval(sensorId: SensorId, timeIntervalInMilliseconds: Int32, completion: @escaping (Result<ResultWrapper, Error>) -> Void) {
         // check, whether the sensor with the given Id is implemented
         if (streamHandlers.keys.contains(sensorId)) {
             // delegate method to sensor and return its answer
-            let changeTimeInterval = streamHandlers[sensorId]!.changeSensorTimeInterval(timeInterval: timeIntervalInMilliseconds);
-            completion(.success(changeTimeInterval))
+            let result : ResultWrapper = streamHandlers[sensorId]!.changeSensorTimeInterval(timeInterval: timeIntervalInMilliseconds);
+            completion(.success(result))
         }
         completion(.failure(ImplementationError.sensorNotImplemented(methodName: "changeSensorTimeInterval", sensorId: sensorId)))
     }
@@ -117,7 +125,7 @@ public class SensorManager: NSObject, FlutterPlugin, SensorManagerApi {
         completion(.failure(ImplementationError.sensorNotImplemented(methodName: "getSensorInfo", sensorId: id)))
     }
     
-    func dummyMethod(data: SensorData) throws {
+    func _dummyMethod(data: SensorData) throws {
         throw ImplementationError.notImplementedYet(methodName: "dummyMethod")
     }
     
