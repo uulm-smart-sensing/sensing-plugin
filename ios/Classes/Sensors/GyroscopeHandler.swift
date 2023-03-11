@@ -24,9 +24,7 @@ import CoreMotion
  
  */
 public class GyroscopeHandler : NSObject, ISensorStreamHandler {
-    
-    static var sensorId: SensorIds = SensorIds.gyroscope
-        
+  
     func isSensorAvailable() -> Bool {
         return ManagerCollection.getMotionManager().isGyroAvailable
     }

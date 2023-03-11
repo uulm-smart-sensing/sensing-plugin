@@ -9,25 +9,9 @@ import Flutter
 import Foundation
 
 /**
- enumeration containing the names respectivly the Ids of all implemented sensors
- */
-enum SensorIds : CaseIterable {
-    case accelerometer,
-         gyroscope,
-         magnetometer,
-         heading,
-         linear_acceleromter,
-         barometer,
-         thermometer
-}
-
-/**
  Interface for a stream handler of a sensor
  */
 protocol ISensorStreamHandler : NSObject, FlutterStreamHandler {
-    
-    /// the Id of the sensor used for identification
-    static var sensorId: SensorIds { get }
     
     /**
      Checks, whether the sensor is available and can provide sensor data
