@@ -28,11 +28,11 @@ public class GyroscopeHandler : NSObject, ISensorStreamHandler {
     static var sensorId: SensorIds = SensorIds.gyroscope
         
     func isSensorAvailable() -> Bool {
-        return CMMangerCollection.getMotionManager().isGyroAvailable
+        return ManagerCollection.getMotionManager().isGyroAvailable
     }
     
     func isSensorUsed() -> Bool {
-        return CMMangerCollection.getMotionManager().isGyroActive
+        return ManagerCollection.getMotionManager().isGyroActive
     }
     
     /**
@@ -44,7 +44,7 @@ public class GyroscopeHandler : NSObject, ISensorStreamHandler {
     func changeSensorTimeInterval(timeInterval: Int32) -> ResultWrapper {
         // convert time interval from miliseconds into seconds
         let timeIntervalInSec : TimeInterval = Double(timeInterval) / 1000
-        CMMangerCollection.getMotionManager().gyroUpdateInterval = timeIntervalInSec;
+        ManagerCollection.getMotionManager().gyroUpdateInterval = timeIntervalInSec;
         
         // check, whether the requested time interval is below 10 ms
         if (timeInterval < 10) {
@@ -59,14 +59,14 @@ public class GyroscopeHandler : NSObject, ISensorStreamHandler {
     // TODO: check the accuracy of the gyroscope and do not return -1 (indicating no information) as accuracy
     func getSensorInfo() -> SensorInfo {
         // convert time interval from seconds to milliseconds
-        let timeIntervalInMilliSec : Int32 = Int32(CMMangerCollection.getMotionManager().gyroUpdateInterval * 1000)
+        let timeIntervalInMilliSec : Int32 = Int32(ManagerCollection.getMotionManager().gyroUpdateInterval * 1000)
         return SensorInfo(unit: Unit.radiansPerSecond, accuracy: -1, timeIntervalInMilliseconds: timeIntervalInMilliSec)
     }
     
     // TODO: check, whether timer is not the better solution and provide the data at more precise frequency or if then data would be losen
     public func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
         if (isSensorAvailable()) {
-            CMMangerCollection.getMotionManager().startGyroUpdates(to: OperationQueue.current!, withHandler: {(gyroscopeData: CMGyroData?, error: Error?) in
+            ManagerCollection.getMotionManager().startGyroUpdates(to: OperationQueue.current!, withHandler: {(gyroscopeData: CMGyroData?, error: Error?) in
                 guard (error != nil) else {
                     // get sensor values from gyroscope
                     var xValue = gyroscopeData?.rotationRate.x
@@ -88,7 +88,7 @@ public class GyroscopeHandler : NSObject, ISensorStreamHandler {
     
     public func onCancel(withArguments arguments: Any?) -> FlutterError? {
         if (isSensorUsed()) {
-            CMMangerCollection.getMotionManager().stopGyroUpdates()
+            ManagerCollection.getMotionManager().stopGyroUpdates()
             return nil
         }
         return FlutterError(code: "NO_UPDATE_STOP_POSSIBLE", message: "Gyroscope is not used, so stopping the updates is not possible.", details: "")
