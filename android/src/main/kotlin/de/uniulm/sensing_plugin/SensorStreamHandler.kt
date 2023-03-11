@@ -98,11 +98,11 @@ abstract class SensorStreamHandler(
     }
 
     /** Changes the interval of this listener to [timeIntervalInMicroseconds]. */
-    fun changeTimeInterval(timeIntervalInMicroseconds: Long) : State {
+    fun changeTimeInterval(timeIntervalInMicroseconds: Long) : SensorTaskResult {
         this.timeIntervalInMicroseconds = timeIntervalInMicroseconds
         stopListener()
         startListener()
-        return State.SUCCESS
+        return SensorTaskResult.SUCCESS
     }
 
     /**
