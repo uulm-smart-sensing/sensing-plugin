@@ -12,13 +12,13 @@ import Foundation
  enumeration containing the names respectivly the Ids of all implemented sensors
  */
 enum SensorIds : CaseIterable {
-    case Accelerometer,
-         Gyroscope,
-         Magnetometer,
-         Heading,
-         Linear_Acceleromter,
-         Barometer,
-         Thermometer
+    case accelerometer,
+         gyroscope,
+         magnetometer,
+         heading,
+         linear_acceleromter,
+         barometer,
+         thermometer
 }
 
 /**
@@ -38,7 +38,7 @@ protocol ISensorStreamHandler : NSObject, FlutterStreamHandler {
     
     /**
      Checks, whether the sensor is currently used, which means it was started and not stopped yet
-     - Returns: true, if the sensor is currently used so being tracked and provide sensor data, otherwise false
+     - Returns: true, if the sensor is currently used (so being tracked) and provide sensor data, otherwise false
      */
     func isSensorUsed() -> Bool
     
@@ -46,9 +46,9 @@ protocol ISensorStreamHandler : NSObject, FlutterStreamHandler {
      Changes the interval at which the sensor provide data
      - Parameters:
         - timeInterval: required interval in ms
-     - Returns: StateIndicator.sucess if the time interval was changed sucessfully, otherwise StateIndicator.failure
+     - Returns: ResultWrapper if the time interval was changed sucessfully, otherwise StateIndicator.failure
      */
-    func changeSensorTimeInterval(timeInterval : Int32) -> StateIndicator
+    func changeSensorTimeInterval(timeInterval : Int32) -> ResultWrapper
     
     /**
      Get the information about this sensor
