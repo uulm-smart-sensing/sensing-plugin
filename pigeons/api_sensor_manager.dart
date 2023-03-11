@@ -2,54 +2,49 @@ import 'package:pigeon/pigeon.dart';
 
 @HostApi()
 abstract class SensorManagerApi {
-  @async
-
   /// Checks whether the sensor with the passed [SensorId] is available.
-  bool isSensorAvailable(SensorId id);
-
   @async
+  bool isSensorAvailable(SensorId id);
 
   /// Checks whether the sensor with the passed [SensorId] is currently used.
   ///
   /// 'used' means that tracking for this sensor started in the passed and has
   /// not yet been stopped.
-  bool isSensorUsed(SensorId id);
-
   @async
+  bool isSensorUsed(SensorId id);
 
   /// Starts tracking of the sensor with the passed [SensorId].
   ///
   /// The sensor sends data via the event channel every
   /// [timeIntervalInMilliseconds] ms.
-  StateIndicator startSensorTracking(
+  @async
+  ResultWrapper startSensorTracking(
     SensorId id,
     int timeIntervalInMilliseconds,
   );
 
-  @async
-
   /// Stops tracking of the sensor with the passed [SensorId].
-  StateIndicator stopSensorTracking(SensorId id);
-
   @async
+  ResultWrapper stopSensorTracking(SensorId id);
 
   /// Changes the interval of the sensor event channel with the passed
   /// [SensorId] to [timeIntervalInMilliseconds] ms.
-  StateIndicator changeSensorTimeInterval(
+  @async
+  ResultWrapper changeSensorTimeInterval(
     SensorId sensorId,
     int timeIntervalInMilliseconds,
   );
 
-  @async
-
   /// Retrieves information about the sensor with the passed [SensorId].
+  @async
   SensorInfo getSensorInfo(SensorId id);
 
   /// [SensorData] isn't used in any method but returned via the event channel.
   ///
   /// For the class to be generated on the platforms it must be referenced in at
   /// least one method.
-  void dummyMethod(SensorData data);
+  // ignore: unused_element
+  void _dummyMethod(SensorData data);
 }
 
 enum SensorId {
@@ -86,18 +81,38 @@ enum Unit {
   unitless,
 }
 
-/// Stores state enum.
+/// Wrappes [SensorTaskResult] enum.
 ///
 /// Enums aren't yet supported for primitive return types.
-class StateIndicator {
-  StateIndicator(this.state);
+class ResultWrapper {
+  const ResultWrapper(this.state);
 
-  final State state;
+  final SensorTaskResult state;
 }
 
-enum State {
+/// The result of a task executed by a sensor.
+enum SensorTaskResult {
+  /// The task was executed without an error.
   success,
-  fail,
+
+  /// The sensor corresponding to the task was not available.
+  sensorNotAvailable,
+
+  /// The sensor corresponding to the task is already being tracked.
+  alreadyTrackingSensor,
+
+  // The sensor corresponding to the task was not being tracked.
+  notTrackingSensor,
+
+  // The sensor time interval corresponding to the task was invalid.
+  invalidTimeInterval,
+
+  /// The action was executed successfully, but there are some warnings
+  /// (e.g. sensor updates not always possible, depending on the device)
+  warning,
+
+  /// The action couldn't be executed without an error.
+  failure,
 }
 
 class SensorInfo {
