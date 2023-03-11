@@ -1,8 +1,8 @@
 /// Converts [value] to the same value, but with a precision of
 /// [targetPrecision].
 ///
-/// The parameter [targetPrecision] must be an integer satisfying:
-/// `0 <= fractionDigits <= 20` or otherwise a [RangeError] is thrown.
+/// The parameter [targetPrecision] must satisfy:
+/// `0 <= targetPrecision <= 20` or otherwise a [RangeError] is thrown.
 ///
 /// Example:
 /// ```
