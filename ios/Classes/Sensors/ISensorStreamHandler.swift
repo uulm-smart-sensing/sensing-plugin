@@ -9,12 +9,9 @@ import Flutter
 import Foundation
 
 /**
- Interface for a stream handler
+ Interface for a stream handler of a sensor
  */
 protocol ISensorStreamHandler : NSObject, FlutterStreamHandler {
-    
-    /// the Id of the sensor used for identification
-    static var sensorId: Int { get }
     
     /**
      Checks, whether the sensor is available and can provide sensor data
@@ -25,7 +22,7 @@ protocol ISensorStreamHandler : NSObject, FlutterStreamHandler {
     
     /**
      Checks, whether the sensor is currently used, which means it was started and not stopped yet
-     - Returns: true, if the sensor is currently used so being tracked and provide sensor data, otherwise false
+     - Returns: true, if the sensor is currently used (so being tracked) and provide sensor data, otherwise false
      */
     func isSensorUsed() -> Bool
     
@@ -33,12 +30,12 @@ protocol ISensorStreamHandler : NSObject, FlutterStreamHandler {
      Changes the interval at which the sensor provide data
      - Parameters:
         - timeInterval: required interval in ms
-     - Returns: StateIndicator.sucess if the time interval was changed sucessfully, otherwise StateIndicator.failure
+     - Returns: ResultWrapper if the time interval was changed sucessfully, otherwise StateIndicator.failure
      */
-    func changeSensorTimeInterval(timeInterval : Int32) -> StateIndicator
+    func changeSensorTimeInterval(timeInterval : Int32) -> ResultWrapper
     
     /**
-    Get the information about this sensor
+     Get the information about this sensor
      - Returns: SensorInfo object containing information about the unit, accuracy and the time interval at which the data from the sensor are provided
      */
     func getSensorInfo() -> SensorInfo
