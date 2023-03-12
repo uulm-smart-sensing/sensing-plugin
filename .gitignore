@@ -36,3 +36,6 @@ android/src/main/kotlin/de/uniulm/sensing_plugin/generated/**
 !android/src/main/kotlin/de/uniulm/sensing_plugin/generated/.gitkeep
 ios/Classes/Generated/**
 !ios/Classes/Generated/.gitkeep
+
+# CI coverage reports
+report_outputs/

@@ -4,18 +4,21 @@ stages:
   - analysis
   - test
 
+before_script:
+  - flutter -v
+  - flutter clean
+  - bash setup.sh
+
 flutter-analyze:
   stage: analysis
   needs: [ ]
   script:
-    - bash setup.sh
     - flutter analyze --fatal-infos
 
 flutter-format:
   stage: analysis
   needs: [ ]
   script:
-    - bash setup.sh
     - flutter format . -o write --fix
     - git diff --exit-code
 
@@ -31,9 +34,11 @@ flutter-format:apply:
       git remote add ci https://oauth2:${FLUTTER_FORMAT_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git
       git config user.name "flutter-format bot"
       git config user.email "noreply+flutter-format-bot@${CI_SERVER_HOST}"
+      flutter -v
+      flutter clean
+      bash setup.sh
   script:
     - |
-      bash setup.sh
       flutter format . -o write --fix
       git commit -am "style: apply flutter-format"
       git push ci HEAD:$CI_COMMIT_REF_NAME
@@ -43,6 +48,24 @@ flutter-format:apply:
 flutter-test:
   stage: test
   needs: [ ]
-  script:
+  before_script:
+    - flutter -v
+    - flutter clean
     - bash setup.sh
-    - flutter test
+    - mkdir -p report_outputs
+  script:
+    - flutter test --coverage --branch-coverage --coverage-path report_outputs/lcov.info --report json --test-randomize-ordering-seed random > report_outputs/test_report.json
+    - flutter pub run junitreport:tojunit --input report_outputs/test_report.json --output report_outputs/test_report.xml
+    - flutter pub run cobertura convert --input report_outputs/lcov.info --output report_outputs/lcov.xml
+    - flutter pub run test_cov_console -f report_outputs/lcov.info -e lib/src/generated
+  artifacts:
+    paths:
+      - report_outputs/test_report.xml
+      - report_outputs/lcov.xml
+    expire_in: 2 week
+    reports:
+      junit: report_outputs/test_report.xml
+      coverage_report:
+        file: report_outputs/lcov.xml
+        format: cobertura
+  coverage: '/\|\s*\d+(?:\.\d+)?\s*\|/'
