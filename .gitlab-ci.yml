@@ -55,6 +55,7 @@ flutter-test:
     - mkdir -p report_outputs
   script:
     - flutter test --coverage --branch-coverage --coverage-path report_outputs/lcov.info --reporter json --test-randomize-ordering-seed random > report_outputs/test_report.json
+  after_script:
     - flutter pub run junitreport:tojunit --input report_outputs/test_report.json --output report_outputs/test_report.xml
     - flutter pub run cobertura convert --input report_outputs/lcov.info --output report_outputs/lcov.xml
     - flutter pub run test_cov_console -f report_outputs/lcov.info -e lib/src/generated
