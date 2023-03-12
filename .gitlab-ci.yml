@@ -67,5 +67,5 @@ flutter-test:
       junit: report_outputs/test_report.xml
       coverage_report:
         path: report_outputs/lcov.xml
-        format: cobertura
+        coverage_format: cobertura
   coverage: '/\|\s*\d+(?:\.\d+)?\s*\|/'
