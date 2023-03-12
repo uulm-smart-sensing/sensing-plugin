@@ -28,10 +28,10 @@ abstract class SensorStreamHandler(
     abstract fun getSensorInfo() : SensorInfo
 
     /**
-     * Called when the accuracy of the registered sensor has changed.
+     * Called when the accuracy of the registered sensor has changed to the value [i].
      *
+     * [i] is one of [SensorManager].SENSOR_STATUS_*.
      * Unlike onSensorChanged(), this is only called when this accuracy value changes.
-     * @param i: The new accuracy of this sensor, one of [SensorManager].SENSOR_STATUS_*.
      */
     override fun onAccuracyChanged(sensor: Sensor, i: Int) { }
 
@@ -57,9 +57,8 @@ abstract class SensorStreamHandler(
      *
      * Any uncaught exception thrown by this method will be caught by the channel implementation
      * and logged. An error result message will be sent back to Flutter.
-     *
-     * @param arguments stream configuration arguments, possibly null.
-     * @param eventSink an [EventChannel.EventSink] for emitting events to the Flutter receiver.
+     * [eventSink] is an [EventChannel.EventSink] for emitting events to the Flutter receiver.
+     * [arguments] are the stream configuration arguments. They may be null.
      */
     override fun onListen(arguments: Any?, eventSink: EventChannel.EventSink?) {
         if (eventSink != null) {
@@ -74,11 +73,10 @@ abstract class SensorStreamHandler(
      * Any uncaught exception thrown by this method will be caught by the channel implementation
      * and logged. An error result message will be sent back to Flutter.
      *
-     * The channel implementation may call this method with null arguments to separate a pair of
-     * two consecutive set up requests. Such request pairs may occur during Flutter hot restart. Any
-     * uncaught exception thrown in this situation will be logged without notifying Flutter.
-     *
-     * @param arguments stream configuration arguments, possibly null.
+     * The channel implementation may call this method with [arguments] being null, to separate a
+     * pair of two consecutive set up requests. Such request pairs may occur during Flutter hot
+     * restart. Any uncaught exception thrown in this situation will be logged without notifying
+     * Flutter.
      */
     override fun onCancel(arguments: Any?) {
         stopListener()

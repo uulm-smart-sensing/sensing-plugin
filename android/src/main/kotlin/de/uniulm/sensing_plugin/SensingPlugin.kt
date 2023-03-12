@@ -42,7 +42,7 @@ class SensingPlugin: FlutterPlugin, SensorManagerApi {
     /**
      * Checks whether the sensor with the passed [SensorId] is currently used.
      *
-     * 'used' means that tracking for this sensor started in the passed and has
+     * 'used' means that tracking for this sensor was started in the past and has
      * not yet been stopped.
      */
     override fun isSensorUsed(
