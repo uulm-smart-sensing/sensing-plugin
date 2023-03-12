@@ -5,7 +5,7 @@ stages:
   - test
 
 before_script:
-  - flutter -v
+  - flutter --version
   - flutter clean
   - bash setup.sh
 
@@ -34,7 +34,7 @@ flutter-format:apply:
       git remote add ci https://oauth2:${FLUTTER_FORMAT_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git
       git config user.name "flutter-format bot"
       git config user.email "noreply+flutter-format-bot@${CI_SERVER_HOST}"
-      flutter -v
+      flutter --version
       flutter clean
       bash setup.sh
   script:
@@ -49,12 +49,12 @@ flutter-test:
   stage: test
   needs: [ ]
   before_script:
-    - flutter -v
+    - flutter --version
     - flutter clean
     - bash setup.sh
     - mkdir -p report_outputs
   script:
-    - flutter test --coverage --branch-coverage --coverage-path report_outputs/lcov.info --report json --test-randomize-ordering-seed random > report_outputs/test_report.json
+    - flutter test --coverage --branch-coverage --coverage-path report_outputs/lcov.info --reporter json --test-randomize-ordering-seed random > report_outputs/test_report.json
     - flutter pub run junitreport:tojunit --input report_outputs/test_report.json --output report_outputs/test_report.xml
     - flutter pub run cobertura convert --input report_outputs/lcov.info --output report_outputs/lcov.xml
     - flutter pub run test_cov_console -f report_outputs/lcov.info -e lib/src/generated
