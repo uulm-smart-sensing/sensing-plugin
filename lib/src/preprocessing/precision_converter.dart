@@ -1,8 +1,8 @@
 /// Converts [value] to the same value, but with a precision of
 /// [targetPrecision].
 ///
-/// The parameter [targetPrecision] must satisfy:
-/// `0 <= targetPrecision <= 20` or otherwise a [RangeError] is thrown.
+/// The parameter [targetPrecision] must be greater than or equal to 0 or
+/// otherwise a [RangeError] is thrown.
 ///
 /// Example:
 /// ```
@@ -17,12 +17,16 @@ double convertPrecision({
   required double value,
   required int targetPrecision,
 }) {
-  if (targetPrecision < 0 || targetPrecision > 20) {
-    throw RangeError.value(
+  if (targetPrecision < 0) {
+    throw ArgumentError.value(
       targetPrecision,
       "targetPrecision",
-      "Invalid value: Not in inclusive range 0..20",
+      "Invalid value: value must be greater than or equal to 0",
     );
   }
-  return double.parse(value.toStringAsFixed(targetPrecision));
+  var factor = 1;
+  for (var i = 0; i < targetPrecision; i++) {
+    factor *= 10;
+  }
+  return (value * factor).roundToDouble() / factor;
 }

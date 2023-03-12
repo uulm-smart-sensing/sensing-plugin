@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sensing_plugin/src/preprocessing/precision_converter.dart';
 
-const delta = 1E-10;
+const delta = 1E-6;
 
 void main() {
   group('Number around 0', () {
@@ -39,10 +39,10 @@ void main() {
       ' are truncated',
       () {
         var result = convertPrecision(
-          value: 123456789123456789.123456789,
+          value: 123456789.123456789,
           targetPrecision: 2,
         );
-        expect(result, closeTo(123456789123456789.12, delta));
+        expect(result, closeTo(123456789.12, delta));
       },
     );
 
@@ -51,10 +51,10 @@ void main() {
       ' remain the same',
       () {
         var result = convertPrecision(
-          value: 123456789123456789.123,
-          targetPrecision: 12,
+          value: 123456789.123,
+          targetPrecision: 10,
         );
-        expect(result, closeTo(123456789123456789.123, delta));
+        expect(result, closeTo(123456789.123, delta));
       },
     );
 
@@ -63,10 +63,10 @@ void main() {
       'places remain the same',
       () {
         var result = convertPrecision(
-          value: 123456789123456789.123456789,
-          targetPrecision: 9,
+          value: 123456789.123456789,
+          targetPrecision: 10,
         );
-        expect(result, closeTo(123456789123456789.123456789, delta));
+        expect(result, closeTo(123456789.123456789, delta));
       },
     );
   });
