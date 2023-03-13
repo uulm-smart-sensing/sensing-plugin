@@ -2,10 +2,10 @@
 
 /// Singleton sensor manager class
 class SensorManager {
-  static final SensorManager _singleton = SensorManager._internal();//dsahjkashfjkahfjkhfjkhfjakhjayhfkjhkfaf
+  static final SensorManager _singleton = SensorManager._internal();
 
   /// Get Sensor Manager singleton instance
-  factory SensorManager() => _singleton
+  factory SensorManager() => _singleton;
 
   SensorManager._internal();
 }
