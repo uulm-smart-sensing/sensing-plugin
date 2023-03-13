@@ -17,7 +17,7 @@ class DummySensor(
     timeIntervalInMicroseconds,
 ) {
 
-    override fun getSensorDataMapFromSensorEvent(event: SensorEvent): SensorData =
+    override fun getSensorDataFromSensorEvent(event: SensorEvent): SensorData =
         SensorData.Builder()
             .setData(event.values.map { v -> v.toDouble() })
             .setMaxPrecision(100)
