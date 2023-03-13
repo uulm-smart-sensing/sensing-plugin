@@ -1,5 +1,5 @@
 //
-//  LinearAccelerometer.swift
+//  Accelerometer.swift
 //  sensing_plugin
 //
 //  Created by Leonhard Alkewitz on 13.03.23.
@@ -10,11 +10,9 @@ import CoreMotion
 
 /**
  The object for starting and stopping the accelerometer sensor and receiving its sensor data.
- - Important: The "linear accelerometer" measures the acceleromation, but
-             without considering the acceleration through gravity!
  
- The ``LinearAccelerometerHandler``wraps the part of the ``CMMotionManager``,
- which handles the accelerometer sensor.
+ The ``AccelerometerHandler``wraps the part of the ``CMMotionManager``,
+ which handles the accelerometer  sensor.
  
  So this handler provide methods to ...
  - check, whether the accelerometer is available or already used
@@ -25,14 +23,14 @@ import CoreMotion
  can be called and managed by the ``SensorManager``.
  
  */
-public class LinearAccelerometerHandler: NSObject, ISensorStreamHandler {
+public class AccelerometerHandler: NSObject, ISensorStreamHandler {
 
     func isSensorAvailable() -> Bool {
-        return ManagerCollection.getMotionManager().isAccelerometerAvailable
+        return ManagerCollection.getMotionManager().isDeviceMotionAvailable
     }
 
     func isSensorUsed() -> Bool {
-        return ManagerCollection.getMotionManager().isAccelerometerActive
+        return ManagerCollection.getMotionManager().isDeviceMotionActive
     }
 
     /**
@@ -44,7 +42,7 @@ public class LinearAccelerometerHandler: NSObject, ISensorStreamHandler {
     func changeSensorTimeInterval(timeInterval: Int32) -> ResultWrapper {
         // convert time interval from miliseconds into seconds
         let timeIntervalInSec: TimeInterval = Double(timeInterval) / 1000
-        ManagerCollection.getMotionManager().accelerometerUpdateInterval = timeIntervalInSec
+        ManagerCollection.getMotionManager().deviceMotionUpdateInterval = timeIntervalInSec
 
         // check, whether the requested time interval is below 10 ms
         if timeInterval < 10 {
@@ -59,7 +57,7 @@ public class LinearAccelerometerHandler: NSObject, ISensorStreamHandler {
     // TODO: check the accuracy of the accelerometer and do not return -1 (indicating no information) as accuracy
     func getSensorInfo() -> SensorInfo {
         // convert time interval from seconds to milliseconds
-        let timeIntervalInMilliSec: Int32 = Int32(ManagerCollection.getMotionManager().accelerometerUpdateInterval
+        let timeIntervalInMilliSec: Int32 = Int32(ManagerCollection.getMotionManager().deviceMotionUpdateInterval
                                                   * 1000)
         return SensorInfo(unit: Unit.gravitationalForce, accuracy: -1,
                           timeIntervalInMilliseconds: timeIntervalInMilliSec)
@@ -67,13 +65,13 @@ public class LinearAccelerometerHandler: NSObject, ISensorStreamHandler {
 
     public func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
         if isSensorAvailable() {
-            ManagerCollection.getMotionManager().startAccelerometerUpdates(to: OperationQueue.current!,
-                                           withHandler: {(accelerometerData: CMAccelerometerData?, err: Error?) in
+            ManagerCollection.getMotionManager().startDeviceMotionUpdates(to: OperationQueue.current!,
+                                           withHandler: {(accelerometerData: CMDeviceMotion?, err: Error?) in
                 guard err != nil else {
                     // get sensor values from accelerometer
-                    let xValue = accelerometerData?.acceleration.x
-                    let yValue = accelerometerData?.acceleration.y
-                    let zValue = accelerometerData?.acceleration.z
+                    let xValue = accelerometerData?.gravity.x
+                    let yValue = accelerometerData?.gravity.y
+                    let zValue = accelerometerData?.gravity.z
 
                     // TODO: check, what maxPrecision is
                     // wrap the sensor values to `SensorData` object and "send" it to the event stream
@@ -94,7 +92,7 @@ public class LinearAccelerometerHandler: NSObject, ISensorStreamHandler {
 
     public func onCancel(withArguments arguments: Any?) -> FlutterError? {
         if isSensorUsed() {
-            ManagerCollection.getMotionManager().stopAccelerometerUpdates()
+            ManagerCollection.getMotionManager().stopDeviceMotionUpdates()
             return nil
         }
         return FlutterError(code: "NO_UPDATE_STOP_POSSIBLE",
