@@ -68,6 +68,7 @@ ktlint:
   needs: [ ]
   before_script:
     - mkdir -p report_outputs
+    - apk add --no-cache curl
     - curl -sSL https://github.com/pinterest/ktlint/releases/download/0.48.2/ktlint > /usr/local/bin/ktlint
     - chmod +x /usr/local/bin/ktlint
     - npm i -g sarif-codeclimate@latest
