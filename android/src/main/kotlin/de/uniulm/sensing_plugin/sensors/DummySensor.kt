@@ -10,11 +10,11 @@ import de.uniulm.sensing_plugin.generated.ApiSensorManager.Unit
 
 class DummySensor(
     sensorManager: SensorManager,
-    timeIntervalInMicroseconds: Long,
+    timeIntervalInMicroseconds: Long
 ) : SensorStreamHandler(
     sensorManager,
     Sensor.TYPE_ACCELEROMETER,
-    timeIntervalInMicroseconds,
+    timeIntervalInMicroseconds
 ) {
 
     override fun getSensorDataFromSensorEvent(event: SensorEvent): SensorData =
