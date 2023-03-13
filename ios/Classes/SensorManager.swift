@@ -4,22 +4,22 @@ import CoreMotion
 
 /**
  The object for managing the different sensors implement on the iOS platform
- 
+
  Use the ``SensorManager`` to manage sensors on iOS platform, so if you want
  1.  check, whether a sensor is currently available on the device (e. g. your iPhone)
  2.  check, whether a sensor is currently used so providing sensor data
  3.  start and stop the tracking of a certain sensor
  4.  change the frequency, how often a certain sensor should provide sensor data
  5.  to get information about a certain sensor, like the unit or accuracy of its sensor data
- 
+
  - Note: The main task of the ``SensorManager`` is to kind of delegate the method calls to
  the corresponding sensor and return the result from the sensor to the `SensorManager` on Dart platform.
- 
+
  - Important: This class is not intended to be used directly. It will be automatically used by
  the `SensorManager` on Dart platform, so the method calls on Dart platform will automatically trigger
  the equally named method in this platform specific ``SensorManager`` because the connecting code was
  generated via Pigeon already (see `Generated/ApiSensorManager`)
- 
+
  */
 public class SensorManager: NSObject, FlutterPlugin, SensorManagerApi {
 
@@ -41,7 +41,7 @@ public class SensorManager: NSObject, FlutterPlugin, SensorManagerApi {
 
     /**
      initializes the ``SensorManager``
-     
+
      Therefor, the `init` method ...
      - save the registration context for the flutter plugin for later use
      - register all implemented stream handlers for the sensors
@@ -51,9 +51,13 @@ public class SensorManager: NSObject, FlutterPlugin, SensorManagerApi {
 
         // add gyroscope as implemented sensor
         streamHandlers.updateValue(GyroscopeHandler(), forKey: SensorId.gyroscope)
-        
+
         // add magnetometer as implemented sensor
         streamHandlers.updateValue(MagnetometerHandler(), forKey: SensorId.magnetometer)
+
+        // add (linear) acceleromter as implemented sensor
+        streamHandlers.updateValue(LinearAccelerometerHandler(), forKey: SensorId.linearAcceleration)
+        streamHandlers.updateValue(AccelerometerHandler(), forKey: SensorId.accelerometer)
     }
 
     func isSensorAvailable(id: SensorId, completion: @escaping (Result<Bool, Error>) -> Void) {
