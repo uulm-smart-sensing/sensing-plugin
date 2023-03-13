@@ -18,8 +18,8 @@ abstract class SensorStreamHandler(
     private var eventSink: EventChannel.EventSink? = null
     private var lastUpdate: Calendar = Calendar.getInstance()
 
-    /** Creates a map representing a [SensorData] object from the passed [SensorEvent]. */
-    abstract fun getSensorDataMapFromSensorEvent(event: SensorEvent) : Map<String, Any>
+    /** Creates a [SensorData] object from the passed [SensorEvent]. */
+    abstract fun getSensorDataFromSensorEvent(event: SensorEvent) : SensorData
 
     /**
      * Returns the [SensorInfo] object of the sensor.
@@ -46,8 +46,8 @@ abstract class SensorStreamHandler(
     override fun onSensorChanged(event: SensorEvent) {
         val currentTime = Calendar.getInstance()
         if (isValidTime(currentTime)) {
-            val sensorDataMap = getSensorDataMapFromSensorEvent(event)
-            eventSink?.success(sensorDataMap)
+            val sensorData = getSensorDataFromSensorEvent(event)
+            eventSink?.success(sensorData.toList())
             lastUpdate = currentTime
         }
     }
