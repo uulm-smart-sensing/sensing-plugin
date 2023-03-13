@@ -50,7 +50,10 @@ public class SensorManager: NSObject, FlutterPlugin, SensorManagerApi {
         self.registrar = registrar
 
         // add gyroscope as implemented sensor
-        streamHandlers.updateValue(MagnetometerHandler(), forKey: SensorId.gyroscope)
+        streamHandlers.updateValue(GyroscopeHandler(), forKey: SensorId.gyroscope)
+        
+        // add magnetometer as implemented sensor
+        streamHandlers.updateValue(MagnetometerHandler(), forKey: SensorId.magnetometer)
     }
 
     func isSensorAvailable(id: SensorId, completion: @escaping (Result<Bool, Error>) -> Void) {
