@@ -9,11 +9,6 @@ before_script:
   - flutter clean
   - bash setup.sh
 
-flutter-analyze:
-  stage: analysis
-  needs: [ ]
-  script:
-    - flutter analyze --fatal-infos
 
 flutter-format:
   stage: analysis
@@ -45,6 +40,27 @@ flutter-format:apply:
   after_script:
     - git remote rm ci
 
+
+flutter-analyze:
+  stage: analysis
+  needs: [ ]
+  before_script:
+    - flutter --version
+    - flutter clean
+    - bash setup.sh
+    - mkdir -p report_outputs
+    - curl https://github.com/fgardt/flutter_analyze_codeclimate/releases/latest/download/flutter_analyze_codeclimate -o /usr/local/bin/flutter_analyze_codeclimate
+    - chmod +x /usr/local/bin/flutter_analyze_codeclimate
+  script:
+    - flutter analyze --fatal-infos --write report_outputs/flutter.txt
+  after_script:
+    - flutter_analyze_codeclimate --input report_outputs/flutter.txt --output report_outputs/flutter.json
+  artifacts:
+    paths:
+      - report_outputs/flutter.json
+    expire_in: 2 week
+    reports:
+      codequality: report_outputs/flutter.json
 
 swiftlint:
   image: ghcr.io/realm/swiftlint:latest
