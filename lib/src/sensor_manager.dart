@@ -1,10 +1,18 @@
+// ignore_for_file: prefer_final_fields
+
 import 'package:flutter/services.dart';
 
 import 'generated/api_sensor_manager.dart'
     show SensorManagerApi, SensorId, Unit;
 
 /// Singleton sensor manager class
+
 class SensorManager {
+  List<SensorId> _usedSenors = [];
+  List<SensorId> _allSensors = SensorId.values.toList();
+  List<Stream> _sensorStreams = [];
+  bool _sensorbool = false;
+  bool _sensorTracking = false;
   static final SensorManager _singleton = SensorManager._internal();
 
   /// Get Sensor Manager singleton instance
@@ -12,9 +20,8 @@ class SensorManager {
 
   SensorManager._internal();
 
-  //Propose: i don't know if it is better if we cast this method with future
-  Map<SensorId, EventChannel> _getsensorId(SensorId id) {
-    //get the sensorid and returns a map with id and eventchannel
+  Future<Map<SensorId, EventChannel>> getSensorId(SensorId id) async {
+    /// get the sensorid and returns a map with id and eventchannel
     var channel = EventChannel('sensors/[$id]');
     try {
       channel.receiveBroadcastStream();
@@ -25,26 +32,74 @@ class SensorManager {
     }
   }
 
+  /// TODO: implement and document this method
+  void _initializeAllSensors() {}
+
+  /// TODO: implement and document this method
+  void _makeAvaibleSensorsUsable() {}
+
 // TODO: implement and document this method
 //checks if the Sensor is currently used and returns an bool
-  bool _isSensorUsed(SensorId id) => false;
+  bool _isSensorUsed(SensorId id) {
+    _usedSenors.add(id);
+    _sensorbool = true;
+    return _sensorbool;
+  }
 
 //checks if the Sensor is available and returns the SensorID
-  bool _isSensorAvailable(SensorId id) =>
-      SensorManager()._isSensorAvailable(id);
+  Future<bool> _isSensorAvailable(SensorId id) async =>
+      SensorManagerApi().isSensorAvailable(id);
 
 // TODO: implement and document this method
   ///checks if the sensor is being edited and returns an bool
-  bool startSensorTracking(
+  Future<bool> startSensorTracking(
     SensorId id,
     Unit units,
     int precision,
     Duration interval,
-  ) =>
-      false;
+  ) async {
+    if (await _isSensorAvailable(id) && _isSensorUsed(id)) {
+      editSensor(id, units, precision, interval);
+      return _sensorTracking = true;
+    } else {
+      return false;
+    }
+  }
 
-// TODO: implement and document this method
-  ///checks if the sensor is being edited and returns an bool
-  bool editSensor(String id, String units, int precision, Duration interval) =>
-      false;
+  bool stopSensorTracking(
+    SensorId id,
+    Unit units,
+    int precision,
+    Duration interval,
+  ) {
+    if (_sensorTracking) {
+      _sensorbool = false;
+      _sensorTracking = false;
+      // TODO: implementation for updating sensor
+      return true;
+    }
+    return true;
+  }
+
+  /// TODO: whole method needs to be adjusted
+  bool editSensor(SensorId id, Unit units, int precision, Duration interval) =>
+      true;
+
+  ///
+  List<SensorId> getUsedSensors() => _usedSenors;
+  ///
+  List<SensorId> getUsableSensors() =>
+      _allSensors.toSet().difference(_usedSenors.toSet()).toList();
+      
+/*List<SensorId> getSensor (String name){
+SensorId match;
+  for(SensorId id in SensorId.values){
+      if(id.t
+  }
+    if (_allSensors.contains(name)){
+
+    }else{
+      return [];
+    }
+  }*/
 }
