@@ -2,7 +2,7 @@
 /// [targetPrecision].
 ///
 /// The parameter [targetPrecision] must be greater than or equal to 0 or
-/// otherwise a [RangeError] is thrown.
+/// otherwise an [ArgumentError] is thrown.
 ///
 /// Example:
 /// ```
