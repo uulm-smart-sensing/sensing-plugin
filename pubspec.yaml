@@ -2,6 +2,7 @@ name: sensing_plugin
 description: The sensing plugin for the Smart Sensing Library
 version: 0.0.0
 homepage:
+publish_to: none
 
 environment:
   sdk: '>=2.18.4 <3.0.0'
