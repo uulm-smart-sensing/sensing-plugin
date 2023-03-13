@@ -134,4 +134,11 @@ void main() {
       },
     );
   });
+
+  test('When targetPrecision is negative, then ArgumentError is thrown', () {
+    expect(
+      () => convertPrecision(value: 0, targetPrecision: -1),
+      throwsA(isA<ArgumentError>()),
+    );
+  });
 }
