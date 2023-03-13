@@ -138,6 +138,7 @@ public class SensorManager: NSObject, FlutterPlugin, SensorManagerApi {
         completion(.failure(ImplementationError.sensorNotImplemented(methodName: "getSensorInfo", sensorId: id)))
     }
 
+    // swiftlint:disable:next identifier_name
     func _dummyMethod(data: SensorData) throws {
         throw ImplementationError.notImplementedYet(methodName: "dummyMethod")
     }
