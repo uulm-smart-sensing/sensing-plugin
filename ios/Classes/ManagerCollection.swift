@@ -17,16 +17,15 @@ import CoreMotion
               multiple times, because this is not recommended (c. f. official Swift documentation for
               CMMotionManager)
  */
-public class ManagerCollection : NSObject {
-    
-    private static var motionManager : CMMotionManager?
-    
+public class ManagerCollection: NSObject {
+
+    private static var motionManager: CMMotionManager?
 
     static func getMotionManager() -> CMMotionManager {
-        if (self.motionManager == nil) {
+        if self.motionManager == nil {
             self.motionManager = CMMotionManager()
         }
-        
+
         return self.motionManager!
     }
 }
