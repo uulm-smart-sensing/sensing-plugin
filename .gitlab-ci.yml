@@ -45,6 +45,23 @@ flutter-format:apply:
   after_script:
     - git remote rm ci
 
+
+swiftlint:
+  image: ghcr.io/realm/swiftlint:latest
+  stage: analysis
+  needs: [ ]
+  before_script:
+    - mkdir -p report_outputs
+  script:
+    - swiftlint --reporter codeclimate --output report_outputs/swiftlint.json
+  artifacts:
+    paths:
+      - report_outputs/swiftlint.json
+    expire_in: 2 week
+    reports:
+      codequality: report_outputs/swiftlint.json
+
+
 flutter-test:
   stage: test
   needs: [ ]
