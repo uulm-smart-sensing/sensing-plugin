@@ -12,3 +12,6 @@ indent_size = 4
 # Flutter files use an ident size of 2 by default
 [*.{dart,yaml,iml,metadata,xml}]
 indent_size = 2
+
+[*.{kt,kts}]
+ktlint_code_style = official

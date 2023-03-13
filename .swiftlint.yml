@@ -1,0 +1,9 @@
+excluded:
+  - ios/Classes/Generated
+
+disabled_rules:
+  - todo
+
+identifier_name:
+  excluded:
+    - id

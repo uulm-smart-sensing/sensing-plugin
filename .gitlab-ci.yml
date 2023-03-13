@@ -9,11 +9,6 @@ before_script:
   - flutter clean
   - bash setup.sh
 
-flutter-analyze:
-  stage: analysis
-  needs: [ ]
-  script:
-    - flutter analyze --fatal-infos
 
 flutter-format:
   stage: analysis
@@ -44,6 +39,67 @@ flutter-format:apply:
       git push ci HEAD:$CI_COMMIT_REF_NAME
   after_script:
     - git remote rm ci
+
+
+flutter-analyze:
+  stage: analysis
+  needs: [ ]
+  before_script:
+    - flutter --version
+    - flutter clean
+    - bash setup.sh
+    - mkdir -p report_outputs
+    - curl -sSL https://github.com/fgardt/flutter_analyze_codeclimate/releases/latest/download/flutter_analyze_codeclimate > /usr/local/bin/flutter_analyze_codeclimate
+    - chmod +x /usr/local/bin/flutter_analyze_codeclimate
+  script:
+    - flutter analyze --fatal-infos --write report_outputs/flutter.txt
+  after_script:
+    - flutter_analyze_codeclimate --input report_outputs/flutter.txt --output report_outputs/flutter.json
+    - sed -i 's/"[^:]*\/sensing\-plugin\//"/g' report_outputs/flutter.json
+  artifacts:
+    paths:
+      - report_outputs/flutter.json
+    expire_in: 2 week
+    reports:
+      codequality: report_outputs/flutter.json
+
+ktlint:
+  image: node:lts-alpine
+  stage: analysis
+  needs: [ ]
+  before_script:
+    - mkdir -p report_outputs
+    - apk add --no-cache curl openjdk11
+    - curl -sSL https://github.com/pinterest/ktlint/releases/download/0.48.2/ktlint > /usr/local/bin/ktlint
+    - chmod +x /usr/local/bin/ktlint
+    - npm i -g sarif-codeclimate@latest
+  script:
+    - ktlint --reporter=plain --reporter=sarif,output=report_outputs/ktlint_sarif.json --android || true
+  after_script:
+    - sarif-codeclimate --input report_outputs/ktlint_sarif.json --output report_outputs/ktlint.json
+    - sed -i 's/"[^:]*\/sensing\-plugin\//"/g' report_outputs/ktlint.json
+  artifacts:
+    paths:
+      - report_outputs/ktlint.json
+    expire_in: 2 week
+    reports:
+      codequality: report_outputs/ktlint.json
+
+swiftlint:
+  image: ghcr.io/realm/swiftlint:latest
+  stage: analysis
+  needs: [ ]
+  before_script:
+    - mkdir -p report_outputs
+  script:
+    - swiftlint --reporter codeclimate --output report_outputs/swiftlint.json || true
+  artifacts:
+    paths:
+      - report_outputs/swiftlint.json
+    expire_in: 2 week
+    reports:
+      codequality: report_outputs/swiftlint.json
+
 
 flutter-test:
   stage: test
