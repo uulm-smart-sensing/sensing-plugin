@@ -3,14 +3,20 @@ package de.uniulm.sensing_plugin
 import android.content.Context
 import android.hardware.SensorManager
 import de.uniulm.sensing_plugin.exceptions.SensorNotRegisteredException
-import de.uniulm.sensing_plugin.generated.ApiSensorManager.*
+import de.uniulm.sensing_plugin.generated.ApiSensorManager.Result
+import de.uniulm.sensing_plugin.generated.ApiSensorManager.ResultWrapper
+import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorData
+import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorId
+import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorInfo
+import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorManagerApi
+import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorTaskResult
 import de.uniulm.sensing_plugin.sensors.DummySensor
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.EventChannel
 
 /** SensingPlugin */
-class SensingPlugin: FlutterPlugin, SensorManagerApi {
+class SensingPlugin : FlutterPlugin, SensorManagerApi {
     private var eventChannels = hashMapOf<SensorId, EventChannel>()
     private var streamHandlers = hashMapOf<SensorId, SensorStreamHandler>()
     private lateinit var context: Context
@@ -72,7 +78,7 @@ class SensingPlugin: FlutterPlugin, SensorManagerApi {
         }
 
         val taskResult = if (!streamHandlers.containsKey(id)) {
-            val streamHandler = when(id) {
+            val streamHandler = when (id) {
                 SensorId.ACCELEROMETER -> DummySensor(sensorManager, timeIntervalInMilliseconds)
                 else -> throw NotImplementedError()
             }
