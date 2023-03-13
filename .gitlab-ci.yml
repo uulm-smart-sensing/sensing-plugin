@@ -49,7 +49,7 @@ flutter-analyze:
     - flutter clean
     - bash setup.sh
     - mkdir -p report_outputs
-    - wget https://github.com/fgardt/flutter_analyze_codeclimate/releases/latest/download/flutter_analyze_codeclimate -O /usr/local/bin/flutter_analyze_codeclimate
+    - curl -L https://github.com/fgardt/flutter_analyze_codeclimate/releases/latest/download/flutter_analyze_codeclimate > /usr/local/bin/flutter_analyze_codeclimate
     - chmod +x /usr/local/bin/flutter_analyze_codeclimate
   script:
     - flutter analyze --fatal-infos --write report_outputs/flutter.txt
