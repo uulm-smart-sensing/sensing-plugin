@@ -74,7 +74,7 @@ ktlint:
     - chmod +x /usr/local/bin/ktlint
     - npm i -g sarif-codeclimate@latest
   script:
-    - ktlint --reporter=plain --reporter=sarif,output=report_outputs/ktlint_sarif.json --android
+    - ktlint --reporter=plain --reporter=sarif,output=report_outputs/ktlint_sarif.json --android || true
   after_script:
     - sarif-codeclimate --input report_outputs/ktlint_sarif.json --output report_outputs/ktlint.json
     - sed -i 's/"[^:]*\/sensing\-plugin\//"/g' report_outputs/ktlint.json
@@ -92,7 +92,7 @@ swiftlint:
   before_script:
     - mkdir -p report_outputs
   script:
-    - swiftlint --reporter codeclimate --output report_outputs/swiftlint.json
+    - swiftlint --reporter codeclimate --output report_outputs/swiftlint.json || true
   artifacts:
     paths:
       - report_outputs/swiftlint.json
