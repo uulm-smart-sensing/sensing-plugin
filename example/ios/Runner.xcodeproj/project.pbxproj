@@ -199,6 +199,7 @@
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				7CB2CF3F6CEC5E5A1542CB7D /* [CP] Embed Pods Frameworks */,
+				0B34EEB929BF47AE00518330 /* Run Script (swiftlint) */,
 			);
 			buildRules = (
 			);
@@ -270,6 +271,24 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		0B34EEB929BF47AE00518330 /* Run Script (swiftlint) */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 8;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Run Script (swiftlint)";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+			shellPath = /bin/sh;
+			shellScript = "export PATH=\"$PATH:/opt/homebrew/bin\"\n# Type a script or drag a script file from your workspace to insert its path.\nif which swiftlint>/dev/null; then\n    cd \"${PROJECT_DIR}/../../ios/\"\n    swiftlint --fix && swiftlint\nelse \n    echo \"warning: SwiftLint not installed, download from https: //github.com/realm/SwiftLint\"\nfi\n";
+		};
 		3B06AD1E1E4923F5004D2608 /* Thin Binary */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
