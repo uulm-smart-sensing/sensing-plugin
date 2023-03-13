@@ -4,14 +4,16 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import de.uniulm.sensing_plugin.generated.ApiSensorManager.*
+import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorData
+import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorInfo
+import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorTaskResult
 import io.flutter.plugin.common.EventChannel
-import java.util.*
+import java.util.Calendar
 
 abstract class SensorStreamHandler(
     private val sensorManager: SensorManager,
     private val sensorId: Int,
-    private var timeIntervalInMicroseconds: Long,
+    private var timeIntervalInMicroseconds: Long
 ) : EventChannel.StreamHandler, SensorEventListener {
 
     private val sensor: Sensor = sensorManager.getDefaultSensor(sensorId)
@@ -19,13 +21,13 @@ abstract class SensorStreamHandler(
     private var lastUpdate: Calendar = Calendar.getInstance()
 
     /** Creates a [SensorData] object from the passed [SensorEvent]. */
-    abstract fun getSensorDataFromSensorEvent(event: SensorEvent) : SensorData
+    abstract fun getSensorDataFromSensorEvent(event: SensorEvent): SensorData
 
     /**
      * Returns the [SensorInfo] object of the sensor.
      * This contains basic information about the sensor.
      */
-    abstract fun getSensorInfo() : SensorInfo
+    abstract fun getSensorInfo(): SensorInfo
 
     /**
      * Called when the accuracy of the registered sensor has changed to the value [i].
@@ -96,7 +98,7 @@ abstract class SensorStreamHandler(
     }
 
     /** Changes the interval of this listener to [timeIntervalInMicroseconds]. */
-    fun changeTimeInterval(timeIntervalInMicroseconds: Long) : SensorTaskResult {
+    fun changeTimeInterval(timeIntervalInMicroseconds: Long): SensorTaskResult {
         this.timeIntervalInMicroseconds = timeIntervalInMicroseconds
         stopListener()
         startListener()
@@ -107,12 +109,12 @@ abstract class SensorStreamHandler(
      * Checks whether time difference between the passed [time] and the [lastUpdate] is greater
      * than or equal to [timeIntervalInMicroseconds].
      */
-    private fun isValidTime(time: Calendar) : Boolean {
+    private fun isValidTime(time: Calendar): Boolean {
         return (time.timeInMillis - lastUpdate.timeInMillis) * 1000 >= timeIntervalInMicroseconds
     }
 
     /** Checks whether the sensor with [sensorId] is available. */
-    fun isAvailable() : Boolean {
+    fun isAvailable(): Boolean {
         return sensorManager.getSensorList(sensorId).isNotEmpty()
     }
 

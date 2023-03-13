@@ -42,3 +42,24 @@ On Linux/macOS run:
 ```bash
 bash run_pigeon.sh
 ```
+
+## Working on Android
+
+We use Android Studio to write code for our Android sensor implementations.
+In order for Android Studio to recognize all dependencies, it is mandatory to open the `./example/android/` directory with Android Studio. If any other directory is opened, the dependencies won't be recognized.
+
+### Linting
+
+We use [Ktlint](https://pinterest.github.io/ktlint/) to lint our Kotlin code.
+
+For a simple check, run:
+
+```bash
+./gradlew ktlintCheck
+```
+
+For Ktlint to format the code automatically, run:
+
+```bash
+./gradlew ktlintFormat
+```
