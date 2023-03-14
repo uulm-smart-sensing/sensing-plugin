@@ -11,7 +11,7 @@ class SensorManager {
   List<SensorId> _usedSenors = [];
   List<SensorId> _allSensors = SensorId.values.toList();
   List<Stream> _sensorStreams = [];
-  bool _sensorbool = false;
+  bool _sensorUse = false;
   bool _sensorTracking = false;
   static final SensorManager _singleton = SensorManager._internal();
 
@@ -42,27 +42,28 @@ class SensorManager {
 //checks if the Sensor is currently used and returns an bool
   bool _isSensorUsed(SensorId id) {
     _usedSenors.add(id);
-    _sensorbool = true;
-    return _sensorbool;
+    _sensorUse = true;
+    return _sensorUse;
   }
 
 //checks if the Sensor is available and returns the SensorID
   Future<bool> _isSensorAvailable(SensorId id) async =>
       SensorManagerApi().isSensorAvailable(id);
 
-// TODO: implement and document this method
-  ///checks if the sensor is being edited and returns an bool
+
   Future<bool> startSensorTracking(
     SensorId id,
     Unit units,
     int precision,
     Duration interval,
   ) async {
-    if (await _isSensorAvailable(id) && _isSensorUsed(id)) {
-      editSensor(id, units, precision, interval);
+    if (await _isSensorAvailable(id)) {
+      _isSensorUsed(id);
+      /// TODO: implementation to configuration of the sensor
+
       return _sensorTracking = true;
     } else {
-      return false;
+      return _sensorTracking = false;
     }
   }
 
@@ -73,9 +74,10 @@ class SensorManager {
     Duration interval,
   ) {
     if (_sensorTracking) {
-      _sensorbool = false;
+      _sensorUse = false;
       _sensorTracking = false;
       // TODO: implementation for updating sensor
+
       return true;
     }
     return true;
@@ -90,7 +92,7 @@ class SensorManager {
   ///
   List<SensorId> getUsableSensors() =>
       _allSensors.toSet().difference(_usedSenors.toSet()).toList();
-      
+
 /*List<SensorId> getSensor (String name){
 SensorId match;
   for(SensorId id in SensorId.values){
