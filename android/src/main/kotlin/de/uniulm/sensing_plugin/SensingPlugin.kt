@@ -11,7 +11,7 @@ import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorId
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorInfo
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorManagerApi
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorTaskResult
-import de.uniulm.sensing_plugin.sensors.DummySensor
+import de.uniulm.sensing_plugin.sensors.Gyroscope
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.EventChannel
@@ -25,7 +25,7 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
     private lateinit var sensorManager: SensorManager
 
     private val sensorIdMap = mapOf(
-        SensorId.GYROSCOPE to Sensor.TYPE_GYROSCOPE,
+        SensorId.GYROSCOPE to Sensor.TYPE_GYROSCOPE
     )
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
@@ -84,10 +84,8 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
         }
 
         val taskResult = if (!streamHandlers.containsKey(id)) {
-            val streamHandler = when (id) {
-                SensorId.ACCELEROMETER -> DummySensor(sensorManager, timeIntervalInMilliseconds)
-                else -> throw NotImplementedError()
-            }
+            val streamHandler =
+                createSensorStreamHandlerFromId(id, sensorManager, timeIntervalInMilliseconds)
             streamHandlers[id] = streamHandler
             eventChannel!!.setStreamHandler(streamHandler)
             SensorTaskResult.SUCCESS
@@ -101,6 +99,15 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
 
         result!!.success(resultWrapper)
     }
+
+    private fun createSensorStreamHandlerFromId(
+        id: SensorId,
+        sensorManager: SensorManager,
+        timeIntervalInMilliseconds: Long
+    ) = when (id) {
+            SensorId.GYROSCOPE -> Gyroscope(sensorManager, timeIntervalInMilliseconds)
+            else -> throw NotImplementedError()
+        }
 
     /** Stops tracking of the sensor with the passed [SensorId]. */
     override fun stopSensorTracking(
