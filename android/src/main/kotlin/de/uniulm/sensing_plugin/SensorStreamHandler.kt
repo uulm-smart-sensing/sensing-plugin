@@ -22,9 +22,15 @@ abstract class SensorStreamHandler(
     private var eventSink: EventChannel.EventSink? = null
     private var lastUpdate: Calendar = Calendar.getInstance()
     private var accuracy: Long = -1
+    private var precision: Long = 0
 
     /** Creates a [SensorData] object from the passed [SensorEvent]. */
-    abstract fun getSensorDataFromSensorEvent(event: SensorEvent): SensorData
+    private fun getSensorDataFromSensorEvent(event: SensorEvent): SensorData =
+        SensorData.Builder()
+            .setData(event.values.map { v -> v.toDouble() })
+            .setMaxPrecision(precision)
+            .setUnit(unit)
+            .build()
 
     /**
      * Returns the [SensorInfo] object of the sensor.
@@ -45,6 +51,25 @@ abstract class SensorStreamHandler(
      */
     override fun onAccuracyChanged(sensor: Sensor, newAccuracy: Int) {
         accuracy = newAccuracy.toLong()
+        precision = getPrecisionFromResolution(sensor.resolution)
+    }
+
+    /**
+     * Evaluates the precision from the passed [resolution] of a sensor.
+     *
+     * Precision is the number of decimal places of a value to which the value is accurate.
+     */
+    private fun getPrecisionFromResolution(resolution: Float): Long {
+        if (resolution < 1E-12) {
+            return 12
+        }
+        var precision = 0L
+        var res = resolution
+        while (res < 1) {
+            precision++
+            res *= 10
+        }
+        return precision
     }
 
     /**
