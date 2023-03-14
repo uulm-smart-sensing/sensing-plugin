@@ -76,7 +76,8 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
         result: Result<ResultWrapper>?
     ) {
         val eventChannel = if (!eventChannels.containsKey(id)) {
-            val eventChannel = EventChannel(messenger, "sensors/$id")
+            val channelName = screamingSnakeCaseToCamelCase(id.name)
+            val eventChannel = EventChannel(messenger, "sensors/$channelName")
             eventChannels[id] = eventChannel
             eventChannel
         } else {
