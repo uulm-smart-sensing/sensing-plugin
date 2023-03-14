@@ -1,6 +1,7 @@
 package de.uniulm.sensing_plugin
 
 import android.content.Context
+import android.hardware.Sensor
 import android.hardware.SensorManager
 import de.uniulm.sensing_plugin.exceptions.SensorNotRegisteredException
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.Result
@@ -23,6 +24,10 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
     private lateinit var messenger: BinaryMessenger
     private lateinit var sensorManager: SensorManager
 
+    private val sensorIdMap = mapOf(
+        SensorId.GYROSCOPE to Sensor.TYPE_GYROSCOPE,
+    )
+
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         this.context = binding.applicationContext
         this.messenger = binding.binaryMessenger
@@ -37,12 +42,13 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
 
     /** Checks whether the sensor with the passed [SensorId] is available. */
     override fun isSensorAvailable(id: SensorId, result: Result<Boolean>?) {
-        if (streamHandlers.containsKey(id)) {
-            val isAvailable = streamHandlers[id]!!.isAvailable()
-            result?.success(isAvailable)
+        val isAvailable = if (sensorIdMap.containsKey(id)) {
+            sensorManager.getSensorList(sensorIdMap[id]!!).isNotEmpty()
         } else {
-            result?.success(false)
+            false
         }
+
+        result?.success(isAvailable)
     }
 
     /**

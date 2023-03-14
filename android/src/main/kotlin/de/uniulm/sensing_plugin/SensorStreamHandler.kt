@@ -12,7 +12,7 @@ import java.util.Calendar
 
 abstract class SensorStreamHandler(
     private val sensorManager: SensorManager,
-    private val sensorId: Int,
+    sensorId: Int,
     private var timeIntervalInMicroseconds: Long
 ) : EventChannel.StreamHandler, SensorEventListener {
 
@@ -111,11 +111,6 @@ abstract class SensorStreamHandler(
      */
     private fun isValidTime(time: Calendar): Boolean {
         return (time.timeInMillis - lastUpdate.timeInMillis) * 1000 >= timeIntervalInMicroseconds
-    }
-
-    /** Checks whether the sensor with [sensorId] is available. */
-    fun isAvailable(): Boolean {
-        return sensorManager.getSensorList(sensorId).isNotEmpty()
     }
 
     fun getTimeIntervalInMicroseconds() = timeIntervalInMicroseconds
