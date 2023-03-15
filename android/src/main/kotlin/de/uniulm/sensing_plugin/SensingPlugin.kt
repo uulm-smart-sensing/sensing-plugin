@@ -106,9 +106,9 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
         sensorManager: SensorManager,
         timeIntervalInMilliseconds: Long
     ) = when (id) {
-            SensorId.GYROSCOPE -> Gyroscope(sensorManager, timeIntervalInMilliseconds)
-            else -> throw NotImplementedError()
-        }
+        SensorId.GYROSCOPE -> Gyroscope(sensorManager, timeIntervalInMilliseconds)
+        else -> throw NotImplementedError()
+    }
 
     /** Stops tracking of the sensor with the passed [SensorId]. */
     override fun stopSensorTracking(
