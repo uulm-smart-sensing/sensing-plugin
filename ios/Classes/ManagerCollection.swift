@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreMotion
+import CoreLocation
 
 /**
  This object is a collection of all needed "sensor manager" existing in Swift, which can be used to access sensors
@@ -20,6 +21,7 @@ import CoreMotion
 public class ManagerCollection: NSObject {
 
     private static var motionManager: CMMotionManager?
+    private static var locationManager: CLLocationManager?
 
     static func getMotionManager() -> CMMotionManager {
         if self.motionManager == nil {
@@ -27,5 +29,13 @@ public class ManagerCollection: NSObject {
         }
 
         return self.motionManager!
+    }
+    
+    static func getLocationManager() -> CLLocationManager {
+        if self.locationManager == nil {
+            self.locationManager = CLLocationManager()
+        }
+        
+        return self.locationManager!
     }
 }

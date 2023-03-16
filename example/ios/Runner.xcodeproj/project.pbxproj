@@ -273,7 +273,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		0B34EEB929BF47AE00518330 /* Run Script (swiftlint) */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 12;
+			buildActionMask = 8;
 			files = (
 			);
 			inputFileListPaths = (
@@ -285,7 +285,7 @@
 			);
 			outputPaths = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
+			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/sh;
 			shellScript = "export PATH=\"$PATH:/opt/homebrew/bin\"\n# Type a script or drag a script file from your workspace to insert its path.\nif which swiftlint>/dev/null; then\n    cd \"${PROJECT_DIR}/../../ios/\"\n    swiftlint --fix && swiftlint\nelse \n    echo \"warning: SwiftLint not installed, download from https: //github.com/realm/SwiftLint\"\nfi\n";
 		};

@@ -22,7 +22,7 @@ import CoreMotion
 
  */
 public class SensorManager: NSObject, FlutterPlugin, SensorManagerApi {
-    
+
     private var eventChannels: [SensorId: FlutterEventChannel] = [:]
     private var streamHandlers: [SensorId: ISensorStreamHandler] = [:]
 
@@ -58,7 +58,7 @@ public class SensorManager: NSObject, FlutterPlugin, SensorManagerApi {
         // add (linear) acceleromter as implemented sensor
         streamHandlers.updateValue(LinearAccelerometerHandler(), forKey: SensorId.linearAcceleration)
         streamHandlers.updateValue(AccelerometerHandler(), forKey: SensorId.accelerometer)
-        
+
         // add heading sensor as implemented sensor
         streamHandlers.updateValue(HeadingSensorHandler(), forKey: SensorId.heading)
     }
