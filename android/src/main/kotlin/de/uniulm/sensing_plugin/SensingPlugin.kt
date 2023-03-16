@@ -42,10 +42,9 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
 
     /** Checks whether the sensor with the passed [SensorId] is available. */
     override fun isSensorAvailable(id: SensorId, result: Result<Boolean>?) {
-        val isAvailable = if (id in sensorIdMap) {
-            sensorManager.getSensorList(sensorIdMap[id]!!).isNotEmpty()
-        } else {
-            false
+        var isAvailable = false
+        if (id in sensorIdMap) {
+            isAvailable = sensorManager.getSensorList(sensorIdMap[id]!!).isNotEmpty()
         }
 
         result?.success(isAvailable)
@@ -75,14 +74,11 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
         timeIntervalInMilliseconds: Long,
         result: Result<ResultWrapper>?
     ) {
-        val eventChannel = if (id in eventChannels) {
-            eventChannels[id]
-        } else {
+        if (id !in eventChannels) {
             val channelName = screamingSnakeCaseToCamelCase(id.name)
-            val eventChannel = EventChannel(messenger, "sensors/$channelName")
-            eventChannels[id] = eventChannel
-            eventChannel
+            eventChannels[id] = EventChannel(messenger, "sensors/$channelName")
         }
+        val eventChannel = eventChannels[id]!!
 
         val taskResult = if (id in streamHandlers) {
             SensorTaskResult.ALREADY_TRACKING_SENSOR
@@ -90,7 +86,7 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
             val streamHandler =
                 createSensorStreamHandlerFromId(id, sensorManager, timeIntervalInMilliseconds)
             streamHandlers[id] = streamHandler
-            eventChannel!!.setStreamHandler(streamHandler)
+            eventChannel.setStreamHandler(streamHandler)
             SensorTaskResult.SUCCESS
         }
 
