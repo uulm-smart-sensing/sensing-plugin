@@ -51,7 +51,7 @@ public class MagnetometerHandler: NSObject, ISensorStreamHandler {
 
     public func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
         if isSensorAvailable() {
-            ManagerCollection.getMotionManager().startMagnetometerUpdates(to: OperationQueue.current!,
+            MotionManager().startMagnetometerUpdates(to: OperationQueue.current!,
                                                   withHandler: {(magnetometerData: CMMagnetometerData?, err: Error?) in
                 guard err != nil else {
                     // get sensor values from magnetometer
@@ -63,7 +63,7 @@ public class MagnetometerHandler: NSObject, ISensorStreamHandler {
                     // wrap the sensor values to `SensorData` object and "send" it to the event stream
                     let sensorData = SensorData(data: [xValue, yValue, zValue],
                                                 maxPrecision: -1,
-                                                unit: Unit.radiansPerSecond)
+                                                unit: Unit.microTeslas)
 
                     events(sensorData.toList())
                     return

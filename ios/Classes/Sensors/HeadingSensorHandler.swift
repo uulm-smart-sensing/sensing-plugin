@@ -34,7 +34,7 @@ public class HeadingSensorHandler: NSObject, ISensorStreamHandler {
         return ManagerCollection.getMotionManager().isDeviceMotionActive
     }
 
-    func changeSensorTimeInterval(timeInterval: Int32) -> ResultWrapper {
+    func changeSensorTimeInterval(timeInterval: Int64) -> ResultWrapper {
         // convert time interval from miliseconds into seconds
         let timeIntervalInSec: TimeInterval = Double(timeInterval) / 1000
         ManagerCollection.getMotionManager().deviceMotionUpdateInterval = timeIntervalInSec
