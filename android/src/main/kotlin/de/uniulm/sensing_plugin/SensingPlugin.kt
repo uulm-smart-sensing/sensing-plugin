@@ -42,7 +42,7 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
 
     /** Checks whether the sensor with the passed [SensorId] is available. */
     override fun isSensorAvailable(id: SensorId, result: Result<Boolean>?) {
-        val isAvailable = if (sensorIdMap.containsKey(id)) {
+        val isAvailable = if (id in sensorIdMap) {
             sensorManager.getSensorList(sensorIdMap[id]!!).isNotEmpty()
         } else {
             false
@@ -75,23 +75,23 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
         timeIntervalInMilliseconds: Long,
         result: Result<ResultWrapper>?
     ) {
-        val eventChannel = if (!eventChannels.containsKey(id)) {
+        val eventChannel = if (id in eventChannels) {
+            eventChannels[id]
+        } else {
             val channelName = screamingSnakeCaseToCamelCase(id.name)
             val eventChannel = EventChannel(messenger, "sensors/$channelName")
             eventChannels[id] = eventChannel
             eventChannel
-        } else {
-            eventChannels[id]
         }
 
-        val taskResult = if (!streamHandlers.containsKey(id)) {
+        val taskResult = if (id in streamHandlers) {
+            SensorTaskResult.ALREADY_TRACKING_SENSOR
+        } else {
             val streamHandler =
                 createSensorStreamHandlerFromId(id, sensorManager, timeIntervalInMilliseconds)
             streamHandlers[id] = streamHandler
             eventChannel!!.setStreamHandler(streamHandler)
             SensorTaskResult.SUCCESS
-        } else {
-            SensorTaskResult.ALREADY_TRACKING_SENSOR
         }
 
         val resultWrapper = ResultWrapper.Builder()
@@ -115,7 +115,7 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
         id: SensorId,
         result: Result<ResultWrapper>?
     ) {
-        val taskResult = if (streamHandlers.containsKey(id)) {
+        val taskResult = if (id in streamHandlers) {
             val streamHandler = streamHandlers[id]!!
             streamHandler.stopListener()
             streamHandlers.remove(id)
@@ -144,7 +144,7 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
     ) {
         val taskResult = if (timeIntervalInMilliseconds < 0) {
             SensorTaskResult.INVALID_TIME_INTERVAL
-        } else if (streamHandlers.containsKey(id)) {
+        } else if (id in streamHandlers) {
             val timeIntervalInMicroseconds = timeIntervalInMilliseconds * 1000
             streamHandlers[id]!!.changeTimeInterval(timeIntervalInMicroseconds)
             SensorTaskResult.SUCCESS
@@ -164,7 +164,7 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
         id: SensorId,
         result: Result<SensorInfo>?
     ) {
-        if (streamHandlers.containsKey(id)) {
+        if (id in streamHandlers) {
             val streamHandler = streamHandlers[id]!!
             result!!.success(streamHandler.getSensorInfo())
         } else {
