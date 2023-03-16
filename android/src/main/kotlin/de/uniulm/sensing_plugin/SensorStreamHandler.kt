@@ -7,35 +7,70 @@ import android.hardware.SensorManager
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorData
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorInfo
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorTaskResult
+import de.uniulm.sensing_plugin.generated.ApiSensorManager.Unit
 import io.flutter.plugin.common.EventChannel
 import java.util.Calendar
 
 abstract class SensorStreamHandler(
     private val sensorManager: SensorManager,
-    private val sensorId: Int,
-    private var timeIntervalInMicroseconds: Long
+    sensorId: Int,
+    private var timeIntervalInMicroseconds: Long,
+    private val unit: Unit
 ) : EventChannel.StreamHandler, SensorEventListener {
 
     private val sensor: Sensor = sensorManager.getDefaultSensor(sensorId)
     private var eventSink: EventChannel.EventSink? = null
     private var lastUpdate: Calendar = Calendar.getInstance()
+    private var accuracy: Long = -1
+    private var precision: Long = 0
 
     /** Creates a [SensorData] object from the passed [SensorEvent]. */
-    abstract fun getSensorDataFromSensorEvent(event: SensorEvent): SensorData
+    private fun getSensorDataFromSensorEvent(event: SensorEvent): SensorData =
+        SensorData.Builder()
+            .setData(event.values.map { v -> v.toDouble() })
+            .setMaxPrecision(precision)
+            .setUnit(unit)
+            .build()
 
     /**
      * Returns the [SensorInfo] object of the sensor.
      * This contains basic information about the sensor.
      */
-    abstract fun getSensorInfo(): SensorInfo
+    fun getSensorInfo(): SensorInfo =
+        SensorInfo.Builder()
+            .setAccuracy(accuracy)
+            .setTimeIntervalInMilliseconds(timeIntervalInMicroseconds)
+            .setUnit(unit)
+            .build()
 
     /**
-     * Called when the accuracy of the registered sensor has changed to the value [i].
+     * Called when the accuracy of the registered sensor has changed to the value [newAccuracy].
      *
-     * [i] is one of [SensorManager].SENSOR_STATUS_*.
+     * [newAccuracy] is one of [SensorManager].SENSOR_STATUS_*.
      * Unlike onSensorChanged(), this is only called when this accuracy value changes.
      */
-    override fun onAccuracyChanged(sensor: Sensor, i: Int) { }
+    override fun onAccuracyChanged(sensor: Sensor, newAccuracy: Int) {
+        accuracy = newAccuracy.toLong()
+        precision = getPrecisionFromResolution(sensor.resolution)
+    }
+
+    /**
+     * Evaluates the precision from the passed [resolution] of a sensor.
+     *
+     * Precision is the number of decimal places of a value to which the value is accurate.
+     */
+    private fun getPrecisionFromResolution(resolution: Float): Long {
+        if (resolution < 1E-12) {
+            return 12
+        }
+        var precision = 0L
+        var res = resolution
+        while (res < 1) {
+            precision++
+            res *= 10
+        }
+        return precision
+    }
 
     /**
      * Called when there is a new sensor event.
@@ -112,11 +147,4 @@ abstract class SensorStreamHandler(
     private fun isValidTime(time: Calendar): Boolean {
         return (time.timeInMillis - lastUpdate.timeInMillis) * 1000 >= timeIntervalInMicroseconds
     }
-
-    /** Checks whether the sensor with [sensorId] is available. */
-    fun isAvailable(): Boolean {
-        return sensorManager.getSensorList(sensorId).isNotEmpty()
-    }
-
-    fun getTimeIntervalInMicroseconds() = timeIntervalInMicroseconds
 }
