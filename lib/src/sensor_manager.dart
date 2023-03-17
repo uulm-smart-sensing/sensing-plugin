@@ -3,7 +3,13 @@
 import 'package:flutter/services.dart';
 
 import 'generated/api_sensor_manager.dart'
-    show SensorManagerApi, SensorData, Unit, SensorId;
+    show
+        SensorManagerApi,
+        SensorData,
+        Unit,
+        SensorId,
+        SensorInfo,
+        ResultWrapper;
 import 'preprocessing/preprocessor.dart';
 import 'preprocessing/sensor_config.dart' show SensorConfig;
 import 'sensor.dart';
@@ -56,9 +62,20 @@ class SensorManager {
     return false;
   }
 
-// Checks if the Sensor is available and returns the SensorID.
+  // Checks if the Sensor is available and returns the SensorID.
   Future<bool> _isSensorAvailable(SensorId id) async =>
       SensorManagerApi().isSensorAvailable(id);
+
+  // Changes the interval of the sensor event channel with the passed
+  /// [SensorId] to [timeIntervalInMilliseconds] ms.
+  Future<ResultWrapper> _changeSensorTimeInterval(
+          SensorId id, int timeIntervalInMilliseconds) async =>
+      SensorManagerApi()
+          .changeSensorTimeInterval(id, timeIntervalInMilliseconds);
+
+  /// Retrieves information about the sensor with the passed [SensorId]git .
+  Future<SensorInfo> _getSensorInfo(SensorId id) async =>
+      SensorManagerApi().getSensorInfo(id);
 
   /// Tracks if a Sensor is being used and returns an bool.
   Future<bool> startSensorTracking(
