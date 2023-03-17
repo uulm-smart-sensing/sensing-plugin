@@ -51,16 +51,8 @@ class SensorManager {
       .map((data) => SensorData.decode(data as Object));
 
   /// Checks if the Sensor is currently used and returns an bool.
-  bool isSensorUsed(SensorId id) {
-    // Iterates through _usedSensor
-    // and returns true if the sensor matches the searched ID, if not, false.
-    for (var sensor in _usedSenors) {
-      if (sensor.id == id) {
-        return true;
-      }
-    }
-    return false;
-  }
+  Future<bool> isSensorUsed(SensorId id) async =>
+      SensorManagerApi().isSensorUsed(id);
 
   // Checks if the Sensor is available and returns the SensorID.
   Future<bool> _isSensorAvailable(SensorId id) async =>
