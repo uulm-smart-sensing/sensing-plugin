@@ -30,7 +30,7 @@ class SensorManager {
   bool _sensorTracking = false;
 
   // The EventChannel name used to get the data from the native site.
-  var _eventStream = const EventChannel('sensors/[id]');
+  var _eventStream = const EventChannel('sensors/%id');
 
   static final SensorManager _singleton = SensorManager._internal();
 
