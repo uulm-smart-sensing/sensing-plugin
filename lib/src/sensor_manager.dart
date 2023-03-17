@@ -44,7 +44,6 @@ class SensorManager {
       .receiveBroadcastStream()
       .map((data) => SensorData.decode(data as Object));
 
-
   /// Checks if the Sensor is currently used and returns an bool.
   bool isSensorUsed(SensorId id) {
     // Iterates through _usedSensor
