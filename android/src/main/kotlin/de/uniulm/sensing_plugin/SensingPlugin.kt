@@ -1,6 +1,7 @@
 package de.uniulm.sensing_plugin
 
 import android.content.Context
+import android.hardware.Sensor
 import android.hardware.SensorManager
 import de.uniulm.sensing_plugin.exceptions.SensorNotRegisteredException
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.Result
@@ -10,7 +11,7 @@ import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorId
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorInfo
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorManagerApi
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorTaskResult
-import de.uniulm.sensing_plugin.sensors.DummySensor
+import de.uniulm.sensing_plugin.sensors.Gyroscope
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.EventChannel
@@ -22,6 +23,10 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
     private lateinit var context: Context
     private lateinit var messenger: BinaryMessenger
     private lateinit var sensorManager: SensorManager
+
+    private val sensorIdMap = mapOf(
+        SensorId.GYROSCOPE to Sensor.TYPE_GYROSCOPE
+    )
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         this.context = binding.applicationContext
@@ -37,12 +42,12 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
 
     /** Checks whether the sensor with the passed [SensorId] is available. */
     override fun isSensorAvailable(id: SensorId, result: Result<Boolean>?) {
-        if (streamHandlers.containsKey(id)) {
-            val isAvailable = streamHandlers[id]!!.isAvailable()
-            result?.success(isAvailable)
-        } else {
-            result?.success(false)
+        var isAvailable = false
+        if (id in sensorIdMap) {
+            isAvailable = sensorManager.getSensorList(sensorIdMap[id]!!).isNotEmpty()
         }
+
+        result?.success(isAvailable)
     }
 
     /**
@@ -69,24 +74,20 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
         timeIntervalInMilliseconds: Long,
         result: Result<ResultWrapper>?
     ) {
-        val eventChannel = if (!eventChannels.containsKey(id)) {
-            val eventChannel = EventChannel(messenger, "sensors/$id")
-            eventChannels[id] = eventChannel
-            eventChannel
-        } else {
-            eventChannels[id]
+        if (id !in eventChannels) {
+            val channelName = screamingSnakeCaseToCamelCase(id.name)
+            eventChannels[id] = EventChannel(messenger, "sensors/$channelName")
         }
+        val eventChannel = eventChannels[id]!!
 
-        val taskResult = if (!streamHandlers.containsKey(id)) {
-            val streamHandler = when (id) {
-                SensorId.ACCELEROMETER -> DummySensor(sensorManager, timeIntervalInMilliseconds)
-                else -> throw NotImplementedError()
-            }
-            streamHandlers[id] = streamHandler
-            eventChannel!!.setStreamHandler(streamHandler)
-            SensorTaskResult.SUCCESS
-        } else {
+        val taskResult = if (id in streamHandlers) {
             SensorTaskResult.ALREADY_TRACKING_SENSOR
+        } else {
+            val streamHandler =
+                createSensorStreamHandlerFromId(id, sensorManager, timeIntervalInMilliseconds)
+            streamHandlers[id] = streamHandler
+            eventChannel.setStreamHandler(streamHandler)
+            SensorTaskResult.SUCCESS
         }
 
         val resultWrapper = ResultWrapper.Builder()
@@ -96,12 +97,21 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
         result!!.success(resultWrapper)
     }
 
+    private fun createSensorStreamHandlerFromId(
+        id: SensorId,
+        sensorManager: SensorManager,
+        timeIntervalInMilliseconds: Long
+    ) = when (id) {
+        SensorId.GYROSCOPE -> Gyroscope(sensorManager, timeIntervalInMilliseconds)
+        else -> throw NotImplementedError()
+    }
+
     /** Stops tracking of the sensor with the passed [SensorId]. */
     override fun stopSensorTracking(
         id: SensorId,
         result: Result<ResultWrapper>?
     ) {
-        val taskResult = if (streamHandlers.containsKey(id)) {
+        val taskResult = if (id in streamHandlers) {
             val streamHandler = streamHandlers[id]!!
             streamHandler.stopListener()
             streamHandlers.remove(id)
@@ -130,7 +140,7 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
     ) {
         val taskResult = if (timeIntervalInMilliseconds < 0) {
             SensorTaskResult.INVALID_TIME_INTERVAL
-        } else if (streamHandlers.containsKey(id)) {
+        } else if (id in streamHandlers) {
             val timeIntervalInMicroseconds = timeIntervalInMilliseconds * 1000
             streamHandlers[id]!!.changeTimeInterval(timeIntervalInMicroseconds)
             SensorTaskResult.SUCCESS
@@ -150,7 +160,7 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
         id: SensorId,
         result: Result<SensorInfo>?
     ) {
-        if (streamHandlers.containsKey(id)) {
+        if (id in streamHandlers) {
             val streamHandler = streamHandlers[id]!!
             result!!.success(streamHandler.getSensorInfo())
         } else {

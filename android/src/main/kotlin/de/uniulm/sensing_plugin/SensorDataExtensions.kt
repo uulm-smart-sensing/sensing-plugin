@@ -13,6 +13,6 @@ fun SensorData.toList(): ArrayList<Any> {
     val list = ArrayList<Any>()
     list.add(this.data)
     list.add(this.maxPrecision)
-    list.add(this.unit)
+    list.add(this.unit.ordinal)
     return list
 }
