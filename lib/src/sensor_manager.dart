@@ -30,7 +30,7 @@ class SensorManager {
   bool _sensorTracking = false;
 
   // The EventChannel name used to get the data from the native site.
-  var _eventStream = const EventChannel('sensors/%id');
+  final EventChannel _eventStream = const EventChannel('sensors/%id');
 
   static final SensorManager _singleton = SensorManager._internal();
 
@@ -42,7 +42,8 @@ class SensorManager {
   /// Process the [SensorData] which i get from the Native side and decode it.
   Stream<SensorData> getSensorStream() => _eventStream
       .receiveBroadcastStream()
-      .map((data) => SensorData.decode(data));
+      .map((data) => SensorData.decode(data as Object));
+
 
   /// Checks if the Sensor is currently used and returns an bool.
   bool isSensorUsed(SensorId id) {
