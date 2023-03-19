@@ -115,6 +115,10 @@ enum SensorTaskResult {
   failure,
 }
 
+/// Basic information about a sensor.
+///
+/// The sensor will report data with an [accuracy] in the specified
+/// [timeIntervalInMilliseconds]. The values will be in the fixed [unit].
 class SensorInfo {
   SensorInfo(
     this.unit,
