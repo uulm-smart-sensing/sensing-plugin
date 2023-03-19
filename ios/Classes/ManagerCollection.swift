@@ -30,12 +30,12 @@ public class ManagerCollection: NSObject {
 
         return self.motionManager!
     }
-    
+
     static func getLocationManager() -> CLLocationManager {
         if self.locationManager == nil {
             self.locationManager = CLLocationManager()
         }
-        
+
         return self.locationManager!
     }
 }

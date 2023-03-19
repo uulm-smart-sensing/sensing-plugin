@@ -27,24 +27,24 @@ import CoreLocation
  */
 public class HeadingSensorHandler: NSObject, ISensorStreamHandler, CLLocationManagerDelegate {
 
-    private var isSensorUsageAllowedFromUser : Bool
-    private var isHeadingSensorInUse : Bool
-    private var requestUpdateTimeInterval : TimeInterval
-    
-    private var headingAnglePublisher : Timer?
-    private var latestHeadingValue : Double
-    
+    private var isSensorUsageAllowedFromUser: Bool
+    private var isHeadingSensorInUse: Bool
+    private var requestUpdateTimeInterval: TimeInterval
+
+    private var headingAnglePublisher: Timer?
+    private var latestHeadingValue: Double
+
     override init() {
         self.isSensorUsageAllowedFromUser = false
         self.isHeadingSensorInUse = false
         self.requestUpdateTimeInterval = 0
         self.headingAnglePublisher = nil
         self.latestHeadingValue = 0.0
-        
+
         // request user to access location (i. e. heading sensor) data
         ManagerCollection.getLocationManager().requestWhenInUseAuthorization()
     }
-    
+
     func isSensorAvailable() -> Bool {
         return CLLocationManager.headingAvailable()
     }
@@ -70,25 +70,25 @@ public class HeadingSensorHandler: NSObject, ISensorStreamHandler, CLLocationMan
 
     public func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
         ManagerCollection.getLocationManager().delegate = self
-        
+
         if isSensorAvailable() {
             ManagerCollection.getLocationManager().startUpdatingHeading()
-            
+
             // create timer for sending the heading angles
             if self.headingAnglePublisher == nil {
                 self.headingAnglePublisher = Timer(fire: Date(), interval: requestUpdateTimeInterval, repeats: true,
-                                                   block: { (timer) in
-                    
+                                                   block: { (_) in
+
                     // send the latest heading angle
                     let sensorData = SensorData(data: [self.latestHeadingValue], maxPrecision: -1, unit: Unit.degrees)
                     events(sensorData.toList())
-                    
+
                 })
             }
-            
+
             // add the timer to the current run loop
             RunLoop.current.add(self.headingAnglePublisher!, forMode: RunLoop.Mode.default)
-            
+
         }
         return FlutterError(code: "SENSOR_NOT_AVAILABLE",
                             message: "Heading sensor is not available, so it cannot be started.",
@@ -99,7 +99,8 @@ public class HeadingSensorHandler: NSObject, ISensorStreamHandler, CLLocationMan
      updates the last received heading angle value
      
      - Parameters:
-        - newHeading new `CLHeading` object, containg the heading sensor data (true heading and magnetic heading as well as accuracy etc.)
+        - newHeading new `CLHeading` object, containg the heading sensor data
+                   (true heading and magnetic heading as well as accuracy etc.)
      */
     public func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
         self.latestHeadingValue = newHeading.trueHeading
