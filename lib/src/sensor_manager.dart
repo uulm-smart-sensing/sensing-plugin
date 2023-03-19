@@ -61,7 +61,9 @@ class SensorManager {
   // Changes the interval of the sensor event channel with the passed
   /// [SensorId] to [timeIntervalInMilliseconds] ms.
   Future<ResultWrapper> _changeSensorTimeInterval(
-          SensorId id, int timeIntervalInMilliseconds,) async =>
+    SensorId id,
+    int timeIntervalInMilliseconds,
+  ) async =>
       SensorManagerApi()
           .changeSensorTimeInterval(id, timeIntervalInMilliseconds);
 
