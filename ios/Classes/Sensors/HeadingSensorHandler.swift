@@ -73,6 +73,7 @@ public class HeadingSensorHandler: NSObject, ISensorStreamHandler, CLLocationMan
 
         if isSensorAvailable() {
             ManagerCollection.getLocationManager().startUpdatingHeading()
+            self.isHeadingSensorInUse = true
 
             // create timer for sending the heading angles
             if self.headingAnglePublisher == nil {
@@ -111,6 +112,8 @@ public class HeadingSensorHandler: NSObject, ISensorStreamHandler, CLLocationMan
             ManagerCollection.getLocationManager().stopUpdatingHeading()
             self.headingAnglePublisher?.invalidate()
             self.headingAnglePublisher = nil
+            self.isHeadingSensorInUse = false
+            
             return nil
         }
         return FlutterError(code: "NO_UPDATE_STOP_POSSIBLE",
