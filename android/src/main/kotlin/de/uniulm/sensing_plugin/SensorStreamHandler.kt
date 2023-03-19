@@ -31,6 +31,7 @@ abstract class SensorStreamHandler(
             .setData(event.values.map { v -> v.toDouble() })
             .setMaxPrecision(precision)
             .setUnit(unit)
+            .setTimestamp(event.timestamp)
             .build()
 
     /**
