@@ -27,6 +27,7 @@ import CoreLocation
  */
 public class HeadingSensorHandler: NSObject, ISensorStreamHandler, CLLocationManagerDelegate {
 
+    /// 
     /// A Boolean value that indicates whether the user allowed the app to use the heading sensor
     private var isSensorUsageAllowedFromUser: Bool
 
@@ -47,7 +48,7 @@ public class HeadingSensorHandler: NSObject, ISensorStreamHandler, CLLocationMan
      initializes resp. creating a new heading sensor and request the access for using location data (including heading sensor data)
      */
     override init() {
-        self.isSensorUsageAllowedFromUser = false
+        self.isSensorUsageAllowedFromUser = CLLocationManager.locationServicesEnabled()
         self.isHeadingSensorInUse = false
         self.requestUpdateTimeInterval = 0
         self.headingAnglePublisher = nil
@@ -58,7 +59,7 @@ public class HeadingSensorHandler: NSObject, ISensorStreamHandler, CLLocationMan
     }
 
     func isSensorAvailable() -> Bool {
-        return CLLocationManager.headingAvailable()
+        return CLLocationManager.headingAvailable() && self.isSensorUsageAllowedFromUser
     }
 
     func isSensorUsed() -> Bool {
