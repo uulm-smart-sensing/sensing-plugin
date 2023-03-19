@@ -10,18 +10,18 @@ import CoreMotion
 
 /**
  The object for starting and stopping the magnetometer sensor and receiving its sensor data
- 
+
  The ``MagnetometerHandler``wraps the part of the ``CMMotionManager``, which handles the
  magnetometer sensor.
- 
+
  So this handler provide methods to ...
  - check, whether the magnetometer is available or already used
  - change the time interval at which the magnetometer data are collected
  - "start" and "stop" the magnetometer, so whether the magnetometer should provide magnetic field data or not
- 
+
  - Important: Therefor it conforms the ``ISensorStreamHandler`` protocol, so it
  can be called and managed by the ``SensorManager``.
- 
+
  */
 public class MagnetometerHandler: NSObject, ISensorStreamHandler {
 
