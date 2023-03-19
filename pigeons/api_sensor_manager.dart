@@ -139,3 +139,30 @@ class SensorData {
   int maxPrecision;
   Unit unit;
 }
+
+/// Represents the accuracy with which the sensor reports data.
+///
+/// Note: Reporting the accuracy of a sensor has is a feature that only Android
+/// has, so the [SensorAccuracy] on iOS devices will always be
+/// [SensorAccuracy.high].
+enum SensorAccuracy {
+  /// The sensor is reporting data with maximum accuracy.
+  high,
+
+  /// The sensor is reporting data with an average level of accuracy,
+  /// calibration with the environment may improve the readings.
+  medium,
+
+  /// The sensor is reporting data with low accuracy, calibration with the
+  /// environment is needed.
+  low,
+
+  /// The values returned by the sensor cannot be trusted, calibration is
+  /// needed or the environment doesn't allow readings.
+  unreliable,
+
+  /// The values returned by the sensor cannot be trusted because the sensor had
+  /// no contact with what it was measuring (for example, the heart rate monitor
+  /// is not in contact with the user).
+  noContact,
+}
