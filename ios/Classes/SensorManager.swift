@@ -80,7 +80,7 @@ public class SensorManager: NSObject, FlutterPlugin, SensorManagerApi {
         completion(.failure(ImplementationError.sensorNotImplemented(methodName: "isSensorUsed", sensorId: id)))
     }
 
-    func startSensorTracking(id: SensorId, timeIntervalInMilliseconds: Int32, completion: @escaping
+    func startSensorTracking(id: SensorId, timeIntervalInMilliseconds: Int64, completion: @escaping
                              (Result<ResultWrapper, Error>) -> Void) {
         // check, whether the sensor with the given Id is implemented
         if streamHandlers.keys.contains(id) {
@@ -119,7 +119,7 @@ public class SensorManager: NSObject, FlutterPlugin, SensorManagerApi {
         completion(.failure(ImplementationError.sensorNotImplemented(methodName: "stopSensorTracking", sensorId: id)))
     }
 
-    func changeSensorTimeInterval(sensorId: SensorId, timeIntervalInMilliseconds: Int32, completion: @escaping
+    func changeSensorTimeInterval(sensorId: SensorId, timeIntervalInMilliseconds: Int64, completion: @escaping
                                   (Result<ResultWrapper, Error>) -> Void) {
         // check, whether the sensor with the given Id is implemented
         if streamHandlers.keys.contains(sensorId) {
