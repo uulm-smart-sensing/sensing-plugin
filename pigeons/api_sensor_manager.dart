@@ -127,7 +127,7 @@ class SensorInfo {
   );
 
   Unit unit;
-  int accuracy;
+  SensorAccuracy accuracy;
   int timeIntervalInMilliseconds;
 }
 
