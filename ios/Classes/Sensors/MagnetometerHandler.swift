@@ -59,11 +59,14 @@ public class MagnetometerHandler: NSObject, ISensorStreamHandler {
                     let yValue = magnetometerData?.magneticField.y
                     let zValue = magnetometerData?.magneticField.z
 
+                    let timestamp = TimestampConverter.convertSensorEventToUnixTimestamp(sensorEventTimestamp: magnetometerData!.timestamp)
+
                     // TODO: check, what maxPrecision is
                     // wrap the sensor values to `SensorData` object and "send" it to the event stream
                     let sensorData = SensorData(data: [xValue, yValue, zValue],
                                                 maxPrecision: -1,
-                                                unit: Unit.microTeslas)
+                                                unit: Unit.microTeslas,
+                                                timestamp: timestamp)
 
                     events(sensorData.toList())
                     return

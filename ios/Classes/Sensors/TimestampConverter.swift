@@ -6,3 +6,27 @@
 //
 
 import Foundation
+
+/**
+ This object converts different formats of timestamps
+ 
+ For example the timestamps from the sensor data represent the time since the booting process of the device,
+ which needs to be converted to unix timestamps. 
+ */
+public class TimestampConverter : NSObject {
+    
+    /**
+     converts a time stamp of a sensor data to a unix time stamp
+     
+     - Important: The input timestamp coming from the sensor data (i. e. the `timestamp` attribute
+                 from the `CMLogItem` class) is not a unix timestamp, but the elapsed time (in sec)
+                 since the device was booted.
+     - Parameters:
+        - sensorEventTimeStamp: the timestamp, at which the sensor data was produced
+     - Returns: the timestamp,  at which the sensor data was produced, converted as a unix timestamp
+     */
+    public static func convertSensorEventToUnixTimestamp(sensorEventTimestamp: Double) -> Int64 {
+        return Int64(Date(timeIntervalSinceNow: -ProcessInfo.processInfo.systemUptime).addingTimeInterval(sensorEventTimestamp).timeIntervalSince1970)
+    }
+    
+}
