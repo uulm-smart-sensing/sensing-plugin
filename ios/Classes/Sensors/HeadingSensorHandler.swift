@@ -27,13 +27,25 @@ import CoreLocation
  */
 public class HeadingSensorHandler: NSObject, ISensorStreamHandler, CLLocationManagerDelegate {
 
+    /// A Boolean value that indicates whether the user allowed the app to use the heading sensor
     private var isSensorUsageAllowedFromUser: Bool
+    
+    /// A Boolean value that indicates whether the heading sensor is in use or not (so already started or not)
     private var isHeadingSensorInUse: Bool
+    
+    /// The interval, in seconds, at which this sensor provide sensor data, i. e. the heading angle
     private var requestUpdateTimeInterval: TimeInterval
 
+    /// The timer which sends the latest sensor data from the heading sensor to the
+    /// sensor manager in the smart sensing library
     private var headingAnglePublisher: Timer?
+    
+    /// The latest sensor data, i. e. the last heading angle received from the heading sensor
     private var latestHeadingValue: Double
 
+    /**
+     initializes resp. creating a new heading sensor and request the access for using location data (including heading sensor data)
+     */
     override init() {
         self.isSensorUsageAllowedFromUser = false
         self.isHeadingSensorInUse = false
