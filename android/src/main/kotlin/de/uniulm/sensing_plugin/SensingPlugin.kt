@@ -141,8 +141,7 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
         val taskResult = if (timeIntervalInMilliseconds < 0) {
             SensorTaskResult.INVALID_TIME_INTERVAL
         } else if (id in streamHandlers) {
-            val timeIntervalInMicroseconds = timeIntervalInMilliseconds * 1000
-            streamHandlers[id]!!.changeTimeInterval(timeIntervalInMicroseconds)
+            streamHandlers[id]!!.changeTimeInterval(timeIntervalInMilliseconds)
             SensorTaskResult.SUCCESS
         } else {
             SensorTaskResult.SENSOR_NOT_AVAILABLE

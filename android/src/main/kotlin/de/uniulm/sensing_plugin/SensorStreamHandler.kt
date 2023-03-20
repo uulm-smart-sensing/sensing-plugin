@@ -15,7 +15,7 @@ import java.util.Calendar
 abstract class SensorStreamHandler(
     private val sensorManager: SensorManager,
     sensorId: Int,
-    private var timeIntervalInMicroseconds: Long,
+    private var timeIntervalInMilliseconds: Long,
     private val unit: Unit
 ) : EventChannel.StreamHandler, SensorEventListener {
 
@@ -41,7 +41,7 @@ abstract class SensorStreamHandler(
     fun getSensorInfo(): SensorInfo =
         SensorInfo.Builder()
             .setAccuracy(accuracy)
-            .setTimeIntervalInMilliseconds(timeIntervalInMicroseconds)
+            .setTimeIntervalInMilliseconds(timeIntervalInMilliseconds)
             .setUnit(unit)
             .build()
 
@@ -133,10 +133,11 @@ abstract class SensorStreamHandler(
 
     /**
      * Registers this stream handler as the listener for the according [sensor] with the
-     * configured [timeIntervalInMicroseconds].
+     * configured [timeIntervalInMilliseconds].
      */
     private fun startListener() {
-        sensorManager.registerListener(this, sensor, timeIntervalInMicroseconds.toInt())
+        val timeIntervalInMicroseconds = (timeIntervalInMilliseconds * 1000).toInt()
+        sensorManager.registerListener(this, sensor, timeIntervalInMicroseconds)
     }
 
     /** Unregisters this stream handler as the listener for the according [sensor]. */
@@ -144,9 +145,9 @@ abstract class SensorStreamHandler(
         sensorManager.unregisterListener(this)
     }
 
-    /** Changes the interval of this listener to [timeIntervalInMicroseconds]. */
-    fun changeTimeInterval(timeIntervalInMicroseconds: Long): SensorTaskResult {
-        this.timeIntervalInMicroseconds = timeIntervalInMicroseconds
+    /** Changes the interval of this listener to [timeIntervalInMilliseconds]. */
+    fun changeTimeInterval(timeIntervalInMilliseconds: Long): SensorTaskResult {
+        this.timeIntervalInMilliseconds = timeIntervalInMilliseconds
         stopListener()
         startListener()
         return SensorTaskResult.SUCCESS
@@ -154,9 +155,9 @@ abstract class SensorStreamHandler(
 
     /**
      * Checks whether time difference between the passed [time] and the [lastUpdate] is greater
-     * than or equal to [timeIntervalInMicroseconds].
+     * than or equal to [timeIntervalInMilliseconds].
      */
     private fun isValidTime(time: Calendar): Boolean {
-        return (time.timeInMillis - lastUpdate.timeInMillis) * 1000 >= timeIntervalInMicroseconds
+        return time.timeInMillis - lastUpdate.timeInMillis >= timeIntervalInMilliseconds
     }
 }
