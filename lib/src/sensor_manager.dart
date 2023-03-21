@@ -11,7 +11,6 @@ import 'generated/api_sensor_manager.dart'
         SensorInfo,
         ResultWrapper;
 import 'preprocessing/preprocessor.dart';
-import 'preprocessing/sensor_config.dart' show SensorConfig;
 import 'sensor.dart';
 
 /// Singleton sensor manager class
@@ -26,14 +25,8 @@ class SensorManager {
   // Stores all received [Stream].
   List<Stream> _sensorStreams = [];
 
-  // Stores all [SensorConfig].
-  List<SensorConfig> _sensorConfig = [];
-
   // Map Object with a SensorId and a Preprocessor
   Map<SensorId, Preprocessor> _preprocessor = <SensorId, Preprocessor>{};
-
-  // An help variable that I use to determine the status of a tracked sensor.
-  bool _sensorTracking = false;
 
   // The EventChannel name used to get the data from the native site.
   final EventChannel _eventStream = const EventChannel('sensors/%id');
@@ -80,31 +73,22 @@ class SensorManager {
   ) async {
     // Checks first if the sensor we want to track is available at all.
     if (await _isSensorAvailable(id)) {
-      // Saves the config from the Sensor in _sensorConfig.
-      _sensorConfig.add(
-        SensorConfig(
-          targetUnit: units,
-          targetPrecision: precision,
-          timeInterval: timeInterval,
-        ),
-      );
-      // Sets the help variable true and returns it.
-      return _sensorTracking = true;
+      return true;
     } else {
       // Sets the help variable false and returns it.
-      return _sensorTracking = false;
+      return false;
     }
   }
 
   /// Stops the tracking from Sensor and returns an bool.
-  bool stopSensorTracking(Sensor sensor) {
+  Future<bool> stopSensorTracking(Sensor sensor) async {
     // Checks if the Sensor is being tracked.
-    if (_sensorTracking) {
+    if (await startSensorTracking(
+        sensor.id, sensor.unit, sensor.accuracy, sensor.timeInterval)) {
       //Removes the Sensor from _usedSensors
       //because the Sensor is not being used anymore.
       _usedSenors.remove(sensor);
       // Sets the help variable on false.
-      _sensorTracking = false;
       return true;
     }
     return false;
