@@ -23,7 +23,7 @@ class Preprocessor {
   /// [SensorData.data]:
   /// - converting the unit from [SensorData.unit] to [SensorConfig.targetUnit]
   /// - converting the precision to [SensorConfig.targetPrecision]
-  /// The list of processed values is returned.
+  /// A copy of [sensorData] with the processed values is returned.
   ///
   /// Examples:
   /// ```dart
@@ -45,7 +45,13 @@ class Preprocessor {
   ///   maxPrecision: 2,
   ///   unit: Unit.fahrenheit,
   /// );
-  /// preprocessor.processData(sensorData); // [37.8, 43.3, 48.9]
+  /// var processedData = preprocessor.processData(sensorData);
+  /// // processedData is:
+  /// // SensorData(
+  /// //   data: [37.8, 43.3, 48.9],
+  /// //   maxPrecision: 2,
+  /// //   unit: Unit.fahrenheit,
+  /// // )
   /// ```
   /// It is also possible to use for processing streams of sensor data e.g:
   /// ```dart

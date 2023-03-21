@@ -17,7 +17,7 @@ extension SensorDataExtension on SensorData {
   /// // SensorData(
   /// //   data: [2, 3, 6],
   /// //   maxPrecision: 2,
-  /// //   unit: Unit.fahrenheit
+  /// //   unit: Unit.fahrenheit,
   /// // )
   /// ```
   SensorData copyWith({
