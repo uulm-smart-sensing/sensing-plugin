@@ -1,3 +1,4 @@
+import '../extensions/sensor_data_extension.dart';
 import '../generated/api_sensor_manager.dart' show SensorData;
 import 'precision_converter.dart';
 import 'sensor_config.dart';
@@ -52,20 +53,22 @@ class Preprocessor {
   ///   .map(preprocessor.processData)
   ///   .listen(...)
   /// ```
-  List<double> processData(SensorData sensorData) => sensorData.data
-      .whereType<double>()
-      .map(
-        (value) => convertUnit(
-          value: value,
-          sourceUnit: sensorData.unit,
-          targetUnit: config.targetUnit,
-        ),
-      )
-      .map(
-        (value) => convertPrecision(
-          value: value,
-          targetPrecision: config.targetPrecision,
-        ),
-      )
-      .toList();
+  SensorData processData(SensorData sensorData) => sensorData.copyWith(
+        data: sensorData.data
+            .whereType<double>()
+            .map(
+              (value) => convertUnit(
+                value: value,
+                sourceUnit: sensorData.unit,
+                targetUnit: config.targetUnit,
+              ),
+            )
+            .map(
+              (value) => convertPrecision(
+                value: value,
+                targetPrecision: config.targetPrecision,
+              ),
+            )
+            .toList(),
+      );
 }
