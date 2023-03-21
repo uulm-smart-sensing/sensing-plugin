@@ -63,3 +63,28 @@ For Ktlint to format the code automatically, run:
 ```bash
 ./gradlew ktlintFormat
 ```
+
+## Working on iOS
+
+For the development of the iOS platform code, which is written in Swift, we use Xcode.
+In order for Xcode to recognize all dependencies and correctly set up the project structure, it is mandatory to open the `./example/ios/` directory with Xcode.
+
+### Linting
+
+To lint the Swift code we use [Swiftlint](https://github.com/realm/SwiftLint) (see [here](https://github.com/realm/SwiftLint#installation) for installation guide).
+If *Swiftlint* is installed successfully, you can manually check the Swift files by running
+
+```bash
+swiftlint
+```
+and correct fixable linting issues with
+
+```bash
+swiftlint --fix
+```
+
+For further configuration of the `swiftlint` command, it is recommended to use a `.swiftlint.yml` file, which already exists in this repository and can be extended.
+
+---
+
+If you want *Swiftlint* to be automatically run by Xcode, you need to set up a new "Run script phase" in the "Build phases" of your target and execute the `swiftlint` command there, as described [here](https://github.com/realm/SwiftLint#xcode).
