@@ -4,6 +4,7 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorAccuracy
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorData
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorInfo
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorTaskResult
@@ -21,7 +22,7 @@ abstract class SensorStreamHandler(
     private val sensor: Sensor = sensorManager.getDefaultSensor(sensorId)
     private var eventSink: EventChannel.EventSink? = null
     private var lastUpdate: Calendar = Calendar.getInstance()
-    private var accuracy: Long = -1
+    private var accuracy: SensorAccuracy = SensorAccuracy.NO_CONTACT
     private var precision: Long = 0
 
     /** Creates a [SensorData] object from the passed [SensorEvent]. */
@@ -50,9 +51,19 @@ abstract class SensorStreamHandler(
      * Unlike onSensorChanged(), this is only called when this accuracy value changes.
      */
     override fun onAccuracyChanged(sensor: Sensor, newAccuracy: Int) {
-        accuracy = newAccuracy.toLong()
+        accuracy = getAccuracyEnumFromValue(newAccuracy)
         precision = getPrecisionFromResolution(sensor.resolution)
     }
+
+    private fun getAccuracyEnumFromValue(accuracyValue: Int): SensorAccuracy =
+        when (accuracyValue) {
+            SensorManager.SENSOR_STATUS_ACCURACY_HIGH -> SensorAccuracy.HIGH
+            SensorManager.SENSOR_STATUS_ACCURACY_MEDIUM -> SensorAccuracy.MEDIUM
+            SensorManager.SENSOR_STATUS_ACCURACY_LOW -> SensorAccuracy.LOW
+            SensorManager.SENSOR_STATUS_UNRELIABLE -> SensorAccuracy.UNRELIABLE
+            SensorManager.SENSOR_STATUS_NO_CONTACT -> SensorAccuracy.NO_CONTACT
+            else -> { throw IllegalArgumentException("Unexpected accuracy value '$accuracyValue'") }
+        }
 
     /**
      * Evaluates the precision from the passed [resolution] of a sensor.

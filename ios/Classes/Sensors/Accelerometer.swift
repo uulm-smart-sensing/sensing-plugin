@@ -39,7 +39,7 @@ public class AccelerometerHandler: NSObject, ISensorStreamHandler {
      But if the time interval is smaller than 10ms it is possible,
      that the update will not be performed or the change can not be notified.
      */
-    func changeSensorTimeInterval(timeInterval: Int32) -> ResultWrapper {
+    func changeSensorTimeInterval(timeInterval: Int64) -> ResultWrapper {
         // convert time interval from miliseconds into seconds
         let timeIntervalInSec: TimeInterval = Double(timeInterval) / 1000
         ManagerCollection.getMotionManager().deviceMotionUpdateInterval = timeIntervalInSec
@@ -54,12 +54,11 @@ public class AccelerometerHandler: NSObject, ISensorStreamHandler {
         return ResultWrapper(state: SensorTaskResult.success)
     }
 
-    // TODO: check the accuracy of the accelerometer and do not return -1 (indicating no information) as accuracy
     func getSensorInfo() -> SensorInfo {
         // convert time interval from seconds to milliseconds
-        let timeIntervalInMilliSec: Int32 = Int32(ManagerCollection.getMotionManager().deviceMotionUpdateInterval
+        let timeIntervalInMilliSec: Int64 = Int64(ManagerCollection.getMotionManager().deviceMotionUpdateInterval
                                                   * 1000)
-        return SensorInfo(unit: Unit.gravitationalForce, accuracy: -1,
+        return SensorInfo(unit: Unit.gravitationalForce, accuracy: SensorAccuracy.high,
                           timeIntervalInMilliseconds: timeIntervalInMilliSec)
     }
 

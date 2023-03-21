@@ -39,7 +39,7 @@ public class GyroscopeHandler: NSObject, ISensorStreamHandler {
      But if the time interval is smaller than 10ms it is possible,
      that the update will not be performed or the change can not be notified.
      */
-    func changeSensorTimeInterval(timeInterval: Int32) -> ResultWrapper {
+    func changeSensorTimeInterval(timeInterval: Int64) -> ResultWrapper {
         // convert time interval from miliseconds into seconds
         let timeIntervalInSec: TimeInterval = Double(timeInterval) / 1000
         ManagerCollection.getMotionManager().gyroUpdateInterval = timeIntervalInSec
@@ -54,11 +54,11 @@ public class GyroscopeHandler: NSObject, ISensorStreamHandler {
         return ResultWrapper(state: SensorTaskResult.success)
     }
 
-    // TODO: check the accuracy of the gyroscope and do not return -1 (indicating no information) as accuracy
     func getSensorInfo() -> SensorInfo {
         // convert time interval from seconds to milliseconds
-        let timeIntervalInMilliSec: Int32 = Int32(ManagerCollection.getMotionManager().gyroUpdateInterval * 1000)
-        return SensorInfo(unit: Unit.radiansPerSecond, accuracy: -1, timeIntervalInMilliseconds: timeIntervalInMilliSec)
+        let timeIntervalInMilliSec: Int64 = Int64(ManagerCollection.getMotionManager().gyroUpdateInterval * 1000)
+        return SensorInfo(unit: Unit.radiansPerSecond, accuracy: SensorAccuracy.high,
+                          timeIntervalInMilliseconds: timeIntervalInMilliSec)
     }
 
     // TODO: check, whether timer is not the better solution and provide the data at more precise frequency or
