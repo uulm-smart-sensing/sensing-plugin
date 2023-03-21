@@ -45,7 +45,8 @@ public class MagnetometerHandler: NSObject, ISensorStreamHandler {
         // convert time interval from seconds to milliseconds
         let timeIntervalInMilliSec: Int64 = Int64(ManagerCollection.getMotionManager().magnetometerUpdateInterval
                                                   * 1000)
-        return SensorInfo(unit: Unit.microTeslas, accuracy: SensorAccuracy.high, timeIntervalInMilliseconds: timeIntervalInMilliSec)
+        return SensorInfo(unit: Unit.microTeslas, accuracy: SensorAccuracy.high,
+                          timeIntervalInMilliseconds: timeIntervalInMilliSec)
     }
 
     public func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {

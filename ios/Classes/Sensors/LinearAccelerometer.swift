@@ -17,7 +17,8 @@ import CoreMotion
  */
 public class LinearAccelerometerHandler: AccelerometerHandler {
 
-    override public func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
+    override public func onListen(withArguments arguments: Any?,
+                                  eventSink events: @escaping FlutterEventSink) -> FlutterError? {
         if isSensorAvailable() {
             ManagerCollection.getMotionManager().startDeviceMotionUpdates(to: OperationQueue.current!,
                                            withHandler: {(accelerometerData: CMDeviceMotion?, err: Error?) in

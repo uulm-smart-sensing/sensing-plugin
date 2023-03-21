@@ -57,7 +57,8 @@ public class GyroscopeHandler: NSObject, ISensorStreamHandler {
     func getSensorInfo() -> SensorInfo {
         // convert time interval from seconds to milliseconds
         let timeIntervalInMilliSec: Int64 = Int64(ManagerCollection.getMotionManager().gyroUpdateInterval * 1000)
-        return SensorInfo(unit: Unit.radiansPerSecond, accuracy: SensorAccuracy.high, timeIntervalInMilliseconds: timeIntervalInMilliSec)
+        return SensorInfo(unit: Unit.radiansPerSecond, accuracy: SensorAccuracy.high,
+                          timeIntervalInMilliseconds: timeIntervalInMilliSec)
     }
 
     // TODO: check, whether timer is not the better solution and provide the data at more precise frequency or
