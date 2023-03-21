@@ -27,8 +27,9 @@ public class LinearAccelerometerHandler: AccelerometerHandler {
                     let xValue = accelerometerData?.userAcceleration.x
                     let yValue = accelerometerData?.userAcceleration.y
                     let zValue = accelerometerData?.userAcceleration.z
-                    
-                    let timestamp = TimestampConverter.convertSensorEventToUnixTimestamp(sensorEventTimestamp: accelerometerData!.timestamp)
+
+                    let timestamp = TimestampConverter.convertSensorEventToUnixTimestamp(
+                        sensorEventTimestamp: accelerometerData!.timestamp)
 
                     // TODO: check, what maxPrecision is
                     // wrap the sensor values to `SensorData` object and "send" it to the event stream

@@ -72,8 +72,9 @@ public class AccelerometerHandler: NSObject, ISensorStreamHandler {
                     let yValue = accelerometerData?.gravity.y
                     let zValue = accelerometerData?.gravity.z
 
-                    let timestamp = TimestampConverter.convertSensorEventToUnixTimestamp(sensorEventTimestamp: accelerometerData!.timestamp)
-                    
+                    let timestamp = TimestampConverter.convertSensorEventToUnixTimestamp(
+                        sensorEventTimestamp: accelerometerData!.timestamp)
+
                     // TODO: check, what maxPrecision is
                     // wrap the sensor values to `SensorData` object and "send" it to the event stream
                     let sensorData = SensorData(data: [xValue, yValue, zValue],

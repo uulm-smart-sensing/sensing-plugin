@@ -13,8 +13,8 @@ import Foundation
  For example the timestamps from the sensor data represent the time since the booting process of the device,
  which needs to be converted to unix timestamps. 
  */
-public class TimestampConverter : NSObject {
-    
+public class TimestampConverter: NSObject {
+
     /**
      converts a time stamp of a sensor data to a unix time stamp
      
@@ -26,7 +26,8 @@ public class TimestampConverter : NSObject {
      - Returns: the timestamp,  at which the sensor data was produced, converted as a unix timestamp
      */
     public static func convertSensorEventToUnixTimestamp(sensorEventTimestamp: Double) -> Int64 {
-        return Int64(Date(timeIntervalSinceNow: -ProcessInfo.processInfo.systemUptime).addingTimeInterval(sensorEventTimestamp).timeIntervalSince1970)
+        return Int64(Date(timeIntervalSinceNow: -ProcessInfo.processInfo.systemUptime)
+            .addingTimeInterval(sensorEventTimestamp).timeIntervalSince1970)
     }
-    
+
 }
