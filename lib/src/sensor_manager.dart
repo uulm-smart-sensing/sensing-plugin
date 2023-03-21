@@ -60,7 +60,7 @@ class SensorManager {
       SensorManagerApi()
           .changeSensorTimeInterval(id, timeIntervalInMilliseconds);
 
-  /// Retrieves information about the sensor with the passed [SensorId]git .
+  /// Retrieves information about the sensor with the passed [SensorId].
   Future<SensorInfo> _getSensorInfo(SensorId id) async =>
       SensorManagerApi().getSensorInfo(id);
 
@@ -88,7 +88,6 @@ class SensorManager {
       //Removes the Sensor from _usedSensors
       //because the Sensor is not being used anymore.
       _usedSenors.remove(sensor);
-      // Sets the help variable on false.
       return true;
     }
     return false;
