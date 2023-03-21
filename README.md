@@ -66,7 +66,7 @@ For Ktlint to format the code automatically, run:
 
 ## Working on iOS
 
-For the development of the iOS plaform code, which is written in Swift, we use Xcode.
+For the development of the iOS platform code, which is written in Swift, we use Xcode.
 In order for Xcode to recognize all dependencies and correctly set up the project structure, it is mandatory to open the `./example/ios/` directory with Xcode.
 
 ### Linting
@@ -83,8 +83,8 @@ and correct fixable linting issues with
 swiftlint --fix
 ```
 
-For further configuration of the `swiftlint` command, it is recommended to use a `.swiftlint.yml` file, which already exist in this repository and can be extended.
+For further configuration of the `swiftlint` command, it is recommended to use a `.swiftlint.yml` file, which already exists in this repository and can be extended.
 
 ---
 
-If you want *Swiftlint* automatically be runned by Xcode, you need to set up a new "Run script phase" in the "Build phases" of your target and execute the `swiftlint` command there, like described [here](https://github.com/realm/SwiftLint#xcode).
+If you want *Swiftlint* to be automatically run by Xcode, you need to set up a new "Run script phase" in the "Build phases" of your target and execute the `swiftlint` command there, as described [here](https://github.com/realm/SwiftLint#xcode).
