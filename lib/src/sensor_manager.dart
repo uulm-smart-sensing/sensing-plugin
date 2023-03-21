@@ -30,7 +30,7 @@ class SensorManager {
   List<SensorConfig> _sensorConfig = [];
 
   // Map Object with a SensorId and a Preprocessor
-  Map<SensorId, Preprocessor> _preprocessor = [] as Map<SensorId, Preprocessor>;
+  Map<SensorId, Preprocessor> _preprocessor = <SensorId, Preprocessor>{};
 
   // An help variable that I use to determine the status of a tracked sensor.
   bool _sensorTracking = false;
