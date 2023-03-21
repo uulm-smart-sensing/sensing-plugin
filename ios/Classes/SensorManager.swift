@@ -21,6 +21,7 @@ import CoreMotion
  generated via Pigeon already (see `Generated/ApiSensorManager`)
 
  */
+@available(iOS 14.0, *)
 public class SensorManager: NSObject, FlutterPlugin, SensorManagerApi {
 
     private var eventChannels: [SensorId: FlutterEventChannel] = [:]

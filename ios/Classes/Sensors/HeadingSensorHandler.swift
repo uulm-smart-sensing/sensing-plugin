@@ -25,6 +25,7 @@ import CoreLocation
  can be called and managed by the ``SensorManager``.
  
  */
+@available(iOS 14.0, *)
 public class HeadingSensorHandler: NSObject, ISensorStreamHandler, CLLocationManagerDelegate {
 
     /// 
@@ -45,17 +46,27 @@ public class HeadingSensorHandler: NSObject, ISensorStreamHandler, CLLocationMan
     private var latestHeadingValue: Double
 
     /**
-     initializes resp. creating a new heading sensor and request the access for using location data (including heading sensor data)
+     initializes resp. creating a new heading sensor and request the access for using location data
+     (including heading sensor data)
      */
     override init() {
-        self.isSensorUsageAllowedFromUser = CLLocationManager.locationServicesEnabled()
         self.isHeadingSensorInUse = false
         self.requestUpdateTimeInterval = 0
         self.headingAnglePublisher = nil
         self.latestHeadingValue = 0.0
 
-        // request user to access location (i. e. heading sensor) data
-        ManagerCollection.getLocationManager().requestWhenInUseAuthorization()
+        // check, whether the user allowed the app to use the location services
+        if ManagerCollection.getLocationManager().authorizationStatus == CLAuthorizationStatus.notDetermined {
+            // request user to access location (i. e. heading sensor) data
+            ManagerCollection.getLocationManager().requestAlwaysAuthorization()
+            self.isSensorUsageAllowedFromUser = false
+        } else if ManagerCollection.getLocationManager().authorizationStatus == CLAuthorizationStatus.authorizedAlways {
+            self.isSensorUsageAllowedFromUser = true
+        } else {
+            self.isSensorUsageAllowedFromUser = false
+        }
+        
+        print(ManagerCollection.getLocationManager().authorizationStatus.rawValue)
     }
 
     func isSensorAvailable() -> Bool {
@@ -93,9 +104,14 @@ public class HeadingSensorHandler: NSObject, ISensorStreamHandler, CLLocationMan
                 self.headingAnglePublisher = Timer(fire: Date(), interval: requestUpdateTimeInterval, repeats: true,
                                                    block: { (_) in
 
-                    // send the latest heading angle
-                    let sensorData = SensorData(data: [self.latestHeadingValue], maxPrecision: -1, unit: Unit.degrees)
-                    events(sensorData.toList())
+                    // check, if the app is still allowed to send sensor data
+                    if self.isSensorAvailable() {
+                        
+                        // send the latest heading angle
+                        let sensorData = SensorData(data: [self.latestHeadingValue], maxPrecision: -1,
+                                                    unit: Unit.degrees)
+                        events(sensorData.toList())
+                    }
 
                 })
             }
@@ -118,6 +134,20 @@ public class HeadingSensorHandler: NSObject, ISensorStreamHandler, CLLocationMan
      */
     public func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
         self.latestHeadingValue = newHeading.trueHeading
+    }
+    
+    /**
+     updates the authorization status of the user, so whether the user allowed this app to use the location services
+     
+    This information will be used to figure out, whether this app is allowed to send the sensor data or need to stop
+     the sensor automatically
+     */
+    public func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        if manager.authorizationStatus == CLAuthorizationStatus.authorizedAlways {
+            self.isSensorUsageAllowedFromUser = true
+        } else {
+            self.isSensorUsageAllowedFromUser = false
+        }
     }
 
     public func onCancel(withArguments arguments: Any?) -> FlutterError? {

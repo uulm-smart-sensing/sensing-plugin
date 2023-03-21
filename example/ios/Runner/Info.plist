@@ -47,6 +47,8 @@
 	<true/>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Zum Messen der Ausrichtung (heading angle) gegenüber dem Nordpol</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Zum Messen der Ausrichtung (heading angle) gegenüber dem Nordpol</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 </dict>
