@@ -32,7 +32,7 @@ protocol ISensorStreamHandler: NSObject, FlutterStreamHandler {
         - timeInterval: required interval in ms
      - Returns: ResultWrapper if the time interval was changed sucessfully, otherwise StateIndicator.failure
      */
-    func changeSensorTimeInterval(timeInterval: Int32) -> ResultWrapper
+    func changeSensorTimeInterval(timeInterval: Int64) -> ResultWrapper
 
     /**
      Get the information about this sensor

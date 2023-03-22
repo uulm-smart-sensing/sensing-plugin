@@ -33,7 +33,7 @@ public class MagnetometerHandler: NSObject, ISensorStreamHandler {
         return ManagerCollection.getMotionManager().isMagnetometerActive
     }
 
-    func changeSensorTimeInterval(timeInterval: Int32) -> ResultWrapper {
+    func changeSensorTimeInterval(timeInterval: Int64) -> ResultWrapper {
         // convert time interval from miliseconds into seconds
         let timeIntervalInSec: TimeInterval = Double(timeInterval) / 1000
         ManagerCollection.getMotionManager().magnetometerUpdateInterval = timeIntervalInSec
@@ -41,12 +41,12 @@ public class MagnetometerHandler: NSObject, ISensorStreamHandler {
         return ResultWrapper(state: SensorTaskResult.success)
     }
 
-    // TODO: check the accuracy of the magnetometer and do not return -1 (indicating no information) as accuracy
     func getSensorInfo() -> SensorInfo {
         // convert time interval from seconds to milliseconds
-        let timeIntervalInMilliSec: Int32 = Int32(ManagerCollection.getMotionManager().magnetometerUpdateInterval
+        let timeIntervalInMilliSec: Int64 = Int64(ManagerCollection.getMotionManager().magnetometerUpdateInterval
                                                   * 1000)
-        return SensorInfo(unit: Unit.microTeslas, accuracy: -1, timeIntervalInMilliseconds: timeIntervalInMilliSec)
+        return SensorInfo(unit: Unit.microTeslas, accuracy: SensorAccuracy.high,
+                          timeIntervalInMilliseconds: timeIntervalInMilliSec)
     }
 
     public func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
