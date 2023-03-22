@@ -59,22 +59,25 @@ class Preprocessor {
   ///   .map(preprocessor.processData)
   ///   .listen(...)
   /// ```
-  SensorData processData(SensorData sensorData) => sensorData.copyWith(
-        data: sensorData.data
-            .whereType<double>()
-            .map(
-              (value) => convertUnit(
-                value: value,
-                sourceUnit: sensorData.unit,
-                targetUnit: config.targetUnit,
-              ),
-            )
-            .map(
-              (value) => convertPrecision(
-                value: value,
-                targetPrecision: config.targetPrecision,
-              ),
-            )
-            .toList(),
-      );
+  SensorData processData(SensorData sensorData) {
+    sensorData
+      ..data = sensorData.data
+          .whereType<double>()
+          .map(
+            (value) => convertUnit(
+              value: value,
+              sourceUnit: sensorData.unit,
+              targetUnit: config.targetUnit,
+            ),
+          )
+          .map(
+            (value) => convertPrecision(
+              value: value,
+              targetPrecision: config.targetPrecision,
+            ),
+          )
+          .toList()
+      ..maxPrecision = config.targetPrecision;
+    return sensorData;
+  }
 }
