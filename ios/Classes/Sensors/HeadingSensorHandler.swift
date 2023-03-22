@@ -59,7 +59,8 @@ public class HeadingSensorHandler: NSObject, ISensorStreamHandler, CLLocationMan
         var locationManager = ManagerCollection.getLocationManager()
         var authStatus = locationManager.authorizationStatus
         self.isSensorUsageAllowedFromUser = authStatus == CLAuthorizationStatus.authorizedAlways
-        if authStatus == CLAuthorizationStatus.notDetermined || authStatus == CLAuthorizationStatus.authorizedWhenInUse {
+        if authStatus == CLAuthorizationStatus.notDetermined ||
+            authStatus == CLAuthorizationStatus.authorizedWhenInUse {
             // request user to access location (i. e. heading sensor) data
             locationManager.requestAlwaysAuthorization()
         }

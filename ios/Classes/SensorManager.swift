@@ -21,7 +21,6 @@ import CoreMotion
  generated via Pigeon already (see `Generated/ApiSensorManager`)
 
  */
-@available(iOS 14.0, *)
 public class SensorManager: NSObject, FlutterPlugin, SensorManagerApi {
 
     private var eventChannels: [SensorId: FlutterEventChannel] = [:]
@@ -61,7 +60,9 @@ public class SensorManager: NSObject, FlutterPlugin, SensorManagerApi {
         streamHandlers.updateValue(AccelerometerHandler(), forKey: SensorId.accelerometer)
 
         // add heading sensor as implemented sensor
-        streamHandlers.updateValue(HeadingSensorHandler(), forKey: SensorId.heading)
+        if #available(iOS 14.0, *) {
+            streamHandlers.updateValue(HeadingSensorHandler(), forKey: SensorId.heading)
+        }
     }
 
     func isSensorAvailable(id: SensorId, completion: @escaping (Result<Bool, Error>) -> Void) {
