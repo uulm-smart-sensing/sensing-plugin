@@ -1,4 +1,4 @@
-import Flutter
+simport Flutter
 import UIKit
 import CoreMotion
 
@@ -58,6 +58,11 @@ public class SensorManager: NSObject, FlutterPlugin, SensorManagerApi {
         // add (linear) acceleromter as implemented sensor
         streamHandlers.updateValue(LinearAccelerometerHandler(), forKey: SensorId.linearAcceleration)
         streamHandlers.updateValue(AccelerometerHandler(), forKey: SensorId.accelerometer)
+
+        // add heading sensor as implemented sensor
+        if #available(iOS 14.0, *) {
+            streamHandlers.updateValue(HeadingSensorHandler(), forKey: SensorId.heading)
+        }
     }
 
     func isSensorAvailable(id: SensorId, completion: @escaping (Result<Bool, Error>) -> Void) {
