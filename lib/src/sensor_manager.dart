@@ -3,13 +3,7 @@
 import 'package:flutter/services.dart';
 
 import 'generated/api_sensor_manager.dart'
-    show
-        SensorManagerApi,
-        SensorData,
-        Unit,
-        SensorId,
-        SensorInfo,
-        ResultWrapper;
+    show SensorManagerApi, SensorData, SensorId, SensorInfo, ResultWrapper;
 import 'preprocessing/preprocessor.dart';
 import 'sensor.dart';
 
@@ -28,9 +22,6 @@ class SensorManager {
   // Map Object with a SensorId and a Preprocessor
   Map<SensorId, Preprocessor> _preprocessor = <SensorId, Preprocessor>{};
 
-  // The EventChannel name used to get the data from the native site.
-  final EventChannel _eventStream = const EventChannel('sensors/%id');
-
   static final SensorManager _singleton = SensorManager._internal();
 
   /// Get Sensor Manager singleton instance.
@@ -38,10 +29,14 @@ class SensorManager {
 
   SensorManager._internal();
 
-  /// Process the [SensorData] which i get from the Native side and decode it.
-  Stream<SensorData> getSensorStream() => _eventStream
-      .receiveBroadcastStream()
-      .map((data) => SensorData.decode(data as Object));
+  /// Process the [SensorData] with a matching [SensorId] which i get from the
+  /// Native side and decode it.
+  Stream<SensorData> getSensorStream(SensorId id) {
+    var eventStream = EventChannel('sensors/$id');
+    return eventStream
+        .receiveBroadcastStream()
+        .map((data) => SensorData.decode(data as Object));
+  }
 
   /// Checks if the Sensor is currently used and returns an bool.
   Future<bool> isSensorUsed(SensorId id) async =>
@@ -52,7 +47,7 @@ class SensorManager {
       SensorManagerApi().isSensorAvailable(id);
 
   // Changes the interval of the sensor event channel with the passed
-  /// [SensorId] to [timeIntervalInMilliseconds] ms.
+  ///// [SensorId] to [timeIntervalInMilliseconds] ms.
   Future<ResultWrapper> _changeSensorTimeInterval(
     SensorId id,
     int timeIntervalInMilliseconds,
@@ -65,34 +60,21 @@ class SensorManager {
       SensorManagerApi().getSensorInfo(id);
 
   /// Tracks if a Sensor is being used and returns an bool.
-  Future<bool> startSensorTracking(
-    SensorId id,
-    Unit units,
-    int precision,
-    Duration timeInterval,
-  ) async {
-    // Checks first if the sensor we want to track is available at all.
-    if (await _isSensorAvailable(id)) {
-      return true;
-    } else {
-      // Sets the help variable false and returns it.
-      return false;
-    }
+  Stream<ResultWrapper> startSensorTracking(SensorId id) {
+    var sensorStream = EventChannel('sensors/$id');
+    //TODO: checking if sensor is available
+    return sensorStream
+        .receiveBroadcastStream()
+        .map((data) => ResultWrapper.decode(data as ResultWrapper));
   }
 
-  /// Stops the tracking from Sensor and returns an bool.
+  /* Stops the tracking from Sensor and returns an bool.
   Future<bool> stopSensorTracking(Sensor sensor) async {
     // Checks if the Sensor is being tracked.
-    if (await startSensorTracking(
-        sensor.id, sensor.unit, sensor.accuracy, sensor.timeInterval)) {
-      //Removes the Sensor from _usedSensors
-      //because the Sensor is not being used anymore.
-      _usedSenors.remove(sensor);
-      return true;
-    }
+
     return false;
   }
-
+*/
   /// Gets the List from all Sensor which currently being used and returns it.
   List<Sensor> getUsedSensors() => _usedSenors;
 
