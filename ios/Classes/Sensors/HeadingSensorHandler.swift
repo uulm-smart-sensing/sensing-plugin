@@ -65,8 +65,6 @@ public class HeadingSensorHandler: NSObject, ISensorStreamHandler, CLLocationMan
         } else {
             self.isSensorUsageAllowedFromUser = false
         }
-        
-        print(ManagerCollection.getLocationManager().authorizationStatus.rawValue)
     }
 
     func isSensorAvailable() -> Bool {
@@ -106,7 +104,7 @@ public class HeadingSensorHandler: NSObject, ISensorStreamHandler, CLLocationMan
 
                     // check, if the app is still allowed to send sensor data
                     if self.isSensorAvailable() {
-                        
+
                         // send the latest heading angle
                         let sensorData = SensorData(data: [self.latestHeadingValue], maxPrecision: -1,
                                                     unit: Unit.degrees)
@@ -135,7 +133,7 @@ public class HeadingSensorHandler: NSObject, ISensorStreamHandler, CLLocationMan
     public func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
         self.latestHeadingValue = newHeading.trueHeading
     }
-    
+
     /**
      updates the authorization status of the user, so whether the user allowed this app to use the location services
      
