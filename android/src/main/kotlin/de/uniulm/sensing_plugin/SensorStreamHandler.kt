@@ -10,7 +10,6 @@ import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorInfo
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorTaskResult
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.Unit
 import io.flutter.plugin.common.EventChannel
-import java.util.Calendar
 
 abstract class SensorStreamHandler(
     private val sensorManager: SensorManager,
@@ -21,7 +20,7 @@ abstract class SensorStreamHandler(
 
     private val sensor: Sensor = sensorManager.getDefaultSensor(sensorId)
     private var eventSink: EventChannel.EventSink? = null
-    private var lastUpdate: Calendar = Calendar.getInstance()
+    private var lastUpdateTimestampInMilliseconds: Long = System.currentTimeMillis()
     private var accuracy: SensorAccuracy = SensorAccuracy.NO_CONTACT
     private var precision: Long = 0
 
@@ -110,11 +109,11 @@ abstract class SensorStreamHandler(
      * [SensorEvent](https://developer.android.com/reference/android/hardware/SensorEvent).
      */
     override fun onSensorChanged(event: SensorEvent) {
-        val currentTime = Calendar.getInstance()
+        val currentTime = System.currentTimeMillis()
         if (isValidTime(currentTime)) {
             val sensorData = getSensorDataFromSensorEvent(event)
             eventSink?.success(sensorData.toList())
-            lastUpdate = currentTime
+            lastUpdateTimestampInMilliseconds = currentTime
         }
     }
 
@@ -171,10 +170,11 @@ abstract class SensorStreamHandler(
     }
 
     /**
-     * Checks whether time difference between the passed [time] and the [lastUpdate] is greater
-     * than or equal to [timeIntervalInMilliseconds].
+     * Checks whether time difference between the passed [timestampInMilliseconds] and
+     * [lastUpdateTimestampInMilliseconds] is greater than or equal to [timeIntervalInMilliseconds].
      */
-    private fun isValidTime(time: Calendar): Boolean {
-        return time.timeInMillis - lastUpdate.timeInMillis >= timeIntervalInMilliseconds
+    private fun isValidTime(timestampInMilliseconds: Long): Boolean {
+        val difference = timestampInMilliseconds - lastUpdateTimestampInMilliseconds
+        return difference >= timeIntervalInMilliseconds
     }
 }
