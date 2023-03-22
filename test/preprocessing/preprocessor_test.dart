@@ -19,7 +19,7 @@ void main() {
       ],
       maxPrecision: 1,
       unit: Unit.unitless,
-      timestamp: 0,
+      timestampInMicroseconds: 0,
     );
     var preprocessedData = preprocessor.processData(sensorData);
     expect(preprocessedData.data, isEmpty);
@@ -43,7 +43,7 @@ void main() {
       ],
       maxPrecision: 2,
       unit: Unit.fahrenheit,
-      timestamp: 0,
+      timestampInMicroseconds: 0,
     );
     var preprocessedData = preprocessor.processData(sensorData);
     expect(preprocessedData.data, isNotEmpty);
