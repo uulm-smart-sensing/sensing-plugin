@@ -56,8 +56,8 @@ public class HeadingSensorHandler: NSObject, ISensorStreamHandler, CLLocationMan
         self.latestHeadingValue = 0.0
 
         // check, whether the user allowed the app to use the location services
-        var locationManager = ManagerCollection.getLocationManager()
-        var authStatus = locationManager.authorizationStatus
+        let locationManager = ManagerCollection.getLocationManager()
+        let authStatus = locationManager.authorizationStatus
         self.isSensorUsageAllowedFromUser = authStatus == CLAuthorizationStatus.authorizedAlways
         if authStatus == CLAuthorizationStatus.notDetermined ||
             authStatus == CLAuthorizationStatus.authorizedWhenInUse {
@@ -85,7 +85,7 @@ public class HeadingSensorHandler: NSObject, ISensorStreamHandler, CLLocationMan
     func getSensorInfo() -> SensorInfo {
         // convert time interval from seconds to milliseconds
         let timeIntervalInMilliSec: Int64 = Int64(self.requestUpdateTimeInterval * 1000)
-        return SensorInfo(unit: Unit.degrees, accuracy: -1,
+        return SensorInfo(unit: Unit.degrees, accuracy: SensorAccuracy.high,
                           timeIntervalInMilliseconds: timeIntervalInMilliSec)
     }
 
