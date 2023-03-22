@@ -22,7 +22,8 @@ class Preprocessor {
   /// [SensorData.data]:
   /// - converting the unit from [SensorData.unit] to [SensorConfig.targetUnit]
   /// - converting the precision to [SensorConfig.targetPrecision]
-  /// The list of processed values is returned.
+  /// A copy of [sensorData] with the processed values and the adjusted
+  /// precision is returned.
   ///
   /// Examples:
   /// ```dart
@@ -44,7 +45,13 @@ class Preprocessor {
   ///   maxPrecision: 2,
   ///   unit: Unit.fahrenheit,
   /// );
-  /// preprocessor.processData(sensorData); // [37.8, 43.3, 48.9]
+  /// var processedData = preprocessor.processData(sensorData);
+  /// // processedData is:
+  /// // SensorData(
+  /// //   data: [37.8, 43.3, 48.9],
+  /// //   maxPrecision: 1,
+  /// //   unit: Unit.fahrenheit,
+  /// // )
   /// ```
   /// It is also possible to use for processing streams of sensor data e.g:
   /// ```dart
@@ -52,20 +59,25 @@ class Preprocessor {
   ///   .map(preprocessor.processData)
   ///   .listen(...)
   /// ```
-  List<double> processData(SensorData sensorData) => sensorData.data
-      .whereType<double>()
-      .map(
-        (value) => convertUnit(
-          value: value,
-          sourceUnit: sensorData.unit,
-          targetUnit: config.targetUnit,
-        ),
-      )
-      .map(
-        (value) => convertPrecision(
-          value: value,
-          targetPrecision: config.targetPrecision,
-        ),
-      )
-      .toList();
+  SensorData processData(SensorData sensorData) {
+    sensorData
+      ..data = sensorData.data
+          .whereType<double>()
+          .map(
+            (value) => convertUnit(
+              value: value,
+              sourceUnit: sensorData.unit,
+              targetUnit: config.targetUnit,
+            ),
+          )
+          .map(
+            (value) => convertPrecision(
+              value: value,
+              targetPrecision: config.targetPrecision,
+            ),
+          )
+          .toList()
+      ..maxPrecision = config.targetPrecision;
+    return sensorData;
+  }
 }

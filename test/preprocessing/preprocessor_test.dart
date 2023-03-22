@@ -21,7 +21,7 @@ void main() {
       unit: Unit.unitless,
     );
     var preprocessedData = preprocessor.processData(sensorData);
-    expect(preprocessedData, isEmpty);
+    expect(preprocessedData.data, isEmpty);
   });
 
   test('When values are passed then they are preprocessed', () {
@@ -44,7 +44,54 @@ void main() {
       unit: Unit.fahrenheit,
     );
     var preprocessedData = preprocessor.processData(sensorData);
-    expect(preprocessedData, isNotEmpty);
-    expect(preprocessedData, equals([37.8, 43.3, 48.9]));
+    expect(preprocessedData.data, isNotEmpty);
+    expect(preprocessedData.data, equals([37.8, 43.3, 48.9]));
+  });
+
+  test('When SensorData object is preprocessed, then unit stays the same', () {
+    var preprocessor = Preprocessor(
+      config: const SensorConfig(
+        targetUnit: Unit.celsius,
+        targetPrecision: 1,
+        timeInterval: Duration(seconds: 1),
+      ),
+    );
+
+    var sensorData = SensorData(
+      data: [
+        1,
+        2,
+        3,
+      ],
+      maxPrecision: 5,
+      unit: Unit.celsius,
+    );
+
+    var preprocessedData = preprocessor.processData(sensorData);
+    expect(preprocessedData.unit, equals(Unit.celsius));
+  });
+
+  test(
+      'When sensor data is preprocessed, then output data has precision of '
+      'sensor config', () {
+    var preprocessor = Preprocessor(
+      config: const SensorConfig(
+        targetUnit: Unit.celsius,
+        targetPrecision: 1,
+        timeInterval: Duration(seconds: 1),
+      ),
+    );
+
+    var sensorData = SensorData(
+      data: [
+        1,
+        2,
+        3,
+      ],
+      maxPrecision: 2,
+      unit: Unit.fahrenheit,
+    );
+    var preprocessedData = preprocessor.processData(sensorData);
+    expect(preprocessedData.maxPrecision, preprocessor.config.targetPrecision);
   });
 }
