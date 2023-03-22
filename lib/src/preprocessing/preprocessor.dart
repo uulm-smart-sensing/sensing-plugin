@@ -1,4 +1,3 @@
-import '../extensions/sensor_data_extension.dart';
 import '../generated/api_sensor_manager.dart' show SensorData;
 import 'precision_converter.dart';
 import 'sensor_config.dart';
