@@ -1,4 +1,4 @@
-simport Flutter
+import Flutter
 import UIKit
 import CoreMotion
 
