@@ -44,9 +44,8 @@ abstract class SensorStreamHandler(
      */
     private fun convertSensorEventTimestampToUnixTimestamp(eventTimeInNanoseconds: Long): Long {
         // SystemClock.elapsedRealtimeNanos() returns the elapsed time since the device was booted.
-        val bootTimestampInMicroseconds = (
+        val bootTimestampInMicroseconds =
             (System.currentTimeMillis() * 1000) - (SystemClock.elapsedRealtimeNanos() / 1000)
-        )
         // Add the event timestamp to the boot timestamp to get the unix timestamp of the event
         return bootTimestampInMicroseconds + (eventTimeInNanoseconds / 1000)
     }
