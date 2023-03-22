@@ -29,11 +29,11 @@ public class TimestampConverter: NSObject {
                  since the device was booted.
      - Parameters:
         - sensorEventTimeStamp: the timestamp, at which the sensor data was produced
-     - Returns: the timestamp,  at which the sensor data was produced, converted as a unix timestamp
+     - Returns: the timestamp,  at which the sensor data was produced, converted as a unix timestamp (in micro sec)
      */
     public static func convertSensorEventToUnixTimestamp(sensorEventTimestamp: TimeInterval) -> Int64 {
         let timestamp = Date(timeIntervalSinceNow: sensorEventTimestamp) - ProcessInfo.processInfo.systemUptime
-        return Int64(timestamp.timeIntervalSince1970)
+        return Int64(timestamp.timeIntervalSince1970 * 1000 * 1000)
     }
 
 }

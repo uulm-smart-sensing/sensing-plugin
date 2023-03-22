@@ -36,7 +36,7 @@ public class LinearAccelerometerHandler: AccelerometerHandler {
                     let sensorData = SensorData(data: [xValue, yValue, zValue],
                                                 maxPrecision: -1,
                                                 unit: Unit.gravitationalForce,
-                                                timestamp: timestamp)
+                                                timestampInMicroseconds: timestamp)
 
                     events(sensorData.toList())
                     return

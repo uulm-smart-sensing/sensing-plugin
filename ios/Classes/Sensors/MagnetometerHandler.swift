@@ -67,7 +67,7 @@ public class MagnetometerHandler: NSObject, ISensorStreamHandler {
                     let sensorData = SensorData(data: [xValue, yValue, zValue],
                                                 maxPrecision: -1,
                                                 unit: Unit.microTeslas,
-                                                timestamp: timestamp)
+                                                timestampInMicroseconds: timestamp)
 
                     events(sensorData.toList())
                     return

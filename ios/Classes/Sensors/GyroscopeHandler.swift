@@ -81,7 +81,7 @@ public class GyroscopeHandler: NSObject, ISensorStreamHandler {
                     let sensorData = SensorData(data: [xValue, yValue, zValue],
                                                 maxPrecision: -1,
                                                 unit: Unit.radiansPerSecond,
-                                                timestamp: timestamp)
+                                                timestampInMicroseconds: timestamp)
 
                     events(sensorData.toList())
                     return
