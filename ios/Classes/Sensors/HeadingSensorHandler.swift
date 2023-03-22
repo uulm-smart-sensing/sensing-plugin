@@ -56,14 +56,12 @@ public class HeadingSensorHandler: NSObject, ISensorStreamHandler, CLLocationMan
         self.latestHeadingValue = 0.0
 
         // check, whether the user allowed the app to use the location services
-        if ManagerCollection.getLocationManager().authorizationStatus == CLAuthorizationStatus.notDetermined {
+        var locationManager = ManagerCollection.getLocationManager()
+        var authStatus = locationManager.authorizationStatus
+        self.isSensorUsageAllowedFromUser = authStatus == CLAuthorizationStatus.authorizedAlways
+        if authStatus == CLAuthorizationStatus.notDetermined || authStatus == CLAuthorizationStatus.authorizedWhenInUse {
             // request user to access location (i. e. heading sensor) data
-            ManagerCollection.getLocationManager().requestAlwaysAuthorization()
-            self.isSensorUsageAllowedFromUser = false
-        } else if ManagerCollection.getLocationManager().authorizationStatus == CLAuthorizationStatus.authorizedAlways {
-            self.isSensorUsageAllowedFromUser = true
-        } else {
-            self.isSensorUsageAllowedFromUser = false
+            locationManager.requestAlwaysAuthorization()
         }
     }
 
@@ -141,11 +139,7 @@ public class HeadingSensorHandler: NSObject, ISensorStreamHandler, CLLocationMan
      the sensor automatically
      */
     public func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        if manager.authorizationStatus == CLAuthorizationStatus.authorizedAlways {
-            self.isSensorUsageAllowedFromUser = true
-        } else {
-            self.isSensorUsageAllowedFromUser = false
-        }
+        self.isSensorUsageAllowedFromUser = manager.authorizationStatus == CLAuthorizationStatus.authorizedAlways
     }
 
     public func onCancel(withArguments arguments: Any?) -> FlutterError? {
