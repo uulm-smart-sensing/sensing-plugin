@@ -106,7 +106,9 @@ public class HeadingSensorHandler: NSObject, ISensorStreamHandler, CLLocationMan
 
                         // send the latest heading angle
                         let sensorData = SensorData(data: [self.latestHeadingValue], maxPrecision: -1,
-                                                    unit: Unit.degrees)
+                                                    unit: Unit.degrees,
+                                                    timestampInMicroseconds: Int64(NSDate().timeIntervalSince1970
+                                                                                   * 1000 * 1000))
                         events(sensorData.toList())
                     }
 
