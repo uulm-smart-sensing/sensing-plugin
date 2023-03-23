@@ -81,7 +81,7 @@ class HeadingSensor(
     }
 
     /**
-     * Calculates heading
+     * Calculates heading with the data of the accelerometer and magnetometer.
      *
      * Source: https://developer.android.com/guide/topics/sensors/sensors_position#sensors-pos-orient
      */
