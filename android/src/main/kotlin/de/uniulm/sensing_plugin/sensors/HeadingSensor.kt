@@ -16,7 +16,7 @@ class HeadingSensor(
     sensorManager,
     sensorIds,
     timeIntervalInMilliseconds,
-    Unit.DEGREES
+    Unit.RADIANS
 ),
     SensorEventListener {
 
@@ -97,9 +97,8 @@ class HeadingSensor(
             lastMagnetometerData
         )
         SensorManager.getOrientation(rotationMatrix, orientation)
-        val azimuthInRadians = orientation[0]
-        val azimuthInDegrees = Math.toDegrees(azimuthInRadians.toDouble())
-        if (sendSensorData(listOf(azimuthInDegrees), eventTimeInNanoseconds)) {
+        val azimuthInRadians = orientation[0].toDouble()
+        if (sendSensorData(listOf(azimuthInRadians), eventTimeInNanoseconds)) {
             isAccelerometerDataSet = false
             isMagnetometerDataSet = false
         }
