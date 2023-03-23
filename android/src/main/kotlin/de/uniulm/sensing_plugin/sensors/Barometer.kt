@@ -8,12 +8,11 @@ import de.uniulm.sensing_plugin.streamhandlers.SingleSensorStreamHandler
 class Barometer(
     sensorManager: SensorManager,
     timeIntervalInMilliseconds: Long,
-    unit: Unit
 ) : SingleSensorStreamHandler(
     sensorManager,
     sensorId,
     timeIntervalInMilliseconds,
-    unit
+    Unit.HECTO_PASCAL
 ) {
     companion object {
         const val sensorId = Sensor.TYPE_PRESSURE
