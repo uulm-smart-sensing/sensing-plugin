@@ -3,6 +3,7 @@ image: gitlab.uni-ulm.de:5050/se-anwendungsprojekt-22-23/ci-tools/flutter-devtoo
 stages:
   - analysis
   - test
+  - build
 
 before_script:
   - flutter --version
@@ -126,3 +127,22 @@ flutter-test:
         path: report_outputs/lcov.xml
         coverage_format: cobertura
   coverage: '/\|\s*\d+(?:\.\d+)?\s*\|/'
+
+
+build:android:
+    stage: build
+    needs: [ ]
+    before_script:
+        - flutter --version
+        - flutter clean
+        - bash setup.sh
+    script:
+        - cd example
+        - flutter build apk
+    after_script:
+        - mv example/build/app/outputs/flutter-apk/app-release.apk .
+    artifacts:
+        paths:
+        - app-release.apk
+        expire_in: 2 week
+        expose_as: "Android APK"
