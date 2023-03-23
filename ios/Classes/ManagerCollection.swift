@@ -38,6 +38,7 @@ public class ManagerCollection: NSObject {
         }
 
         return self.locationManager!
+    }
 
     static func getAltimeter() -> CMAltimeter {
         if self.altimeterManager == nil {
