@@ -6,9 +6,9 @@ import android.hardware.SensorManager
 import android.os.SystemClock
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorAccuracy
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorData
-import de.uniulm.sensing_plugin.generated.ApiSensorManager.Unit
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorInfo
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorTaskResult
+import de.uniulm.sensing_plugin.generated.ApiSensorManager.Unit
 import de.uniulm.sensing_plugin.toList
 import io.flutter.plugin.common.EventChannel
 

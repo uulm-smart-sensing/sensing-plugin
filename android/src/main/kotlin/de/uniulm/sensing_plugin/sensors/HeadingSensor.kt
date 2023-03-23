@@ -11,7 +11,7 @@ import de.uniulm.sensing_plugin.streamhandlers.SensorStreamHandler
 
 class HeadingSensor(
     private val sensorManager: SensorManager,
-    private val timeIntervalInMilliseconds: Long,
+    private val timeIntervalInMilliseconds: Long
 ) : SensorStreamHandler(
     sensorManager,
     intArrayOf(Sensor.TYPE_ACCELEROMETER, Sensor.TYPE_MAGNETIC_FIELD),
@@ -95,7 +95,11 @@ class HeadingSensor(
      * configured [timeIntervalInMilliseconds].
      */
     override fun startListeners(timeIntervalInMicroseconds: Int) {
-        sensorManager.registerListener(accelerometerListener, sensors[0], timeIntervalInMicroseconds)
+        sensorManager.registerListener(
+            accelerometerListener,
+            sensors[0],
+            timeIntervalInMicroseconds
+        )
         sensorManager.registerListener(magnetometerListener, sensors[1], timeIntervalInMicroseconds)
     }
 

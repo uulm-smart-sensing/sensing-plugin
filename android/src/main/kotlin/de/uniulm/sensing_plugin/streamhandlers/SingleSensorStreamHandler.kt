@@ -21,7 +21,8 @@ abstract class SingleSensorStreamHandler(
     intArrayOf(sensorId),
     timeIntervalInMilliseconds,
     unit
-), SensorEventListener {
+),
+    SensorEventListener {
 
     /**
      * Called when the accuracy of the registered sensor has changed to the value [newAccuracy].
