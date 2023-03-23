@@ -10,7 +10,11 @@ class Gyroscope(
     timeIntervalInMilliseconds: Long
 ) : SingleSensorStreamHandler(
     sensorManager,
-    Sensor.TYPE_GYROSCOPE,
+    sensorId,
     timeIntervalInMilliseconds,
     Unit.RADIANS_PER_SECOND
-)
+) {
+    companion object {
+        const val sensorId = Sensor.TYPE_GYROSCOPE
+    }
+}

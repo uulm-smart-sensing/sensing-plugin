@@ -25,7 +25,7 @@ import io.flutter.plugin.common.EventChannel
  * data.
  */
 abstract class SensorStreamHandler(
-    private val sensorManager: SensorManager,
+    sensorManager: SensorManager,
     sensorIds: IntArray,
     private var timeIntervalInMilliseconds: Long,
     private val unit: Unit

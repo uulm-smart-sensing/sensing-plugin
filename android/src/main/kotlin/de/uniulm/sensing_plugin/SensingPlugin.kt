@@ -1,7 +1,6 @@
 package de.uniulm.sensing_plugin
 
 import android.content.Context
-import android.hardware.Sensor
 import android.hardware.SensorManager
 import de.uniulm.sensing_plugin.exceptions.SensorNotRegisteredException
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.Result
@@ -27,7 +26,8 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
     private lateinit var sensorManager: SensorManager
 
     private val sensorIdMap = mapOf(
-        SensorId.GYROSCOPE to arrayOf(Sensor.TYPE_GYROSCOPE)
+        SensorId.GYROSCOPE to intArrayOf(Gyroscope.sensorId),
+        SensorId.HEADING to HeadingSensor.sensorIds
     )
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
@@ -103,7 +103,7 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
         id: SensorId,
         sensorManager: SensorManager,
         timeIntervalInMilliseconds: Long
-    ) = when (id) {
+    ): SensorStreamHandler = when (id) {
         SensorId.GYROSCOPE -> Gyroscope(sensorManager, timeIntervalInMilliseconds)
         SensorId.HEADING -> HeadingSensor(sensorManager, timeIntervalInMilliseconds)
         else -> throw NotImplementedError()
