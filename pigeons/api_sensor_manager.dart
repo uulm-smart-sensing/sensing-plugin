@@ -131,17 +131,20 @@ class SensorInfo {
   int timeIntervalInMilliseconds;
 }
 
-/// Raw sensor data with information about precision and unit.
+/// Sensor data with information about [maxPrecision], [unit] and the Unix
+/// [timestampInMicroseconds] of when the data was measured.
 class SensorData {
   SensorData(
     this.data,
     this.maxPrecision,
     this.unit,
+    this.timestampInMicroseconds,
   );
 
   List<double?> data;
   int maxPrecision;
   Unit unit;
+  int timestampInMicroseconds;
 }
 
 /// Represents the accuracy with which the sensor reports data.

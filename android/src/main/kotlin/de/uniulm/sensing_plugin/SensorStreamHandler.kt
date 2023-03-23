@@ -4,24 +4,23 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorAccuracy
+import android.os.SystemClock
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorData
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorInfo
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorTaskResult
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.Unit
 import io.flutter.plugin.common.EventChannel
-import java.util.Calendar
 
 abstract class SensorStreamHandler(
     private val sensorManager: SensorManager,
     sensorId: Int,
-    private var timeIntervalInMicroseconds: Long,
+    private var timeIntervalInMilliseconds: Long,
     private val unit: Unit
 ) : EventChannel.StreamHandler, SensorEventListener {
 
     private val sensor: Sensor = sensorManager.getDefaultSensor(sensorId)
     private var eventSink: EventChannel.EventSink? = null
-    private var lastUpdate: Calendar = Calendar.getInstance()
+    private var lastUpdateTimestampInMilliseconds: Long = System.currentTimeMillis()
     private var accuracy: SensorAccuracy = SensorAccuracy.NO_CONTACT
     private var precision: Long = 0
 
@@ -31,7 +30,25 @@ abstract class SensorStreamHandler(
             .setData(event.values.map { v -> v.toDouble() })
             .setMaxPrecision(precision)
             .setUnit(unit)
+            .setTimestampInMicroseconds(convertSensorEventTimestampToUnixTimestamp(event.timestamp))
             .build()
+
+    /**
+     * Converts the timestamp of a [SensorEvent] to Unix timestamp with a precision in microseconds.
+     *
+     * [SensorEvent.timestamp] is the timestamp since boot of the device and needs to be synced with
+     * the timestamp of the boot to get the actual Unix timestamp.
+     *
+     * For more information:
+     * [StackOverflow](https://stackoverflow.com/questions/3498006/sensorevent-timestamp-to-absolute-utc-timestamp)
+     */
+    private fun convertSensorEventTimestampToUnixTimestamp(eventTimeInNanoseconds: Long): Long {
+        // SystemClock.elapsedRealtimeNanos() returns the elapsed time since the device was booted.
+        val bootTimestampInMicroseconds =
+            (System.currentTimeMillis() * 1000) - (SystemClock.elapsedRealtimeNanos() / 1000)
+        // Add the event timestamp to the boot timestamp to get the unix timestamp of the event
+        return bootTimestampInMicroseconds + (eventTimeInNanoseconds / 1000)
+    }
 
     /**
      * Returns the [SensorInfo] object of the sensor.
@@ -40,7 +57,7 @@ abstract class SensorStreamHandler(
     fun getSensorInfo(): SensorInfo =
         SensorInfo.Builder()
             .setAccuracy(accuracy)
-            .setTimeIntervalInMilliseconds(timeIntervalInMicroseconds)
+            .setTimeIntervalInMilliseconds(timeIntervalInMilliseconds)
             .setUnit(unit)
             .build()
 
@@ -92,11 +109,11 @@ abstract class SensorStreamHandler(
      * [SensorEvent](https://developer.android.com/reference/android/hardware/SensorEvent).
      */
     override fun onSensorChanged(event: SensorEvent) {
-        val currentTime = Calendar.getInstance()
+        val currentTime = System.currentTimeMillis()
         if (isValidTime(currentTime)) {
             val sensorData = getSensorDataFromSensorEvent(event)
             eventSink?.success(sensorData.toList())
-            lastUpdate = currentTime
+            lastUpdateTimestampInMilliseconds = currentTime
         }
     }
 
@@ -132,10 +149,11 @@ abstract class SensorStreamHandler(
 
     /**
      * Registers this stream handler as the listener for the according [sensor] with the
-     * configured [timeIntervalInMicroseconds].
+     * configured [timeIntervalInMilliseconds].
      */
     private fun startListener() {
-        sensorManager.registerListener(this, sensor, timeIntervalInMicroseconds.toInt())
+        val timeIntervalInMicroseconds = (timeIntervalInMilliseconds * 1000).toInt()
+        sensorManager.registerListener(this, sensor, timeIntervalInMicroseconds)
     }
 
     /** Unregisters this stream handler as the listener for the according [sensor]. */
@@ -143,19 +161,20 @@ abstract class SensorStreamHandler(
         sensorManager.unregisterListener(this)
     }
 
-    /** Changes the interval of this listener to [timeIntervalInMicroseconds]. */
-    fun changeTimeInterval(timeIntervalInMicroseconds: Long): SensorTaskResult {
-        this.timeIntervalInMicroseconds = timeIntervalInMicroseconds
+    /** Changes the interval of this listener to [timeIntervalInMilliseconds]. */
+    fun changeTimeInterval(timeIntervalInMilliseconds: Long): SensorTaskResult {
+        this.timeIntervalInMilliseconds = timeIntervalInMilliseconds
         stopListener()
         startListener()
         return SensorTaskResult.SUCCESS
     }
 
     /**
-     * Checks whether time difference between the passed [time] and the [lastUpdate] is greater
-     * than or equal to [timeIntervalInMicroseconds].
+     * Checks whether time difference between the passed [timestampInMilliseconds] and
+     * [lastUpdateTimestampInMilliseconds] is greater than or equal to [timeIntervalInMilliseconds].
      */
-    private fun isValidTime(time: Calendar): Boolean {
-        return (time.timeInMillis - lastUpdate.timeInMillis) * 1000 >= timeIntervalInMicroseconds
+    private fun isValidTime(timestampInMilliseconds: Long): Boolean {
+        val difference = timestampInMilliseconds - lastUpdateTimestampInMilliseconds
+        return difference >= timeIntervalInMilliseconds
     }
 }
