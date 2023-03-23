@@ -8,12 +8,11 @@ import de.uniulm.sensing_plugin.streamhandlers.SingleSensorStreamHandler
 class Thermometer(
     sensorManager: SensorManager,
     timeIntervalInMilliseconds: Long,
-    unit: Unit
 ) : SingleSensorStreamHandler(
     sensorManager,
     sensorId,
     timeIntervalInMilliseconds,
-    unit
+    Unit.CELSIUS
 ) {
     companion object {
         const val sensorId = Sensor.TYPE_AMBIENT_TEMPERATURE
