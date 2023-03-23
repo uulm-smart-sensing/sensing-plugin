@@ -67,6 +67,7 @@ void main() {
       ],
       maxPrecision: 5,
       unit: Unit.celsius,
+      timestampInMicroseconds: 0,
     );
 
     var preprocessedData = preprocessor.processData(sensorData);
@@ -92,6 +93,7 @@ void main() {
       ],
       maxPrecision: 2,
       unit: Unit.fahrenheit,
+      timestampInMicroseconds: 0,
     );
     var preprocessedData = preprocessor.processData(sensorData);
     expect(preprocessedData.maxPrecision, preprocessor.config.targetPrecision);
