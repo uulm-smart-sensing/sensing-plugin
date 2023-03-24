@@ -15,6 +15,7 @@ final unitConversionMethods = <Unit, double Function(double, Unit, Unit)>{
   Unit.radians: _convertAngle,
   Unit.degrees: _convertAngle,
   Unit.hectoPascal: _convertPressure,
+  Unit.kiloPascal: _convertPressure,
   Unit.bar: _convertPressure,
   Unit.celsius: _convertTemperature,
   Unit.fahrenheit: _convertTemperature,
@@ -192,6 +193,14 @@ double _convertAngle(
 double _hectoPascalToBar(value) => value / 1000;
 double _barToHectoPascal(value) => value * 1000;
 
+// Pressure in Bar = Pressure in kilo Pascal / 100
+double _kiloPascalToBar(value) => value / 100;
+double _barToKiloPascal(value) => value * 100;
+
+// Pressure in hecto Pascal = Pressure in kilo Pascal * 0.1
+double _hectoPascalToKiloPascal(value) => value / 10;
+double _kiloPascalToHectoPascal(value) => value * 10;
+
 double _convertPressure(
   double value,
   Unit sourceUnit,
@@ -201,6 +210,9 @@ double _convertPressure(
   switch (sourceUnit) {
     case Unit.hectoPascal:
       valueInHectoPascal = value;
+      break;
+    case Unit.kiloPascal:
+      valueInHectoPascal = _kiloPascalToHectoPascal(value);
       break;
     case Unit.bar:
       valueInHectoPascal = _barToHectoPascal(value);
@@ -213,6 +225,9 @@ double _convertPressure(
   switch (targetUnit) {
     case Unit.hectoPascal:
       valueInTargetUnit = valueInHectoPascal;
+      break;
+    case Unit.kiloPascal:
+      valueInTargetUnit = _hectoPascalToKiloPascal(valueInHectoPascal);
       break;
     case Unit.bar:
       valueInTargetUnit = _hectoPascalToBar(valueInHectoPascal);
