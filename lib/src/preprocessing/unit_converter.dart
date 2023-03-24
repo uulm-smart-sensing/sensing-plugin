@@ -193,10 +193,6 @@ double _convertAngle(
 double _hectoPascalToBar(value) => value / 1000;
 double _barToHectoPascal(value) => value * 1000;
 
-// Pressure in Bar = Pressure in kilo Pascal / 100
-double _kiloPascalToBar(value) => value / 100;
-double _barToKiloPascal(value) => value * 100;
-
 // Pressure in hecto Pascal = Pressure in kilo Pascal * 0.1
 double _hectoPascalToKiloPascal(value) => value / 10;
 double _kiloPascalToHectoPascal(value) => value * 10;
