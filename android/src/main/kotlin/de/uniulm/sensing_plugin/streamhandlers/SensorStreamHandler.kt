@@ -1,9 +1,8 @@
 package de.uniulm.sensing_plugin.streamhandlers
 
 import android.hardware.Sensor
-import android.hardware.SensorEvent
 import android.hardware.SensorManager
-import android.os.SystemClock
+import de.uniulm.sensing_plugin.convertSensorEventTimestampToUnixTimestamp
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorAccuracy
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorData
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorInfo
@@ -76,23 +75,6 @@ abstract class SensorStreamHandler(
         eventSink?.success(sensorData.toList())
         lastUpdateTimestampInMilliseconds = currentTime
         return true
-    }
-
-    /**
-     * Converts the timestamp of a [SensorEvent] to Unix timestamp with a precision in microseconds.
-     *
-     * [SensorEvent.timestamp] is the timestamp since boot of the device and needs to be synced with
-     * the timestamp of the boot to get the actual Unix timestamp.
-     *
-     * For more information:
-     * [StackOverflow](https://stackoverflow.com/questions/3498006/sensorevent-timestamp-to-absolute-utc-timestamp)
-     */
-    private fun convertSensorEventTimestampToUnixTimestamp(eventTimeInNanoseconds: Long): Long {
-        // SystemClock.elapsedRealtimeNanos() returns the elapsed time since the device was booted.
-        val bootTimestampInMicroseconds =
-            (System.currentTimeMillis() * 1000) - (SystemClock.elapsedRealtimeNanos() / 1000)
-        // Add the event timestamp to the boot timestamp to get the unix timestamp of the event
-        return bootTimestampInMicroseconds + (eventTimeInNanoseconds / 1000)
     }
 
     /**

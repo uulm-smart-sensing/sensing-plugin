@@ -1,7 +1,9 @@
 package de.uniulm.sensing_plugin
 
+import android.hardware.SensorEvent
 import android.hardware.SensorManager
-import de.uniulm.sensing_plugin.generated.ApiSensorManager
+import android.os.SystemClock
+import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorAccuracy
 
 /**
  * Converts a String in SCREAMING_SNAKE_CASE to camelCase.
@@ -17,13 +19,13 @@ fun screamingSnakeCaseToCamelCase(text: String): String =
         }
         .joinToString("")
 
-fun getAccuracyEnumFromValue(accuracyValue: Int): ApiSensorManager.SensorAccuracy =
+fun getAccuracyEnumFromValue(accuracyValue: Int): SensorAccuracy =
     when (accuracyValue) {
-        SensorManager.SENSOR_STATUS_ACCURACY_HIGH -> ApiSensorManager.SensorAccuracy.HIGH
-        SensorManager.SENSOR_STATUS_ACCURACY_MEDIUM -> ApiSensorManager.SensorAccuracy.MEDIUM
-        SensorManager.SENSOR_STATUS_ACCURACY_LOW -> ApiSensorManager.SensorAccuracy.LOW
-        SensorManager.SENSOR_STATUS_UNRELIABLE -> ApiSensorManager.SensorAccuracy.UNRELIABLE
-        SensorManager.SENSOR_STATUS_NO_CONTACT -> ApiSensorManager.SensorAccuracy.NO_CONTACT
+        SensorManager.SENSOR_STATUS_ACCURACY_HIGH -> SensorAccuracy.HIGH
+        SensorManager.SENSOR_STATUS_ACCURACY_MEDIUM -> SensorAccuracy.MEDIUM
+        SensorManager.SENSOR_STATUS_ACCURACY_LOW -> SensorAccuracy.LOW
+        SensorManager.SENSOR_STATUS_UNRELIABLE -> SensorAccuracy.UNRELIABLE
+        SensorManager.SENSOR_STATUS_NO_CONTACT -> SensorAccuracy.NO_CONTACT
         else -> { throw IllegalArgumentException("Unexpected accuracy value '$accuracyValue'") }
     }
 
@@ -45,4 +47,21 @@ fun getPrecisionFromResolution(resolution: Float): Long {
         res *= 10
     }
     return precision
+}
+
+/**
+ * Converts the timestamp of a [SensorEvent] to Unix timestamp with a precision in microseconds.
+ *
+ * [SensorEvent.timestamp] is the timestamp since boot of the device and needs to be synced with
+ * the timestamp of the boot to get the actual Unix timestamp.
+ *
+ * For more information:
+ * [StackOverflow](https://stackoverflow.com/questions/3498006/sensorevent-timestamp-to-absolute-utc-timestamp)
+ */
+fun convertSensorEventTimestampToUnixTimestamp(eventTimeInNanoseconds: Long): Long {
+    // SystemClock.elapsedRealtimeNanos() returns the elapsed time since the device was booted.
+    val bootTimestampInMicroseconds =
+        (System.currentTimeMillis() * 1000) - (SystemClock.elapsedRealtimeNanos() / 1000)
+    // Add the event timestamp to the boot timestamp to get the unix timestamp of the event
+    return bootTimestampInMicroseconds + (eventTimeInNanoseconds / 1000)
 }
