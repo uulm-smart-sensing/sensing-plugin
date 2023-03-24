@@ -62,8 +62,11 @@ public class OrientationSensorHandler: NSObject, ISensorStreamHandler {
             ManagerCollection.getMotionManager().startDeviceMotionUpdates(to: OperationQueue.current!, withHandler: {
                 (deviceMotionData: CMDeviceMotion?, err: Error?) in
                 guard err != nil else {
-                    let roll = deviceMotionData?.attitude.roll
-                    let pitch = deviceMotionData?.attitude.pitch
+                    // multiplying "roll" and "pitch" with negative one to get the same sign / orientation like described
+                    // in the Android documentation
+                    // (see https://developer.android.com/guide/topics/sensors/sensors_position#sensors-pos-orient)
+                    let roll = -1 * (deviceMotionData?.attitude.roll)!
+                    let pitch = -1 * (deviceMotionData?.attitude.pitch)!
                     let yaw = deviceMotionData?.attitude.yaw
                     
                     let timestamp = TimestampConverter.convertSensorEventToUnixTimestamp(
