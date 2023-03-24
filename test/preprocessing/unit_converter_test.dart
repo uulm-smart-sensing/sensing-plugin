@@ -167,6 +167,7 @@ void main() {
   group('Pressure', () {
     var units = [
       Unit.hectoPascal,
+      Unit.kiloPascal,
       Unit.bar,
     ];
 
@@ -197,6 +198,42 @@ void main() {
         targetUnit: Unit.hectoPascal,
       );
       expect(result, closeTo(11000, delta));
+    });
+
+    test('When value in bar is converted to kPa, then result is correct', () {
+      var result = convertUnit(
+        value: 11,
+        sourceUnit: Unit.bar,
+        targetUnit: Unit.kiloPascal,
+      );
+      expect(result, closeTo(1100, delta));
+    });
+
+    test('When value in kPa is converted to bar, then result is correct', () {
+      var result = convertUnit(
+        value: 123456,
+        sourceUnit: Unit.kiloPascal,
+        targetUnit: Unit.bar,
+      );
+      expect(result, closeTo(1234.56, delta));
+    });
+
+    test('When value in hPa is converted to kPa, then result is correct', () {
+      var result = convertUnit(
+        value: 12,
+        sourceUnit: Unit.hectoPascal,
+        targetUnit: Unit.kiloPascal,
+      );
+      expect(result, closeTo(1.2, delta));
+    });
+
+    test('When value in kPa is converted to hPa, then result is correct', () {
+      var result = convertUnit(
+        value: 1,
+        sourceUnit: Unit.kiloPascal,
+        targetUnit: Unit.hectoPascal,
+      );
+      expect(result, closeTo(10, delta));
     });
   });
 
