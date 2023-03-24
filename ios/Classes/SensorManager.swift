@@ -61,7 +61,7 @@ public class SensorManager: NSObject, FlutterPlugin, SensorManagerApi {
 
         // add heading sensor as implemented sensor
         streamHandlers.updateValue(OrientationSensorHandler(), forKey: SensorId.orientation)
-        
+
     }
 
     func isSensorAvailable(id: SensorId, completion: @escaping (Result<Bool, Error>) -> Void) {

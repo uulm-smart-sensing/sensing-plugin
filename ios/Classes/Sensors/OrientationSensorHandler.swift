@@ -33,7 +33,7 @@ import CoreMotion
  
  */
 public class OrientationSensorHandler: NSObject, ISensorStreamHandler {
-    
+
     func isSensorAvailable() -> Bool {
         return ManagerCollection.getMotionManager().isDeviceMotionAvailable
     }
@@ -44,7 +44,7 @@ public class OrientationSensorHandler: NSObject, ISensorStreamHandler {
 
     func changeSensorTimeInterval(timeInterval: Int64) -> ResultWrapper {
         // convert time interval from miliseconds into seconds
-        let updateTimeInterval : Double = Double(timeInterval) / 1000
+        let updateTimeInterval: Double = Double(timeInterval) / 1000
         ManagerCollection.getMotionManager().deviceMotionUpdateInterval = updateTimeInterval
 
         return ResultWrapper(state: SensorTaskResult.success)
@@ -60,18 +60,18 @@ public class OrientationSensorHandler: NSObject, ISensorStreamHandler {
     }
 
     public func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
-        
+
         if isSensorAvailable() {
             ManagerCollection.getMotionManager().startDeviceMotionUpdates(using: .xMagneticNorthZVertical,
-                                                                          to: OperationQueue.current!, withHandler: {
-                (deviceMotionData: CMDeviceMotion?, err: Error?) in
+                                                                          to: OperationQueue.current!,
+                                                      withHandler: {(deviceMotionData: CMDeviceMotion?, err: Error?) in
                 guard err != nil else {
-                    // multiplying "roll" and "pitch" with negative one to get the same sign / orientation like described
+                    // multiplying "roll" and "pitch" with negative one to get the same sign like described
                     // in the Android documentation
                     // (see https://developer.android.com/guide/topics/sensors/sensors_position#sensors-pos-orient)
                     let roll = -1 * (deviceMotionData?.attitude.roll)!
                     let pitch = -1 * (deviceMotionData?.attitude.pitch)!
-                    
+
                     // Because the "yaw" value is relative to the reference frame "xMagneticNorth" and
                     // the angle is from -180 to 180 relative to the north, but expected as
                     // 0 to 360, the "yaw" value would need to be converted. To spare this conversion,
@@ -79,7 +79,7 @@ public class OrientationSensorHandler: NSObject, ISensorStreamHandler {
                     // the magnetic north (indicated by angle = 0). Because it is provided in degrees, it
                     // need to be converted to radians
                     let azimuth = (deviceMotionData?.heading)! * .pi / 180
-                    
+
                     let timestamp = TimestampConverter.convertSensorEventToUnixTimestamp(
                         sensorEventTimestamp: deviceMotionData!.timestamp)
 
@@ -91,11 +91,11 @@ public class OrientationSensorHandler: NSObject, ISensorStreamHandler {
                                                 timestampInMicroseconds: timestamp)
 
                     events(sensorData.toList())
-                    
+
                     return
                 }
             })
-            
+
             return nil
         }
         return FlutterError(code: "SENSOR_NOT_AVAILABLE",
@@ -103,7 +103,6 @@ public class OrientationSensorHandler: NSObject, ISensorStreamHandler {
                             details: "")
     }
 
-    
     public func onCancel(withArguments arguments: Any?) -> FlutterError? {
         if isSensorUsed() {
             ManagerCollection.getMotionManager().stopDeviceMotionUpdates()
@@ -113,5 +112,5 @@ public class OrientationSensorHandler: NSObject, ISensorStreamHandler {
                             message: "Orientation sensor is not used, so stopping the updates is not possible.",
                             details: "")
     }
-    
+
 }
