@@ -3,7 +3,13 @@
 import 'package:flutter/services.dart';
 
 import 'generated/api_sensor_manager.dart'
-    show SensorManagerApi, SensorData, SensorId, SensorInfo, ResultWrapper;
+    show
+        SensorManagerApi,
+        SensorData,
+        SensorId,
+        SensorInfo,
+        ResultWrapper,
+        SensorTaskResult;
 import 'preprocessing/preprocessor.dart';
 import 'sensor.dart';
 
@@ -11,10 +17,10 @@ import 'sensor.dart';
 
 class SensorManager {
   // Stores all Sensors which is being used.
-  List<Sensor> _usedSenors = [];
+  List<SensorId> _usedSenors = [];
 
   // Stores all Sensors.
-  List<Sensor> _allSensors = [];
+  List<SensorId> _avaibleSensors = [];
 
   // Stores all received [Stream].
   List<Stream> _sensorStreams = [];
@@ -43,8 +49,10 @@ class SensorManager {
       SensorManagerApi().isSensorUsed(id);
 
   // Checks if the Sensor is available and returns the SensorID.
-  Future<bool> _isSensorAvailable(SensorId id) async =>
-      SensorManagerApi().isSensorAvailable(id);
+  Future<bool> _isSensorAvailable(SensorId id) async {
+    _avaibleSensors.add(id);
+    return SensorManagerApi().isSensorAvailable(id);
+  }
 
   // Changes the interval of the sensor event channel with the passed
   ///// [SensorId] to [timeIntervalInMilliseconds] ms.
@@ -60,23 +68,37 @@ class SensorManager {
       SensorManagerApi().getSensorInfo(id);
 
   /// Tracks if a Sensor is being used and returns an bool.
-  Stream<ResultWrapper> startSensorTracking(SensorId id) {
+  Future<SensorTaskResult> startSensorTracking(SensorId id) {
     var sensorStream = EventChannel('sensors/$id');
-    //TODO: checking if sensor is available
-    return sensorStream
-        .receiveBroadcastStream()
-        .map((data) => ResultWrapper.decode(data as ResultWrapper));
+    if (_avaibleSensors.contains(id)) {
+      if (_usedSenors.contains(id)) {
+        return Future.value(SensorTaskResult.alreadyTrackingSensor);
+      } else {
+        var stream = sensorStream
+            .receiveBroadcastStream()
+            .map((data) => ResultWrapper.decode(data as ResultWrapper))
+            .last
+            .then((value) => value.state);
+        _usedSenors.add(id);
+        return stream;
+      }
+    }
+    return Future.value(SensorTaskResult.failure);
   }
 
-  /* Stops the tracking from Sensor and returns an bool.
-  Future<bool> stopSensorTracking(Sensor sensor) async {
+  /// Stops the tracking from Sensor and returns an bool.
+  SensorTaskResult stopSensorTracking(SensorId id) {
     // Checks if the Sensor is being tracked.
-
-    return false;
+    if (_usedSenors.contains(id)) {
+      MethodChannel('sensors/$id').setMethodCallHandler(null);
+      return SensorTaskResult.success;
+    } else {
+      return SensorTaskResult.notTrackingSensor;
+    }
   }
-*/
+
   /// Gets the List from all Sensor which currently being used and returns it.
-  List<Sensor> getUsedSensors() => _usedSenors;
+  List<SensorId> getUsedSensors() => _usedSenors;
 
   /// Gets the list of all currently available sensors and returns the
   /// difference between _allSensors and _usedSensors
@@ -89,9 +111,9 @@ class SensorManager {
   ///
   ///print (notBeingUsed)  // [magnetometer,gyroscope]
   ///```
-  List<Sensor> getUsableSensors() =>
-      _allSensors.toSet().difference(_usedSenors.toSet()).toList();
-
+  List<SensorId> getUsableSensors() =>
+      _avaibleSensors.toSet().difference(_usedSenors.toSet()).toList();
+/*
   /// Search a Sensor and returns the List
   List<Sensor> getSensor(String name) {
     // The list of found Sensors
@@ -99,15 +121,11 @@ class SensorManager {
     // iterates through _usedSensors
     for (var sensor in _usedSenors) {
       // Checks if the name is identical with the searched name
-      if (sensor.name == name) {
-        // Adds it to the list of found Sensors
-        foundSensors.add(sensor);
-      }
     }
     // Returns all found Sensors
     return foundSensors;
   }
-
+*/
   // ignore: todo
   /// TODO: implement and document this method
   bool editSensor() => false;
