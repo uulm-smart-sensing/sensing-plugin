@@ -11,7 +11,6 @@ import 'generated/api_sensor_manager.dart'
         ResultWrapper,
         SensorTaskResult;
 import 'preprocessing/preprocessor.dart';
-import 'sensor.dart';
 
 /// Singleton sensor manager class
 
@@ -19,14 +18,14 @@ class SensorManager {
   // Stores all Sensors which is being used.
   List<SensorId> _usedSenors = [];
 
-  // Stores all Sensors.
-  List<SensorId> _avaibleSensors = [];
+  // Stores all Sensors which are available.
+  List<SensorId> _availableSensors = [];
 
   // Stores all received [Stream].
   List<Stream> _sensorStreams = [];
 
   // Map Object with a SensorId and a Preprocessor
-  Map<SensorId, Preprocessor> _preprocessor = <SensorId, Preprocessor>{};
+  Map<SensorId, Preprocessor> _preprocessorObject = <SensorId, Preprocessor>{};
 
   static final SensorManager _singleton = SensorManager._internal();
 
@@ -35,8 +34,8 @@ class SensorManager {
 
   SensorManager._internal();
 
-  /// Process the [SensorData] with a matching [SensorId] which i get from the
-  /// Native side and decode it.
+  /// Process the [SensorData] with a matching [SensorId] from the Native side
+  /// and decode it.
   Stream<SensorData> getSensorStream(SensorId id) {
     var eventStream = EventChannel('sensors/$id');
     return eventStream
@@ -50,7 +49,7 @@ class SensorManager {
 
   // Checks if the Sensor is available and returns the SensorID.
   Future<bool> _isSensorAvailable(SensorId id) async {
-    _avaibleSensors.add(id);
+    _availableSensors.add(id);
     return SensorManagerApi().isSensorAvailable(id);
   }
 
@@ -70,19 +69,28 @@ class SensorManager {
   /// Tracks if a Sensor is being used and returns an bool.
   Future<SensorTaskResult> startSensorTracking(SensorId id) {
     var sensorStream = EventChannel('sensors/$id');
-    if (_avaibleSensors.contains(id)) {
+    // Checks if Sensor is available
+    if (_availableSensors.contains(id)) {
+      // Checks if Sensor is in use
       if (_usedSenors.contains(id)) {
         return Future.value(SensorTaskResult.alreadyTrackingSensor);
       } else {
+        // Converts stream into a Stream<ResultWrapper> and then applies the
+        // decode() method to each element to convert it into a ResultWrapper
+        // object. The last function returns the last element of the stream and
+        // then function handle the object and output the state value as an
+        // SensorTaskResult
         var stream = sensorStream
             .receiveBroadcastStream()
             .map((data) => ResultWrapper.decode(data as ResultWrapper))
             .last
             .then((value) => value.state);
+        // Adds the Sensor to the list
         _usedSenors.add(id);
         return stream;
       }
     }
+    // Returns an error if the condition is not met
     return Future.value(SensorTaskResult.failure);
   }
 
@@ -90,6 +98,7 @@ class SensorManager {
   SensorTaskResult stopSensorTracking(SensorId id) {
     // Checks if the Sensor is being tracked.
     if (_usedSenors.contains(id)) {
+      // Cancel the EventChannel
       MethodChannel('sensors/$id').setMethodCallHandler(null);
       return SensorTaskResult.success;
     } else {
@@ -112,20 +121,23 @@ class SensorManager {
   ///print (notBeingUsed)  // [magnetometer,gyroscope]
   ///```
   List<SensorId> getUsableSensors() =>
-      _avaibleSensors.toSet().difference(_usedSenors.toSet()).toList();
-/*
+      _availableSensors.toSet().difference(_usedSenors.toSet()).toList();
+
   /// Search a Sensor and returns the List
-  List<Sensor> getSensor(String name) {
+  List<SensorId> getSensor(String name) {
     // The list of found Sensors
-    var foundSensors = <Sensor>[];
+    var foundSensors = <SensorId>[];
     // iterates through _usedSensors
     for (var sensor in _usedSenors) {
       // Checks if the name is identical with the searched name
+      if (sensor.name.toLowerCase().startsWith(name.toLowerCase())) {
+        foundSensors.add(sensor);
+      }
     }
     // Returns all found Sensors
     return foundSensors;
   }
-*/
+
   // ignore: todo
   /// TODO: implement and document this method
   bool editSensor() => false;
