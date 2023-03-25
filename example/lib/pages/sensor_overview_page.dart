@@ -6,12 +6,17 @@ class SensorOverviewPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SingleChildScrollView(
-          padding: EdgeInsets.symmetric(
-            vertical: 4.0,
-            horizontal: 16.0,
-          ),
-          child: SensorContainer(),
-        );
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Sensing Plugin Demo'),
+      ),
+      body: const SingleChildScrollView(
+        padding: EdgeInsets.symmetric(
+          vertical: 4.0,
+          horizontal: 16.0,
+        ),
+        child: SensorContainer(),
+      ),
+    );
   }
 }

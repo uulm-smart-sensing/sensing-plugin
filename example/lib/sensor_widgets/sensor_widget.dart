@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sensing_plugin/sensing_plugin.dart';
+import 'package:sensing_plugin_example/pages/sensor_info_page.dart';
 import 'package:sensing_plugin_example/sensor_widgets/sensor_data_container.dart';
 
 class SensorWidget extends StatefulWidget {
@@ -67,7 +68,11 @@ class _SensorWidgetState extends State<SensorWidget> {
               ),
             ),
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return SensorInfoPage(sensorId: widget._sensorId);
+                }));
+              },
               icon: const Icon(Icons.info_outline),
             ),
           ],
