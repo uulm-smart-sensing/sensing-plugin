@@ -98,7 +98,7 @@ class SensorManager {
   }
 
   /// Gets the List from all Sensor which currently being used and returns it.
-  List<SensorId> getUsedSensors() => _usedSenors;
+  List<SensorId> getUsedSensors() => usedSensors;
 
   /// Gets the list of all currently available sensors and returns the
   /// difference between _allSensors and _usedSensors
@@ -111,15 +111,23 @@ class SensorManager {
   ///
   ///print (notBeingUsed)  // [magnetometer,gyroscope]
   ///```
-  List<SensorId> getUsableSensors() =>
-      _availableSensors.toSet().difference(_usedSenors.toSet()).toList();
+  Future<List<SensorId>> getUsableSensors() async {
+    var usableSensors = <SensorId>[];
+    for (var id in SensorId.values){
+        if(usedSensors.contains(id) && await _isSensorAvailable(id)){
+            usableSensors.add(id);
+        }
+    }
+    return usableSensors;
+  }
+
 
   /// Search a Sensor and returns the List
   List<SensorId> getSensor(String name) {
     /// The list of found Sensors
     var foundSensors = <SensorId>[];
     /// iterates through _usedSensors
-    for (var sensor in _usedSenors) {
+    for (var sensor in usedSensors) {
       /// Checks if the name is identical with the searched name
       if (sensor.name.toLowerCase()==(name.toLowerCase())) {
         foundSensors.add(sensor);
@@ -134,6 +142,7 @@ class SensorManager {
   bool editSensor() => false;
 
 
+  // ignore: unused_element
   /// ignore: todo, unused_element
   /// TODO: implement and document this method
   void _initializeAllSensors() {}
