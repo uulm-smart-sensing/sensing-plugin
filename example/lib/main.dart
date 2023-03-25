@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:sensing_plugin_example/sensor_container.dart';
+import 'package:sensing_plugin_example/sensor_widget.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+void main() => runApp(const MyApp());
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -22,9 +22,15 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          title: const Text('Sensing Plugin Demo'),
         ),
-        body: const Text('Hello World!'),
+        body: const SingleChildScrollView(
+          padding: EdgeInsets.symmetric(
+            vertical: 4.0,
+            horizontal: 16.0,
+          ),
+          child: SensorContainer(),
+        ),
       ),
     );
   }
