@@ -56,12 +56,21 @@ class _SensorWidgetState extends State<SensorWidget> {
 
     return Column(
       children: [
-        Text(
-          widget._sensorId.name,
-          textAlign: TextAlign.center,
-          style: const TextStyle(
-            fontSize: 16,
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              widget._sensorId.name,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 16,
+              ),
+            ),
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.info_outline),
+            ),
+          ],
         ),
         const Padding(padding: EdgeInsets.only(top: 8.0)),
         dataContainer ?? const SizedBox.shrink(),
