@@ -13,7 +13,7 @@ import 'preprocessing/preprocessor.dart';
 /// Singleton sensor manager class
 class SensorManager {
   /// Stores all Sensors which is being used.
-  final List<SensorId> usedSenors = [];
+  final List<SensorId> usedSensors = [];
 
   /// Stores all Sensors which are available.
   final List<SensorId> availableSensors = [];
