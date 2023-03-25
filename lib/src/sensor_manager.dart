@@ -15,9 +15,6 @@ class SensorManager {
   /// Stores all Sensors which is being used.
   final List<SensorId> usedSensors = [];
 
-  /// Stores all Sensors which are available.
-  final List<SensorId> availableSensors = [];
-
   /// Stores all received [Stream].
   final List<Stream> sensorStreams = [];
 
