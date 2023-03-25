@@ -124,7 +124,7 @@ class SensorManager {
     /// iterates through _usedSensors
     for (var sensor in _usedSenors) {
       /// Checks if the name is identical with the searched name
-      if (sensor.name.toLowerCase().startsWith(name.toLowerCase())) {
+      if (sensor.name.toLowerCase()==(name.toLowerCase())) {
         foundSensors.add(sensor);
       }
     }
