@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sensing_plugin_example/sensor_container.dart';
-import 'package:sensing_plugin_example/sensor_widget.dart';
+import 'sensor_widgets/sensor_container.dart';
 
 void main() => runApp(const MyApp());
 

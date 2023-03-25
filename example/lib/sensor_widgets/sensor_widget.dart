@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sensing_plugin/sensing_plugin.dart';
-import 'package:sensing_plugin_example/sensor_data_container.dart';
+import 'package:sensing_plugin_example/sensor_widgets/sensor_data_container.dart';
 
 class SensorWidget extends StatefulWidget {
   final SensorId _sensorId;
