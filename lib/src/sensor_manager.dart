@@ -142,12 +142,4 @@ class SensorManager {
   bool editSensor() => false;
 
 
-  // ignore: unused_element
-  /// ignore: todo, unused_element
-  /// TODO: implement and document this method
-  void _initializeAllSensors() {}
-
-  /// ignore: todo, unused_element
-  /// TODO: implement and document this method
-  void _makeAvailableSensorsUsable() {}
 }
