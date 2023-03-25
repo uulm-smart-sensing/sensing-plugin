@@ -1,3 +1,5 @@
+// ignore_for_file: unused_element
+
 import 'package:flutter/services.dart';
 
 import 'generated/api_sensor_manager.dart'
@@ -58,12 +60,12 @@ class SensorManager {
       SensorManagerApi().getSensorInfo(id);
 
   /// Tracks if a Sensor is being used and returns an bool.
-  Future<SensorTaskResult> startSensorTracking(SensorId id) {
-    var sensorStream = EventChannel('sensors/$id');
+  Future<SensorTaskResult> startSensorTracking(SensorId id) async {
+    var sensorStream = getSensorStream(id);
     /// Checks if Sensor is available
-    if (availableSensors.contains(id)) {
+    if ( await _isSensorAvailable(id)) {
       /// Checks if Sensor is in use
-      if (usedSenors.contains(id)) {
+      if (usedSensors.contains(id)) {
         return Future.value(SensorTaskResult.alreadyTrackingSensor);
       } else {
         /// Converts stream into a Stream<ResultWrapper> and then applies the
@@ -72,26 +74,24 @@ class SensorManager {
         /// then function handle the object and output the state value as an
         /// SensorTaskResult
         var stream = sensorStream
-            .receiveBroadcastStream()
             .map((data) => ResultWrapper.decode(data as ResultWrapper))
             .last
             .then((value) => value.state);
         /// Adds the Sensor to the list
-        _usedSenors.add(id);
+        usedSensors.add(id);
         return stream;
       }
     }
-    /// Returns an error if the condition is not met
-    return Future.value(SensorTaskResult.failure);
+    /// Returns an [SensorTaskResult] if the Sensor not available
+    return Future.value(SensorTaskResult.sensorNotAvailable);
   }
 
   /// Stops the tracking from Sensor and returns an bool.
-  SensorTaskResult stopSensorTracking(SensorId id) {
+  Future<SensorTaskResult> stopSensorTracking(SensorId id) async {
     /// Checks if the Sensor is being tracked.
-    if (_usedSenors.contains(id)) {
-      /// Cancel the EventChannel
-      MethodChannel('sensors/$id').setMethodCallHandler(null);
-      return SensorTaskResult.success;
+    if (usedSensors.contains(id)) {
+      usedSensors.remove(id);
+      return SensorManagerApi().stopSensorTracking(id).then((value) => value.state);
     } else {
       return SensorTaskResult.notTrackingSensor;
     }
