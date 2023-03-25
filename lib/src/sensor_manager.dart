@@ -114,8 +114,10 @@ class SensorManager {
   Future<SensorTaskResult> stopSensorTracking(SensorId id) async {
     /// Checks if the Sensor is being tracked.
     if (usedSensors.contains(id)) {
-      /// Removes the Sensor from the usedSensors.
+      /// Removes the Sensor from usedSensors.
       usedSensors.remove(id);
+      /// Removes the Sensor from sensorStreams.
+      sensorStreams.remove(id);
       /// Stops the tracking on the specific platform and returns a
       /// SensorTaskResult
       return SensorManagerApi()
