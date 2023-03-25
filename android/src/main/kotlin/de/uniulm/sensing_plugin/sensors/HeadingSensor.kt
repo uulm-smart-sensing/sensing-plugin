@@ -97,8 +97,8 @@ class HeadingSensor(
             lastMagnetometerData
         )
         SensorManager.getOrientation(rotationMatrix, orientation)
-        val azimuthInRadians = orientation[0].toDouble()
-        if (sendSensorData(listOf(azimuthInRadians), eventTimeInNanoseconds)) {
+        val orientationAsDoubles = orientation.map { it.toDouble() }
+        if (sendSensorData(orientationAsDoubles, eventTimeInNanoseconds)) {
             isAccelerometerDataSet = false
             isMagnetometerDataSet = false
         }
