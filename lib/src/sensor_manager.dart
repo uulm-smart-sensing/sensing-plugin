@@ -73,6 +73,7 @@ class SensorManager {
   ) async {
     /// Assign matching stream
     var trackStream = sensorStreams[id];
+
     /// Checks whether the sensor is in use and outputs a corresponding
     /// SensorTaskResult
     if (!usedSensors.contains(id)) {
@@ -83,7 +84,9 @@ class SensorManager {
     if (!await _isSensorAvailable(id)) {
       return Future.value(SensorTaskResult.sensorNotAvailable);
     }
-    /// Starts tracking it on the specific platform and returns an SensorTaskResult
+
+    /// Starts tracking it on the specific platform and returns a
+    /// SensorTaskResult
     var startTrack = await SensorManagerApi()
         .startSensorTracking(id, timeIntervalInMilliseconds)
         .then((value) => value.state);
@@ -111,9 +114,10 @@ class SensorManager {
   Future<SensorTaskResult> stopSensorTracking(SensorId id) async {
     /// Checks if the Sensor is being tracked.
     if (usedSensors.contains(id)) {
-      /// removes the Sensor from the usedSensors
+      /// Removes the Sensor from the usedSensors.
       usedSensors.remove(id);
-      /// Stops the tracking on the specific platform and returns an SensorTaskResult
+      /// Stops the tracking on the specific platform and returns a
+      /// SensorTaskResult
       return SensorManagerApi()
           .stopSensorTracking(id)
           .then((value) => value.state);
@@ -122,11 +126,11 @@ class SensorManager {
     }
   }
 
-
-/// These methods below are probably not to be used.
+  /// These methods below are probably not to be used.
 
   /// returns all Sensor that are being used.
   List<SensorId> getUsedSensors() => usedSensors;
+
   /// checks if the Sensor can be used and returns a List.
   Future<List<SensorId>> getUsableSensors() async {
     var usableSensors = <SensorId>[];
@@ -137,6 +141,7 @@ class SensorManager {
     }
     return usableSensors;
   }
+
   /// configure the sensor properties
   bool editSensor() => false;
 }
