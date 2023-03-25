@@ -112,8 +112,10 @@ class SensorManager {
 
   /// Stops the tracking from Sensor and returns an bool.
   Future<SensorTaskResult> stopSensorTracking(SensorId id) async {
-    /// Checks if the Sensor is being tracked.
-    if (usedSensors.contains(id)) {
+    /// Checks if the Sensor is being used.
+    if(!usedSensors.contains(id)){
+      return SensorTaskResult.notTrackingSensor;
+    }
       /// Removes the Sensor from usedSensors.
       usedSensors.remove(id);
       /// Removes the Sensor from sensorStreams.
@@ -123,9 +125,6 @@ class SensorManager {
       return SensorManagerApi()
           .stopSensorTracking(id)
           .then((value) => value.state);
-    } else {
-      return SensorTaskResult.notTrackingSensor;
-    }
   }
 
   /// These methods below are probably not to be used.
