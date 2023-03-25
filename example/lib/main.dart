@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'sensor_widgets/sensor_container.dart';
+import 'package:sensing_plugin_example/pages/sensor_overview_page.dart';
 
 void main() => runApp(const MyApp());
 
@@ -23,13 +23,7 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: const Text('Sensing Plugin Demo'),
         ),
-        body: const SingleChildScrollView(
-          padding: EdgeInsets.symmetric(
-            vertical: 4.0,
-            horizontal: 16.0,
-          ),
-          child: SensorContainer(),
-        ),
+        body: const SensorOverviewPage(),
       ),
     );
   }
