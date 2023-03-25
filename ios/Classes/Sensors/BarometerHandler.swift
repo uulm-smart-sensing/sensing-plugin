@@ -73,8 +73,8 @@ public class BarometerHandler: NSObject, ISensorStreamHandler {
     public func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
         if isSensorAvailable() {
 
-            ManagerCollection.getAltimeter().startRelativeAltitudeUpdates(to: OperationQueue.current!, withHandler: {
-                (pressureData: CMAltitudeData?, err: Error?) in
+            ManagerCollection.getAltimeter().startRelativeAltitudeUpdates(to: OperationQueue.current!,
+                                                  withHandler: {(pressureData: CMAltitudeData?, err: Error?) in
                 guard err != nil else {
                     self.latestPressureValue = pressureData!.pressure.doubleValue
                     return
