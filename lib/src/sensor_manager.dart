@@ -17,8 +17,8 @@ class SensorManager {
   /// Stores all Sensors which is being used.
   final List<SensorId> usedSensors = [];
 
-  /// Stores all received [Stream].
-  Map<SensorId ,Stream> sensorStreams = <SensorId,Stream>{};
+  /// Stores all received [Stream] with the matching [SensorId].
+  Map<SensorId, Stream> sensorStreams = <SensorId, Stream>{};
 
   /// Map Object with a SensorId and a Preprocessor
   Map<SensorId, Preprocessor> sensorIdToPreprocessor =
@@ -32,15 +32,16 @@ class SensorManager {
   SensorManager._internal();
 
   /// Process the [SensorData] with a matching [SensorId] from the Native side
-  /// and decode it.
+  /// and decode it.Furthermore saves every [Stream] with the matching
+  /// [SensorId] in [sensorStreams]
   Stream<SensorData> getSensorStream(SensorId id) {
     var sensorName = id.name;
     var eventChannel = EventChannel('sensors/$sensorName');
     var eventStream = eventChannel
         .receiveBroadcastStream()
         .map((data) => SensorData.decode(data as Object));
-    sensorStreams[id] =eventStream;
-        return eventStream;
+    sensorStreams[id] = eventStream;
+    return eventStream;
   }
 
   /// Checks if the Sensor is currently used and returns an bool.
@@ -64,23 +65,30 @@ class SensorManager {
   Future<SensorInfo> _getSensorInfo(SensorId id) async =>
       SensorManagerApi().getSensorInfo(id);
 
-  /// Tracks if a Sensor is being used and returns an bool.
+  /// Starts the tracking of a [SensorId] and returns an matching
+  /// [SensorTaskResult].
   Future<SensorTaskResult> startSensorTracking(
-      SensorId id, int timeIntervalInMilliseconds,) async {
-    var trackStream = sensorStreams[id] ;
+    SensorId id,
+    int timeIntervalInMilliseconds,
+  ) async {
+    /// Assign matching stream
+    var trackStream = sensorStreams[id];
+    /// Checks whether the sensor is in use and outputs a corresponding
+    /// SensorTaskResult
     if (!usedSensors.contains(id)) {
       return Future.value(SensorTaskResult.alreadyTrackingSensor);
     }
-    /// Checks if Sensor is available
+
+    /// Checks whether the Sensor is not available
     if (!await _isSensorAvailable(id)) {
       return Future.value(SensorTaskResult.sensorNotAvailable);
     }
-    
+    /// Starts tracking it on the specific platform and returns an SensorTaskResult
     var startTrack = await SensorManagerApi()
         .startSensorTracking(id, timeIntervalInMilliseconds)
         .then((value) => value.state);
 
-    /// Checks if Sensor is in use
+    /// checks if the expected result from startTrack is a success
     if (startTrack == SensorTaskResult.success) {
       /// Converts stream into a Stream<ResultWrapper> and then applies the
       /// decode() method to each element to convert it into a ResultWrapper
@@ -97,14 +105,15 @@ class SensorManager {
       return stream;
     }
     return Future.value(startTrack);
-
   }
 
   /// Stops the tracking from Sensor and returns an bool.
   Future<SensorTaskResult> stopSensorTracking(SensorId id) async {
     /// Checks if the Sensor is being tracked.
     if (usedSensors.contains(id)) {
+      /// removes the Sensor from the usedSensors
       usedSensors.remove(id);
+      /// Stops the tracking on the specific platform and returns an SensorTaskResult
       return SensorManagerApi()
           .stopSensorTracking(id)
           .then((value) => value.state);
@@ -113,20 +122,12 @@ class SensorManager {
     }
   }
 
-  /// Gets the List from all Sensor which currently being used and returns it.
-  List<SensorId> getUsedSensors() => usedSensors;
 
-  /// Gets the list of all currently available sensors and returns the
-  /// difference between _isSensorAvailable and _usedSensors
-  ///
-  /// Example usage:
-  /// ``` dart
-  /// _allSensor =[accelerometer,gyroscope,magnetometer,heading];
-  /// _usedSensors = [accelerometer,heading];
-  /// var notBeingUsed = getUsableSensors();
-  ///
-  ///print (notBeingUsed)  // [magnetometer,gyroscope]
-  ///```
+/// These methods below are probably not to be used.
+
+  /// returns all Sensor that are being used.
+  List<SensorId> getUsedSensors() => usedSensors;
+  /// checks if the Sensor can be used and returns a List.
   Future<List<SensorId>> getUsableSensors() async {
     var usableSensors = <SensorId>[];
     for (var id in SensorId.values) {
@@ -136,8 +137,6 @@ class SensorManager {
     }
     return usableSensors;
   }
-
-  /// ignore: todo
-  /// TODO: implement and document this method
+  /// configure the sensor properties
   bool editSensor() => false;
 }
