@@ -1,5 +1,3 @@
-// ignore_for_file: unused_element, prefer_final_fields, unused_field
-
 import 'package:flutter/services.dart';
 
 import 'generated/api_sensor_manager.dart'
@@ -13,19 +11,18 @@ import 'generated/api_sensor_manager.dart'
 import 'preprocessing/preprocessor.dart';
 
 /// Singleton sensor manager class
-
 class SensorManager {
-  // Stores all Sensors which is being used.
-  List<SensorId> _usedSenors = [];
+  /// Stores all Sensors which is being used.
+  final List<SensorId> usedSenors = [];
 
-  // Stores all Sensors which are available.
-  List<SensorId> _availableSensors = [];
+  /// Stores all Sensors which are available.
+  final List<SensorId> availableSensors = [];
 
-  // Stores all received [Stream].
-  List<Stream> _sensorStreams = [];
+  /// Stores all received [Stream].
+  final List<Stream> sensorStreams = [];
 
-  // Map Object with a SensorId and a Preprocessor
-  Map<SensorId, Preprocessor> _preprocessorObject = <SensorId, Preprocessor>{};
+  /// Map Object with a SensorId and a Preprocessor
+  Map<SensorId, Preprocessor> sensorIdToPreprocessor = <SensorId, Preprocessor>{};
 
   static final SensorManager _singleton = SensorManager._internal();
 
@@ -48,13 +45,10 @@ class SensorManager {
       SensorManagerApi().isSensorUsed(id);
 
   // Checks if the Sensor is available and returns the SensorID.
-  Future<bool> _isSensorAvailable(SensorId id) async {
-    _availableSensors.add(id);
-    return SensorManagerApi().isSensorAvailable(id);
-  }
+  Future<bool> _isSensorAvailable(SensorId id) async => SensorManagerApi().isSensorAvailable(id);
 
   // Changes the interval of the sensor event channel with the passed
-  ///// [SensorId] to [timeIntervalInMilliseconds] ms.
+  // [SensorId] to [timeIntervalInMilliseconds] ms.
   Future<ResultWrapper> _changeSensorTimeInterval(
     SensorId id,
     int timeIntervalInMilliseconds,
