@@ -7,12 +7,10 @@ class SensorInfoPage extends StatelessWidget {
   const SensorInfoPage({super.key, required this.sensorId});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Sensing Plugin Demo'),
-      ),
-      body: Text("$sensorId"),
-    );
-  }
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(
+          title: const Text('Sensing Plugin Demo'),
+        ),
+        body: Text("$sensorId"),
+      );
 }

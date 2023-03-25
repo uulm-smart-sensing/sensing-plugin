@@ -13,33 +13,34 @@ class SensorDataContainer extends StatefulWidget {
 }
 
 class _SensorDataContainerState extends State<SensorDataContainer> {
-  var data = <double>[];
-  Unit? unit;
-  DateTime? timestamp;
+  var _data = <double>[];
+  Unit? _unit;
+  DateTime? _timestamp;
 
   @override
   void initState() {
     widget.stream.listen((sensorData) {
       setState(() {
-        data = sensorData.data.whereType<double>().toList();
-        unit = sensorData.unit;
-        timestamp = DateTime.fromMicrosecondsSinceEpoch(
-            sensorData.timestampInMicroseconds);
+        _data = sensorData.data.whereType<double>().toList();
+        _unit = sensorData.unit;
+        _timestamp = DateTime.fromMicrosecondsSinceEpoch(
+          sensorData.timestampInMicroseconds,
+        );
       });
     });
     super.initState();
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text("Unit: ${unit ?? 'none'}"),
-        Text("Timestamp: ${timestamp != null ? timestamp.toString() : 'none'}"),
-        formatData(data),
-      ],
-    );
-  }
+  Widget build(BuildContext context) => Column(
+        children: [
+          Text("Unit: ${_unit ?? 'none'}"),
+          Text(
+            "Timestamp: ${_timestamp != null ? _timestamp.toString() : 'none'}",
+          ),
+          formatData(_data),
+        ],
+      );
 }
 
 Widget formatData(List<double> data) {

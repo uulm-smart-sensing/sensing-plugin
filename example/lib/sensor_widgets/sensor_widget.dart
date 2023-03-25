@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sensing_plugin/sensing_plugin.dart';
-import 'package:sensing_plugin_example/pages/sensor_info_page.dart';
-import 'package:sensing_plugin_example/sensor_widgets/sensor_data_container.dart';
+import '../pages/sensor_info_page.dart';
+import 'sensor_data_container.dart';
 
 class SensorWidget extends StatefulWidget {
   final SensorId _sensorId;
@@ -69,9 +69,14 @@ class _SensorWidgetState extends State<SensorWidget> {
             ),
             IconButton(
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return SensorInfoPage(sensorId: widget._sensorId);
-                }));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SensorInfoPage(
+                      sensorId: widget._sensorId,
+                    ),
+                  ),
+                );
               },
               icon: const Icon(Icons.info_outline),
             ),
@@ -112,16 +117,16 @@ Widget getSensorButton({
   required bool isAvailable,
   required bool isRunning,
   required Function onPressedFunction,
-}) {
-  return MaterialButton(
-    color: isAvailable ? (isRunning ? Colors.red : Colors.green) : Colors.grey,
-    onPressed: () {
-      if (isAvailable) {
-        onPressedFunction.call();
-      }
-    },
-    child: isAvailable
-        ? (isRunning ? const Text("Stop") : const Text("Start"))
-        : const Text("Not available"),
-  );
-}
+}) =>
+    MaterialButton(
+      color:
+          isAvailable ? (isRunning ? Colors.red : Colors.green) : Colors.grey,
+      onPressed: () {
+        if (isAvailable) {
+          onPressedFunction.call();
+        }
+      },
+      child: isAvailable
+          ? (isRunning ? const Text("Stop") : const Text("Start"))
+          : const Text("Not available"),
+    );
