@@ -18,10 +18,11 @@ class SensorManager {
   final List<SensorId> usedSensors = [];
 
   /// Stores all received [Stream].
-  final List<Stream> sensorStreams = [];
+  Map<SensorId ,Stream> sensorStreams = <SensorId,Stream>{};
 
   /// Map Object with a SensorId and a Preprocessor
-  Map<SensorId, Preprocessor> sensorIdToPreprocessor = <SensorId, Preprocessor>{};
+  Map<SensorId, Preprocessor> sensorIdToPreprocessor =
+      <SensorId, Preprocessor>{};
 
   static final SensorManager _singleton = SensorManager._internal();
 
@@ -33,10 +34,13 @@ class SensorManager {
   /// Process the [SensorData] with a matching [SensorId] from the Native side
   /// and decode it.
   Stream<SensorData> getSensorStream(SensorId id) {
-    var eventStream = EventChannel('sensors/$id');
-    return eventStream
+    var sensorName = id.name;
+    var eventChannel = EventChannel('sensors/$sensorName');
+    var eventStream = eventChannel
         .receiveBroadcastStream()
         .map((data) => SensorData.decode(data as Object));
+    sensorStreams[id] =eventStream;
+        return eventStream;
   }
 
   /// Checks if the Sensor is currently used and returns an bool.
@@ -44,7 +48,8 @@ class SensorManager {
       SensorManagerApi().isSensorUsed(id);
 
   // Checks if the Sensor is available and returns the SensorID.
-  Future<bool> _isSensorAvailable(SensorId id) async => SensorManagerApi().isSensorAvailable(id);
+  Future<bool> _isSensorAvailable(SensorId id) async =>
+      SensorManagerApi().isSensorAvailable(id);
 
   /// Changes the interval of the sensor event channel with the passed
   /// [SensorId] to [timeIntervalInMilliseconds] ms.
@@ -60,30 +65,39 @@ class SensorManager {
       SensorManagerApi().getSensorInfo(id);
 
   /// Tracks if a Sensor is being used and returns an bool.
-  Future<SensorTaskResult> startSensorTracking(SensorId id) async {
-    var sensorStream = getSensorStream(id);
-    /// Checks if Sensor is available
-    if ( await _isSensorAvailable(id)) {
-      /// Checks if Sensor is in use
-      if (usedSensors.contains(id)) {
-        return Future.value(SensorTaskResult.alreadyTrackingSensor);
-      } else {
-        /// Converts stream into a Stream<ResultWrapper> and then applies the
-        /// decode() method to each element to convert it into a ResultWrapper
-        /// object. The last function returns the last element of the stream and
-        /// then function handle the object and output the state value as an
-        /// SensorTaskResult
-        var stream = sensorStream
-            .map((data) => ResultWrapper.decode(data as ResultWrapper))
-            .last
-            .then((value) => value.state);
-        /// Adds the Sensor to the list
-        usedSensors.add(id);
-        return stream;
-      }
+  Future<SensorTaskResult> startSensorTracking(
+      SensorId id, int timeIntervalInMilliseconds,) async {
+    var trackStream = sensorStreams[id] ;
+    if (!usedSensors.contains(id)) {
+      return Future.value(SensorTaskResult.alreadyTrackingSensor);
     }
-    /// Returns an [SensorTaskResult] if the Sensor not available
-    return Future.value(SensorTaskResult.sensorNotAvailable);
+    /// Checks if Sensor is available
+    if (!await _isSensorAvailable(id)) {
+      return Future.value(SensorTaskResult.sensorNotAvailable);
+    }
+    
+    var startTrack = await SensorManagerApi()
+        .startSensorTracking(id, timeIntervalInMilliseconds)
+        .then((value) => value.state);
+
+    /// Checks if Sensor is in use
+    if (startTrack == SensorTaskResult.success) {
+      /// Converts stream into a Stream<ResultWrapper> and then applies the
+      /// decode() method to each element to convert it into a ResultWrapper
+      /// object. The last function returns the last element of the stream and
+      /// then function handle the object and output the state value as an
+      /// SensorTaskResult
+      var stream = trackStream!
+          .map((data) => ResultWrapper.decode(data as ResultWrapper))
+          .last
+          .then((value) => value.state);
+
+      /// Adds the Sensor to the list
+      usedSensors.add(id);
+      return stream;
+    }
+    return Future.value(startTrack);
+
   }
 
   /// Stops the tracking from Sensor and returns an bool.
@@ -91,7 +105,9 @@ class SensorManager {
     /// Checks if the Sensor is being tracked.
     if (usedSensors.contains(id)) {
       usedSensors.remove(id);
-      return SensorManagerApi().stopSensorTracking(id).then((value) => value.state);
+      return SensorManagerApi()
+          .stopSensorTracking(id)
+          .then((value) => value.state);
     } else {
       return SensorTaskResult.notTrackingSensor;
     }
@@ -101,7 +117,7 @@ class SensorManager {
   List<SensorId> getUsedSensors() => usedSensors;
 
   /// Gets the list of all currently available sensors and returns the
-  /// difference between _allSensors and _usedSensors
+  /// difference between _isSensorAvailable and _usedSensors
   ///
   /// Example usage:
   /// ``` dart
@@ -113,33 +129,15 @@ class SensorManager {
   ///```
   Future<List<SensorId>> getUsableSensors() async {
     var usableSensors = <SensorId>[];
-    for (var id in SensorId.values){
-        if(usedSensors.contains(id) && await _isSensorAvailable(id)){
-            usableSensors.add(id);
-        }
-    }
-    return usableSensors;
-  }
-
-
-  /// Search a Sensor and returns the List
-  List<SensorId> getSensor(String name) {
-    /// The list of found Sensors
-    var foundSensors = <SensorId>[];
-    /// iterates through _usedSensors
-    for (var sensor in usedSensors) {
-      /// Checks if the name is identical with the searched name
-      if (sensor.name.toLowerCase()==(name.toLowerCase())) {
-        foundSensors.add(sensor);
+    for (var id in SensorId.values) {
+      if (usedSensors.contains(id) && await _isSensorAvailable(id)) {
+        usableSensors.add(id);
       }
     }
-    /// Returns all found Sensors
-    return foundSensors;
+    return usableSensors;
   }
 
   /// ignore: todo
   /// TODO: implement and document this method
   bool editSensor() => false;
-
-
 }
