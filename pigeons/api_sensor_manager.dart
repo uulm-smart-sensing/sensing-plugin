@@ -51,7 +51,7 @@ enum SensorId {
   accelerometer,
   gyroscope,
   magnetometer,
-  heading,
+  orientation,
   linearAcceleration,
   barometer,
   thermometer,
