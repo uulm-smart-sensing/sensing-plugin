@@ -48,7 +48,7 @@ class SensorManager {
   Future<bool> isSensorUsed(SensorId id) async =>
       SensorManagerApi().isSensorUsed(id);
 
-  // Checks if the Sensor is available and returns the SensorID.
+  /// Checks if the Sensor is available and returns the SensorID.
   Future<bool> _isSensorAvailable(SensorId id) async =>
       SensorManagerApi().isSensorAvailable(id);
 
