@@ -1,20 +1,53 @@
 import 'package:flutter/material.dart';
-import '../sensor_widgets/sensor_container.dart';
+import 'package:sensing_plugin/sensing_plugin.dart';
+import '../sensor_widgets/sensor_widget.dart';
 
-class SensorOverviewPage extends StatelessWidget {
+class SensorOverviewPage extends StatefulWidget {
   const SensorOverviewPage({super.key});
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: const Text('Sensing Plugin Demo'),
+  State<SensorOverviewPage> createState() => _SensorOverviewPageState();
+}
+
+class _SensorOverviewPageState extends State<SensorOverviewPage> {
+  bool showUnavailableSensors = true;
+
+  @override
+  Widget build(BuildContext context) {
+    var checkBox = CheckboxListTile(
+      title: const Text("Show unavailable sensors"),
+      value: showUnavailableSensors,
+      controlAffinity: ListTileControlAffinity.leading,
+      onChanged: (isChecked) {
+        setState(() {
+          showUnavailableSensors = isChecked!;
+        });
+      },
+    );
+
+    var sensorWidgets = SensorId.values.map(
+      (sensorId) => SensorWidget(
+        sensorId: sensorId,
+        showWhenUnavailable: showUnavailableSensors,
+      ),
+    );
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Sensing Plugin Demo'),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(
+          vertical: 4.0,
+          horizontal: 16.0,
         ),
-        body: const SingleChildScrollView(
-          padding: EdgeInsets.symmetric(
-            vertical: 4.0,
-            horizontal: 16.0,
-          ),
-          child: SensorContainer(),
+        child: Column(
+          children: [
+            checkBox,
+            ...sensorWidgets,
+          ],
         ),
-      );
+      ),
+    );
+  }
 }

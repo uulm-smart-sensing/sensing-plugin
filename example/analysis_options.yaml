@@ -18,7 +18,6 @@ linter:
     - use_setters_to_change_properties
     - avoid_setters_without_getters
     - avoid_returning_this
-    - type_annotate_public_apis
     - omit_local_variable_types
     - avoid_types_on_closure_parameters
     - avoid_private_typedef_functions

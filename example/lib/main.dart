@@ -8,6 +8,7 @@ class SensingPluginDemoApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => const MaterialApp(
+        debugShowCheckedModeBanner: false,
         home: SensorOverviewPage(),
       );
 }
