@@ -18,10 +18,10 @@ class SensorManager {
   final List<SensorId> usedSensors = [];
 
   /// Stores all received [Stream] with the matching [SensorId].
-  Map<SensorId, Stream> sensorStreams = <SensorId, Stream>{};
+  final Map<SensorId, Stream> sensorStreams = <SensorId, Stream>{};
 
   /// Map Object with a SensorId and a Preprocessor
-  Map<SensorId, Preprocessor> sensorIdToPreprocessor =
+  final Map<SensorId, Preprocessor> sensorIdToPreprocessor =
       <SensorId, Preprocessor>{};
 
   static final SensorManager _singleton = SensorManager._internal();
