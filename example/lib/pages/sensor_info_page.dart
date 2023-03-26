@@ -31,13 +31,8 @@ class SensorInfoPage extends StatelessWidget {
 }
 
 FutureBuilder getSensorInfoWidget(SensorId sensorId) => FutureBuilder(
-      future: Future.sync(() {
-        // TODO: call getSensorInfo
-        var sensorInfo = SensorInfo(
-          unit: Unit.bar,
-          accuracy: SensorAccuracy.high,
-          timeIntervalInMilliseconds: 10,
-        );
+      future: Future.sync(() async {
+        var sensorInfo = await SensorManager().getSensorInfo(sensorId);
         return jsonEncode(sensorInfo.encode());
       }),
       builder: (context, snapshot) {

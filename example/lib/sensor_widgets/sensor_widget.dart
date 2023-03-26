@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:sensing_plugin/sensing_plugin.dart';
 import '../pages/sensor_info_page.dart';
@@ -26,7 +28,11 @@ class _SensorWidgetState extends State<SensorWidget> {
 
   @override
   void initState() {
-    // TODO: check for availability
+    SensorManager().isSensorAvailable(widget._sensorId).then(
+          (value) => setState(
+            () => _isAvailable = value,
+          ),
+        );
     super.initState();
   }
 
@@ -37,14 +43,26 @@ class _SensorWidgetState extends State<SensorWidget> {
   }
 
   Future<SensorTaskResult> _startSensor() async {
-    // TODO: start sensor and set dataContainer
-    return Future.value(SensorTaskResult.success);
+    var result =
+        await SensorManager().startSensorTracking(widget._sensorId, 50);
+    if (result == SensorTaskResult.success) {
+      setState(() {
+        dataContainer = SensorDataContainer(
+          stream: SensorManager().getSensorStream(widget._sensorId)!,
+        );
+      });
+    }
+    print("Started sensor ${widget._sensorId.name} with result ${result.name}");
+    return result;
   }
 
   Future<SensorTaskResult> _stopSensor() async {
-    // TODO: stop sensor
-    dataContainer = null;
-    return Future.value(SensorTaskResult.success);
+    var result = await SensorManager().stopSensorTracking(widget._sensorId);
+    setState(() {
+      dataContainer = null;
+    });
+    print("Stopped sensor ${widget._sensorId.name} with result ${result.name}");
+    return result;
   }
 
   @override
@@ -53,36 +71,41 @@ class _SensorWidgetState extends State<SensorWidget> {
       return const SizedBox.shrink();
     }
 
-    print("Build SensorWidget");
+    var infoButton = IconButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SensorInfoPage(
+              sensorId: widget._sensorId,
+            ),
+          ),
+        );
+      },
+      icon: const Icon(Icons.info_outline),
+    );
+
+    var titleRow = Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          widget._sensorId.name,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontSize: 16,
+          ),
+        ),
+      ],
+    );
+
+    if (_isRunning) {
+      titleRow.children.add(infoButton);
+    }
 
     return Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              widget._sensorId.name,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 16,
-              ),
-            ),
-            IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => SensorInfoPage(
-                      sensorId: widget._sensorId,
-                    ),
-                  ),
-                );
-              },
-              icon: const Icon(Icons.info_outline),
-            ),
-          ],
-        ),
-        const Padding(padding: EdgeInsets.only(top: 8.0)),
+        titleRow,
+        const Padding(padding: EdgeInsets.only(top: 2.0)),
         dataContainer ?? const SizedBox.shrink(),
         const Padding(padding: EdgeInsets.only(top: 4.0)),
         MaterialButton(
