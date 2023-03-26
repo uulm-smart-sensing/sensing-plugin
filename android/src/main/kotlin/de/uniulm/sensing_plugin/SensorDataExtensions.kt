@@ -14,5 +14,6 @@ fun SensorData.toList(): ArrayList<Any> {
     list.add(this.data)
     list.add(this.maxPrecision)
     list.add(this.unit.ordinal)
+    list.add(this.timestampInMicroseconds)
     return list
 }
