@@ -71,12 +71,13 @@ class SensorManager {
     SensorId id,
     int timeIntervalInMilliseconds,
   ) async {
-    /// Assign matching stream
-    var trackStream = sensorStreams[id];
+    var sensorTaskName = id.name;
+    var taskChannel = EventChannel('sensors/$sensorTaskName');
+    var trackStream = taskChannel;
 
     /// Checks whether the sensor is in use and outputs a corresponding
     /// SensorTaskResult
-    if (!usedSensors.contains(id)) {
+    if (usedSensors.contains(id)) {
       return Future.value(SensorTaskResult.alreadyTrackingSensor);
     }
 
@@ -98,7 +99,8 @@ class SensorManager {
       /// object. The last function returns the last element of the stream and
       /// then function handle the object and output the state value as an
       /// SensorTaskResult
-      var stream = trackStream!
+      var stream = trackStream
+          .receiveBroadcastStream()
           .map((data) => ResultWrapper.decode(data as ResultWrapper))
           .last
           .then((value) => value.state);
