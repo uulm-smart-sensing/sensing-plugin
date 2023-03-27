@@ -1,38 +1,26 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:sensing_plugin/sensing_plugin.dart';
 
-class SensorInfoPage extends StatelessWidget {
+import '../widgets/time_interval_picker.dart';
+
+class SensorInfoPage extends StatefulWidget {
   final SensorId sensorId;
 
   const SensorInfoPage({super.key, required this.sensorId});
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: const Text('Sensing Plugin Demo'),
-        ),
-        body: Container(
-          padding: const EdgeInsets.only(top: 10),
-          alignment: Alignment.center,
-          child: Column(
-            children: [
-              Text(
-                sensorId.name,
-                style: const TextStyle(fontSize: 16),
-              ),
-              const SizedBox(height: 8),
-              getSensorInfoWidget(sensorId),
-            ],
-          ),
-        ),
-      );
+  State<SensorInfoPage> createState() => _SensorInfoPageState();
 }
 
-FutureBuilder getSensorInfoWidget(SensorId sensorId) => FutureBuilder(
+class _SensorInfoPageState extends State<SensorInfoPage> {
+  @override
+  Widget build(BuildContext context) {
+    var sensorInfoWidget = FutureBuilder(
       future: Future.sync(() async {
-        var sensorInfo = await SensorManager().getSensorInfo(sensorId);
+        var sensorInfo = await SensorManager().getSensorInfo(widget.sensorId);
         return jsonEncode(sensorInfo.encode());
       }),
       builder: (context, snapshot) {
@@ -50,6 +38,23 @@ FutureBuilder getSensorInfoWidget(SensorId sensorId) => FutureBuilder(
               Text("Unit: ${sensorInfo.unit.name}"),
               Text("Accuracy: ${sensorInfo.accuracy.name}"),
               Text("Interval: ${sensorInfo.timeIntervalInMilliseconds} ms"),
+              const SizedBox(height: 10),
+              MaterialButton(
+                color: Colors.blue,
+                shape: const StadiumBorder(),
+                child: const Text("Update interval"),
+                onPressed: () async {
+                  var hasIntervalChanged = await updateSensorInterval(
+                    context,
+                    widget.sensorId,
+                    sensorInfo.timeIntervalInMilliseconds,
+                  );
+
+                  if (hasIntervalChanged) {
+                    setState(() {});
+                  }
+                },
+              ),
             ],
           );
         }
@@ -60,3 +65,58 @@ FutureBuilder getSensorInfoWidget(SensorId sensorId) => FutureBuilder(
         );
       },
     );
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Sensing Plugin Demo'),
+      ),
+      body: Container(
+        padding: const EdgeInsets.only(top: 10),
+        alignment: Alignment.center,
+        child: Column(
+          children: [
+            Text(
+              widget.sensorId.name,
+              style: const TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 8),
+            sensorInfoWidget,
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+Future<bool> updateSensorInterval(
+  BuildContext context,
+  SensorId sensorId,
+  int timeIntervalInMilliseconds,
+) async {
+  var currentDateTime = DateTime.fromMillisecondsSinceEpoch(
+    timeIntervalInMilliseconds,
+    isUtc: true,
+  );
+
+  var hasIntervalChanged = false;
+  await DatePicker.showPicker(
+    context,
+    pickerModel: TimeIntervalPicker(
+      startTime: currentDateTime,
+    ),
+    onConfirm: (newDateTime) async {
+      if (currentDateTime.isAtSameMomentAs(newDateTime)) {
+        return;
+      }
+
+      await SensorManager().changeSensorTimeInterval(
+        sensorId,
+        newDateTime.millisecondsSinceEpoch,
+      );
+
+      hasIntervalChanged = true;
+    },
+  );
+
+  return hasIntervalChanged;
+}
