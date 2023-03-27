@@ -7,7 +7,7 @@ import de.uniulm.sensing_plugin.streamhandlers.SingleSensorStreamHandler
 
 class Magnetometer(
     sensorManager: SensorManager,
-    timeIntervalInMilliseconds: Long,
+    timeIntervalInMilliseconds: Long
 ) : SingleSensorStreamHandler(
     sensorManager,
     sensorId,
