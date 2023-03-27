@@ -1,5 +1,6 @@
-// ignore_for_file: avoid_print
+import 'dart:developer';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:sensing_plugin/sensing_plugin.dart';
 import '../sensor_info_page/sensor_info_page.dart';
@@ -52,7 +53,9 @@ class _SensorWidgetState extends State<SensorWidget> {
         );
       });
     }
-    print("Started sensor ${widget._sensorId.name} with result ${result.name}");
+    if (kDebugMode) {
+      log("Started sensor ${widget._sensorId.name} with result ${result.name}");
+    }
     return result;
   }
 
@@ -61,7 +64,9 @@ class _SensorWidgetState extends State<SensorWidget> {
     setState(() {
       dataContainer = null;
     });
-    print("Stopped sensor ${widget._sensorId.name} with result ${result.name}");
+    if (kDebugMode) {
+      log("Stopped sensor ${widget._sensorId.name} with result ${result.name}");
+    }
     return result;
   }
 
