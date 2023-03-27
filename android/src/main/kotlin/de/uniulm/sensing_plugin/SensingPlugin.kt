@@ -27,7 +27,7 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
 
     private val sensorIdMap = mapOf(
         SensorId.GYROSCOPE to intArrayOf(Gyroscope.sensorId),
-        SensorId.HEADING to HeadingSensor.sensorIds
+        SensorId.ORIENTATION to HeadingSensor.sensorIds
     )
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
@@ -105,7 +105,7 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
         timeIntervalInMilliseconds: Long
     ): SensorStreamHandler = when (id) {
         SensorId.GYROSCOPE -> Gyroscope(sensorManager, timeIntervalInMilliseconds)
-        SensorId.HEADING -> HeadingSensor(sensorManager, timeIntervalInMilliseconds)
+        SensorId.ORIENTATION -> HeadingSensor(sensorManager, timeIntervalInMilliseconds)
         else -> throw NotImplementedError()
     }
 
