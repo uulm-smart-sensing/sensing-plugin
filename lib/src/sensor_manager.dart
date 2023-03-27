@@ -35,15 +35,7 @@ class SensorManager {
   /// Process the [SensorData] with a matching [SensorId] from the Native side
   /// and decode it.Furthermore saves every [Stream] with the matching
   /// [SensorId] in [_sensorDataStreams]
-  Stream<SensorData> getSensorStream(SensorId id) {
-    var sensorName = id.name;
-    var eventChannel = EventChannel('sensors/$sensorName');
-    var eventStream = eventChannel
-        .receiveBroadcastStream()
-        .map((data) => SensorData.decode(data as Object));
-    _sensorDataStreams[id] = eventStream;
-    return eventStream;
-  }
+  Stream<SensorData>? getSensorStream(SensorId id) => _sensorDataStreams[id];
 
   /// Checks if the Sensor is currently used and returns an bool.
   Future<bool> isSensorUsed(SensorId id) async =>
@@ -72,19 +64,15 @@ class SensorManager {
     SensorId id,
     int timeIntervalInMilliseconds,
   ) async {
-    var sensorTaskName = id.name;
-    var taskChannel = EventChannel('sensors/$sensorTaskName');
-    var trackStream = taskChannel;
-
     /// Checks whether the sensor is in use and outputs a corresponding
     /// SensorTaskResult
     if (_usedSensors.contains(id)) {
-      return Future.value(SensorTaskResult.alreadyTrackingSensor);
+      return SensorTaskResult.alreadyTrackingSensor;
     }
 
     /// Checks whether the Sensor is not available
     if (!await _isSensorAvailable(id)) {
-      return Future.value(SensorTaskResult.sensorNotAvailable);
+      return SensorTaskResult.sensorNotAvailable;
     }
 
     /// Starts tracking it on the specific platform and returns a
@@ -93,24 +81,19 @@ class SensorManager {
         .startSensorTracking(id, timeIntervalInMilliseconds)
         .then((value) => value.state);
 
-    /// checks if the expected result from startTrack is a success
+    /// Checks if the expected result from startTrack is a success
     if (startTrack == SensorTaskResult.success) {
-      /// Converts stream into a Stream<ResultWrapper> and then applies the
-      /// decode() method to each element to convert it into a ResultWrapper
-      /// object. The last function returns the last element of the stream and
-      /// then function handle the object and output the state value as an
-      /// SensorTaskResult
-      var stream = trackStream
+      var sensorName = id.name;
+      var eventChannel = EventChannel('sensors/$sensorName');
+      var eventStream = eventChannel
           .receiveBroadcastStream()
-          .map((data) => ResultWrapper.decode(data as ResultWrapper))
-          .last
-          .then((value) => value.state);
+          .map((data) => SensorData.decode(data as Object));
+      _sensorDataStreams[id] = eventStream;
 
       /// Adds the Sensor to the list
       _usedSensors.add(id);
-      return stream;
     }
-    return Future.value(startTrack);
+    return startTrack;
   }
 
   /// Stops the tracking from Sensor and returns an bool.
@@ -119,13 +102,12 @@ class SensorManager {
     if (!_usedSensors.contains(id)) {
       return SensorTaskResult.notTrackingSensor;
     }
-    var stopTrack = SensorManagerApi()
-        .stopSensorTracking(id)
-        .then((value) => value.state);
+    var stopTrack =
+        SensorManagerApi().stopSensorTracking(id).then((value) => value.state);
 
     /// Checks if the Result is not successful
-    if(stopTrack != Future.value(SensorTaskResult.failure)){
-        return SensorTaskResult.failure;
+    if (stopTrack != Future.value(SensorTaskResult.failure)) {
+      return SensorTaskResult.failure;
     }
 
     /// Removes the Sensor from usedSensors.
