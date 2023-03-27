@@ -44,13 +44,23 @@ class _SensorInfoWidgetState extends State<SensorInfoWidget> {
                   shape: const StadiumBorder(),
                   child: const Text("Update interval"),
                   onPressed: () async {
-                    var hasIntervalChanged = await updateSensorInterval(
+                    var newDateTime = await updateSensorInterval(
                       context,
-                      widget._sensorId,
                       sensorInfo.timeIntervalInMilliseconds,
                     );
 
-                    if (hasIntervalChanged) {
+                    if (newDateTime == null) {
+                      return;
+                    }
+
+                    var result = await SensorManager()
+                        .changeSensorTimeInterval(
+                          widget._sensorId,
+                          newDateTime.millisecondsSinceEpoch,
+                        )
+                        .then((value) => value.state);
+
+                    if (result == SensorTaskResult.success) {
                       setState(() {});
                     }
                   },
@@ -67,9 +77,8 @@ class _SensorInfoWidgetState extends State<SensorInfoWidget> {
       );
 }
 
-Future<bool> updateSensorInterval(
+Future<DateTime?> updateSensorInterval(
   BuildContext context,
-  SensorId sensorId,
   int timeIntervalInMilliseconds,
 ) async {
   var currentDateTime = DateTime.fromMillisecondsSinceEpoch(
@@ -77,25 +86,16 @@ Future<bool> updateSensorInterval(
     isUtc: true,
   );
 
-  var hasIntervalChanged = false;
-  await DatePicker.showPicker(
+  var newDateTime = await DatePicker.showPicker(
     context,
     pickerModel: TimeIntervalPicker(
       startTime: currentDateTime,
     ),
-    onConfirm: (newDateTime) async {
-      if (currentDateTime.isAtSameMomentAs(newDateTime)) {
-        return;
-      }
-
-      await SensorManager().changeSensorTimeInterval(
-        sensorId,
-        newDateTime.millisecondsSinceEpoch,
-      );
-
-      hasIntervalChanged = true;
-    },
   );
 
-  return hasIntervalChanged;
+  if (newDateTime == null || currentDateTime.isAtSameMomentAs(newDateTime)) {
+    return null;
+  }
+
+  return newDateTime;
 }
