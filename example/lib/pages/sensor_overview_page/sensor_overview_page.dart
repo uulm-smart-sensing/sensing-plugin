@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sensing_plugin/sensing_plugin.dart';
-import '../widgets/sensor_widgets/sensor_widget.dart';
+import '../../widgets/sensor_widgets/sensor_widget.dart';
 
 class SensorOverviewPage extends StatefulWidget {
   const SensorOverviewPage({super.key});

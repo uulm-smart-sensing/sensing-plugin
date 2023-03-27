@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:sensing_plugin/sensing_plugin.dart';
 
-import '../widgets/time_interval_picker.dart';
+import '../../widgets/time_interval_picker.dart';
 
 class SensorInfoPage extends StatefulWidget {
   final SensorId sensorId;

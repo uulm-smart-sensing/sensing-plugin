@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'pages/sensor_overview_page.dart';
+import 'pages/sensor_overview_page/sensor_overview_page.dart';
 
 void main() => runApp(const SensingPluginDemoApp());
 
