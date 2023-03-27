@@ -29,7 +29,7 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
     private val sensorIdMap = mapOf(
         SensorId.GYROSCOPE to intArrayOf(Gyroscope.sensorId),
         SensorId.ORIENTATION to HeadingSensor.sensorIds,
-        SensorId.THERMOMETER to intArrayOf(Thermometer.sensorId),
+        SensorId.THERMOMETER to intArrayOf(Thermometer.sensorId)
     )
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
