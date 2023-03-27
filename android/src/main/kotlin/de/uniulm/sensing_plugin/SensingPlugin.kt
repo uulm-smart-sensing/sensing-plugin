@@ -14,6 +14,7 @@ import de.uniulm.sensing_plugin.sensors.Barometer
 import de.uniulm.sensing_plugin.sensors.Gyroscope
 import de.uniulm.sensing_plugin.sensors.HeadingSensor
 import de.uniulm.sensing_plugin.sensors.LinearAccelerationSensor
+import de.uniulm.sensing_plugin.sensors.Magnetometer
 import de.uniulm.sensing_plugin.sensors.Thermometer
 import de.uniulm.sensing_plugin.streamhandlers.SensorStreamHandler
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -33,7 +34,8 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
         SensorId.ORIENTATION to HeadingSensor.sensorIds,
         SensorId.THERMOMETER to intArrayOf(Thermometer.sensorId),
         SensorId.BAROMETER to intArrayOf(Barometer.sensorId),
-        SensorId.LINEAR_ACCELERATION to intArrayOf(LinearAccelerationSensor.sensorId)
+        SensorId.LINEAR_ACCELERATION to intArrayOf(LinearAccelerationSensor.sensorId),
+        SensorId.MAGNETOMETER to intArrayOf(Magnetometer.sensorId)
     )
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
