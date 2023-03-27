@@ -22,7 +22,7 @@ class SensorInfoPage extends StatelessWidget {
                 sensorId.name,
                 style: const TextStyle(fontSize: 16),
               ),
-              const Padding(padding: EdgeInsets.only(top: 8.0)),
+              const SizedBox(height: 8),
               getSensorInfoWidget(sensorId),
             ],
           ),

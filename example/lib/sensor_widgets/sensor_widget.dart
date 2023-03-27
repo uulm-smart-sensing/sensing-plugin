@@ -105,9 +105,9 @@ class _SensorWidgetState extends State<SensorWidget> {
     return Column(
       children: [
         titleRow,
-        const Padding(padding: EdgeInsets.only(top: 2.0)),
+        const SizedBox(height: 2),
         dataContainer ?? const SizedBox.shrink(),
-        const Padding(padding: EdgeInsets.only(top: 4.0)),
+        const SizedBox(height: 4),
         MaterialButton(
           color: _isAvailable
               ? (_isRunning ? Colors.red : Colors.green)
@@ -130,7 +130,7 @@ class _SensorWidgetState extends State<SensorWidget> {
               ? (_isRunning ? const Text("Stop") : const Text("Start"))
               : const Text("Not available"),
         ),
-        const Padding(padding: EdgeInsets.only(top: 10.0)),
+        const SizedBox(height: 10),
       ],
     );
   }
