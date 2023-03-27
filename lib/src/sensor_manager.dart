@@ -70,7 +70,6 @@ class SensorManager {
       return SensorTaskResult.alreadyTrackingSensor;
     }
 
-    /// Checks whether the Sensor is not available
     if (!await _isSensorAvailable(id)) {
       return SensorTaskResult.sensorNotAvailable;
     }
@@ -83,14 +82,15 @@ class SensorManager {
 
     /// Checks if the expected result from startTrack is a success
     if (startTrack == SensorTaskResult.success) {
+      /// Creates an eventChannel to get the sensorData from native Side and
+      /// saves it in [_sensorDataStreams]
       var sensorName = id.name;
       var eventChannel = EventChannel('sensors/$sensorName');
       var eventStream = eventChannel
           .receiveBroadcastStream()
           .map((data) => SensorData.decode(data as Object));
-      _sensorDataStreams[id] = eventStream;
 
-      /// Adds the Sensor to the list
+      _sensorDataStreams[id] = eventStream;
       _usedSensors.add(id);
     }
     return startTrack;
