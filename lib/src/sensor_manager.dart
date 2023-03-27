@@ -102,6 +102,7 @@ class SensorManager {
     if (!_usedSensors.contains(id)) {
       return SensorTaskResult.notTrackingSensor;
     }
+
     /// Stops tracking on the specific platform and returns a
     /// SensorTaskResult
     var stopTrack = await SensorManagerApi()
