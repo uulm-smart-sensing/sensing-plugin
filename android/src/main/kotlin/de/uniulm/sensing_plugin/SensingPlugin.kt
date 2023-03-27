@@ -13,8 +13,8 @@ import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorTaskResult
 import de.uniulm.sensing_plugin.sensors.Barometer
 import de.uniulm.sensing_plugin.sensors.Gyroscope
 import de.uniulm.sensing_plugin.sensors.HeadingSensor
-import de.uniulm.sensing_plugin.sensors.Magnetometer
 import de.uniulm.sensing_plugin.sensors.LinearAccelerationSensor
+import de.uniulm.sensing_plugin.sensors.Magnetometer
 import de.uniulm.sensing_plugin.sensors.Thermometer
 import de.uniulm.sensing_plugin.streamhandlers.SensorStreamHandler
 import io.flutter.embedding.engine.plugins.FlutterPlugin
