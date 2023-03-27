@@ -102,22 +102,17 @@ class SensorManager {
     if (!_usedSensors.contains(id)) {
       return SensorTaskResult.notTrackingSensor;
     }
-    var stopTrack =
-        SensorManagerApi().stopSensorTracking(id).then((value) => value.state);
+    /// Stops tracking on the specific platform and returns a
+    /// SensorTaskResult
+    var stopTrack = await SensorManagerApi()
+        .stopSensorTracking(id)
+        .then((value) => value.state);
 
-    /// Checks if the Result is not successful
-    if (stopTrack != Future.value(SensorTaskResult.failure)) {
-      return SensorTaskResult.failure;
+    if (stopTrack == SensorTaskResult.success) {
+      _usedSensors.remove(id);
+      _sensorDataStreams.remove(id);
     }
 
-    /// Removes the Sensor from usedSensors.
-    _usedSensors.remove(id);
-
-    /// Removes the Sensor from sensorStreams.
-    _sensorDataStreams.remove(id);
-
-    /// Stops the tracking on the specific platform and returns a
-    /// SensorTaskResult
     return stopTrack;
   }
 
