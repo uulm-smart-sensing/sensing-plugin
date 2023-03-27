@@ -14,6 +14,8 @@ before_script:
 flutter-format:
   stage: analysis
   needs: [ ]
+  only:
+    - merge_requests
   script:
     - flutter format . -o write --fix
     - git diff --exit-code
@@ -21,6 +23,8 @@ flutter-format:
 flutter-format:apply:
   stage: analysis
   needs: [ ]
+  only:
+    - merge_requests
   when: manual
 #  only:
 #    - merge_requests
@@ -45,6 +49,8 @@ flutter-format:apply:
 flutter-analyze:
   stage: analysis
   needs: [ ]
+  only:
+    - merge_requests
   before_script:
     - flutter --version
     - flutter clean
@@ -68,6 +74,8 @@ ktlint:
   image: node:lts-alpine
   stage: analysis
   needs: [ ]
+  only:
+    - merge_requests
   before_script:
     - mkdir -p report_outputs
     - apk add --no-cache curl openjdk11
@@ -90,6 +98,8 @@ swiftlint:
   image: ghcr.io/realm/swiftlint:latest
   stage: analysis
   needs: [ ]
+  only:
+    - merge_requests
   before_script:
     - mkdir -p report_outputs
   script:
@@ -105,6 +115,8 @@ swiftlint:
 flutter-test:
   stage: test
   needs: [ ]
+  only:
+    - merge_requests
   before_script:
     - flutter --version
     - flutter clean
@@ -130,19 +142,21 @@ flutter-test:
 
 
 build:android:
-    stage: build
-    needs: [ ]
-    before_script:
-        - flutter --version
-        - flutter clean
-        - bash setup.sh
-    script:
-        - cd example
-        - flutter build apk
-    after_script:
-        - mv example/build/app/outputs/flutter-apk/app-release.apk .
-    artifacts:
-        paths:
-        - app-release.apk
-        expire_in: 2 week
-        expose_as: "Android APK"
+  stage: build
+  needs: [ ]
+  only:
+    - merge_requests
+  before_script:
+    - flutter --version
+    - flutter clean
+    - bash setup.sh
+  script:
+    - cd example
+    - flutter build apk
+  after_script:
+    - mv example/build/app/outputs/flutter-apk/app-release.apk .
+  artifacts:
+    paths:
+      - app-release.apk
+    expire_in: 2 week
+    expose_as: "Android APK"
