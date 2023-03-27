@@ -1,7 +1,6 @@
 package de.uniulm.sensing_plugin
 
 import android.content.Context
-import android.hardware.Sensor
 import android.hardware.SensorManager
 import de.uniulm.sensing_plugin.exceptions.SensorNotRegisteredException
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.Result
@@ -12,6 +11,8 @@ import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorInfo
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorManagerApi
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorTaskResult
 import de.uniulm.sensing_plugin.sensors.Gyroscope
+import de.uniulm.sensing_plugin.sensors.HeadingSensor
+import de.uniulm.sensing_plugin.streamhandlers.SensorStreamHandler
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.EventChannel
@@ -25,7 +26,8 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
     private lateinit var sensorManager: SensorManager
 
     private val sensorIdMap = mapOf(
-        SensorId.GYROSCOPE to Sensor.TYPE_GYROSCOPE
+        SensorId.GYROSCOPE to intArrayOf(Gyroscope.sensorId),
+        SensorId.HEADING to HeadingSensor.sensorIds
     )
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
@@ -44,7 +46,7 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
     override fun isSensorAvailable(id: SensorId, result: Result<Boolean>?) {
         var isAvailable = false
         if (id in sensorIdMap) {
-            isAvailable = sensorManager.getSensorList(sensorIdMap[id]!!).isNotEmpty()
+            isAvailable = sensorIdMap[id]!!.all { sensorManager.getSensorList(it).isNotEmpty() }
         }
 
         result?.success(isAvailable)
@@ -101,8 +103,9 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
         id: SensorId,
         sensorManager: SensorManager,
         timeIntervalInMilliseconds: Long
-    ) = when (id) {
+    ): SensorStreamHandler = when (id) {
         SensorId.GYROSCOPE -> Gyroscope(sensorManager, timeIntervalInMilliseconds)
+        SensorId.HEADING -> HeadingSensor(sensorManager, timeIntervalInMilliseconds)
         else -> throw NotImplementedError()
     }
 
@@ -113,7 +116,7 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
     ) {
         val taskResult = if (id in streamHandlers) {
             val streamHandler = streamHandlers[id]!!
-            streamHandler.stopListener()
+            streamHandler.stopListeners()
             streamHandlers.remove(id)
             val eventChannel = eventChannels[id]!!
             eventChannel.setStreamHandler(null)
@@ -182,7 +185,7 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
     private fun removeAllListeners() {
         eventChannels.forEach {
             val streamHandler = streamHandlers[it.key]
-            streamHandler?.stopListener()
+            streamHandler?.stopListeners()
         }
     }
 }

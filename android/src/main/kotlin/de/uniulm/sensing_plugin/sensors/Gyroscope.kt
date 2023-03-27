@@ -2,15 +2,19 @@ package de.uniulm.sensing_plugin.sensors
 
 import android.hardware.Sensor
 import android.hardware.SensorManager
-import de.uniulm.sensing_plugin.SensorStreamHandler
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.Unit
+import de.uniulm.sensing_plugin.streamhandlers.SingleSensorStreamHandler
 
 class Gyroscope(
     sensorManager: SensorManager,
-    timeIntervalInMicroseconds: Long
-) : SensorStreamHandler(
+    timeIntervalInMilliseconds: Long
+) : SingleSensorStreamHandler(
     sensorManager,
-    Sensor.TYPE_GYROSCOPE,
-    timeIntervalInMicroseconds,
+    sensorId,
+    timeIntervalInMilliseconds,
     Unit.RADIANS_PER_SECOND
-)
+) {
+    companion object {
+        const val sensorId = Sensor.TYPE_GYROSCOPE
+    }
+}
