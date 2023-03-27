@@ -17,8 +17,9 @@ class SensorManager {
   /// Stores all Sensors which is being used.
   final List<SensorId> usedSensors = [];
 
-  /// Stores all received [Stream] with the matching [SensorId].
-  final Map<SensorId, Stream> sensorStreams = <SensorId, Stream>{};
+  /// Stores all received [Stream] with the matching [SensorId] as [SensorData].
+  final Map<SensorId, Stream<SensorData>> sensorDataStreams =
+      <SensorId, Stream<SensorData>>{};
 
   /// Map Object with a SensorId and a Preprocessor
   final Map<SensorId, Preprocessor> sensorIdToPreprocessor =
@@ -33,14 +34,14 @@ class SensorManager {
 
   /// Process the [SensorData] with a matching [SensorId] from the Native side
   /// and decode it.Furthermore saves every [Stream] with the matching
-  /// [SensorId] in [sensorStreams]
+  /// [SensorId] in [sensorDataStreams]
   Stream<SensorData> getSensorStream(SensorId id) {
     var sensorName = id.name;
     var eventChannel = EventChannel('sensors/$sensorName');
     var eventStream = eventChannel
         .receiveBroadcastStream()
         .map((data) => SensorData.decode(data as Object));
-    sensorStreams[id] = eventStream;
+    sensorDataStreams[id] = eventStream;
     return eventStream;
   }
 
@@ -118,18 +119,24 @@ class SensorManager {
     if (!usedSensors.contains(id)) {
       return SensorTaskResult.notTrackingSensor;
     }
+    var stopTrack = SensorManagerApi()
+        .stopSensorTracking(id)
+        .then((value) => value.state);
+
+    /// Checks if the Result is not successful
+    if(stopTrack != Future.value(SensorTaskResult.failure)){
+        return SensorTaskResult.failure;
+    }
 
     /// Removes the Sensor from usedSensors.
     usedSensors.remove(id);
 
     /// Removes the Sensor from sensorStreams.
-    sensorStreams.remove(id);
+    sensorDataStreams.remove(id);
 
     /// Stops the tracking on the specific platform and returns a
     /// SensorTaskResult
-    return SensorManagerApi()
-        .stopSensorTracking(id)
-        .then((value) => value.state);
+    return stopTrack;
   }
 
   /// These methods below are probably not to be used.
