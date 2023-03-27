@@ -1,4 +1,4 @@
-// ignore_for_file: unused_element
+// ignore_for_file: unused_element, unused_field
 
 import 'package:flutter/services.dart';
 
@@ -15,14 +15,14 @@ import 'preprocessing/preprocessor.dart';
 /// Singleton sensor manager class
 class SensorManager {
   /// Stores all Sensors which is being used.
-  final List<SensorId> usedSensors = [];
+  final List<SensorId> _usedSensors = [];
 
   /// Stores all received [Stream] with the matching [SensorId] as [SensorData].
-  final Map<SensorId, Stream<SensorData>> sensorDataStreams =
+  final Map<SensorId, Stream<SensorData>> _sensorDataStreams =
       <SensorId, Stream<SensorData>>{};
 
   /// Map Object with a SensorId and a Preprocessor
-  final Map<SensorId, Preprocessor> sensorIdToPreprocessor =
+  final Map<SensorId, Preprocessor> _sensorIdToPreprocessor =
       <SensorId, Preprocessor>{};
 
   static final SensorManager _singleton = SensorManager._internal();
@@ -34,14 +34,14 @@ class SensorManager {
 
   /// Process the [SensorData] with a matching [SensorId] from the Native side
   /// and decode it.Furthermore saves every [Stream] with the matching
-  /// [SensorId] in [sensorDataStreams]
+  /// [SensorId] in [_sensorDataStreams]
   Stream<SensorData> getSensorStream(SensorId id) {
     var sensorName = id.name;
     var eventChannel = EventChannel('sensors/$sensorName');
     var eventStream = eventChannel
         .receiveBroadcastStream()
         .map((data) => SensorData.decode(data as Object));
-    sensorDataStreams[id] = eventStream;
+    _sensorDataStreams[id] = eventStream;
     return eventStream;
   }
 
@@ -78,7 +78,7 @@ class SensorManager {
 
     /// Checks whether the sensor is in use and outputs a corresponding
     /// SensorTaskResult
-    if (usedSensors.contains(id)) {
+    if (_usedSensors.contains(id)) {
       return Future.value(SensorTaskResult.alreadyTrackingSensor);
     }
 
@@ -107,7 +107,7 @@ class SensorManager {
           .then((value) => value.state);
 
       /// Adds the Sensor to the list
-      usedSensors.add(id);
+      _usedSensors.add(id);
       return stream;
     }
     return Future.value(startTrack);
@@ -116,7 +116,7 @@ class SensorManager {
   /// Stops the tracking from Sensor and returns an bool.
   Future<SensorTaskResult> stopSensorTracking(SensorId id) async {
     /// Checks if the Sensor is being used.
-    if (!usedSensors.contains(id)) {
+    if (!_usedSensors.contains(id)) {
       return SensorTaskResult.notTrackingSensor;
     }
     var stopTrack = SensorManagerApi()
@@ -129,10 +129,10 @@ class SensorManager {
     }
 
     /// Removes the Sensor from usedSensors.
-    usedSensors.remove(id);
+    _usedSensors.remove(id);
 
     /// Removes the Sensor from sensorStreams.
-    sensorDataStreams.remove(id);
+    _sensorDataStreams.remove(id);
 
     /// Stops the tracking on the specific platform and returns a
     /// SensorTaskResult
@@ -142,13 +142,13 @@ class SensorManager {
   /// These methods below are probably not to be used.
 
   /// returns all Sensor that are being used.
-  List<SensorId> getUsedSensors() => usedSensors;
+  List<SensorId> getUsedSensors() => _usedSensors;
 
   /// checks if the Sensor can be used and returns a List.
   Future<List<SensorId>> getUsableSensors() async {
     var usableSensors = <SensorId>[];
     for (var id in SensorId.values) {
-      if (usedSensors.contains(id) && await _isSensorAvailable(id)) {
+      if (_usedSensors.contains(id) && await _isSensorAvailable(id)) {
         usableSensors.add(id);
       }
     }
