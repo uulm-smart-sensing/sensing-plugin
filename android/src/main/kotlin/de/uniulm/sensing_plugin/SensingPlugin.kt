@@ -12,6 +12,7 @@ import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorManagerApi
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorTaskResult
 import de.uniulm.sensing_plugin.sensors.Gyroscope
 import de.uniulm.sensing_plugin.sensors.HeadingSensor
+import de.uniulm.sensing_plugin.sensors.Thermometer
 import de.uniulm.sensing_plugin.streamhandlers.SensorStreamHandler
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.BinaryMessenger
@@ -27,7 +28,8 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
 
     private val sensorIdMap = mapOf(
         SensorId.GYROSCOPE to intArrayOf(Gyroscope.sensorId),
-        SensorId.ORIENTATION to HeadingSensor.sensorIds
+        SensorId.ORIENTATION to HeadingSensor.sensorIds,
+        SensorId.THERMOMETER to intArrayOf(Thermometer.sensorId)
     )
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
