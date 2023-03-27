@@ -15,12 +15,14 @@ class SensorDataContainer extends StatefulWidget {
 class _SensorDataContainerState extends State<SensorDataContainer> {
   var _data = <double>[];
   DateTime? _timestamp;
+  DateTime? _lastTimestamp;
 
   @override
   void initState() {
     widget.stream.listen((sensorData) {
       setState(() {
         _data = sensorData.data.whereType<double>().toList();
+        _lastTimestamp = _timestamp;
         _timestamp = DateTime.fromMicrosecondsSinceEpoch(
           sensorData.timestampInMicroseconds,
         );
@@ -30,16 +32,32 @@ class _SensorDataContainerState extends State<SensorDataContainer> {
   }
 
   @override
-  Widget build(BuildContext context) => Column(
-        children: [
-          Text(
-            _timestamp != null
-                ? "Timestamp: ${_timestamp.toString()}"
-                : "Waiting to receive data",
-          ),
-          formatData(_data),
-        ],
+  Widget build(BuildContext context) {
+    var timestampInformation = [
+      Text(
+        _timestamp != null
+            ? "Timestamp: ${_timestamp.toString()}"
+            : "Waiting to receive data",
+      ),
+    ];
+
+    if (_lastTimestamp != null && _timestamp != null) {
+      var timeDifference = _timestamp!.difference(_lastTimestamp!);
+      timestampInformation.add(
+        Text(
+          "Last timestamp was ${timeDifference.inMilliseconds} ms ago",
+        ),
       );
+    }
+
+    return Column(
+      children: [
+        ...timestampInformation,
+        const SizedBox(height: 4),
+        formatData(_data),
+      ],
+    );
+  }
 }
 
 Widget formatData(List<double> data) {
