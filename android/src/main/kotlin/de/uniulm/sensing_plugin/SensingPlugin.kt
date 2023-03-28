@@ -10,6 +10,7 @@ import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorId
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorInfo
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorManagerApi
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorTaskResult
+import de.uniulm.sensing_plugin.sensors.Accelerometer
 import de.uniulm.sensing_plugin.sensors.Barometer
 import de.uniulm.sensing_plugin.sensors.Gyroscope
 import de.uniulm.sensing_plugin.sensors.OrientationSensor
@@ -30,6 +31,7 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
     private lateinit var sensorManager: SensorManager
 
     private val sensorIdMap = mapOf(
+        SensorId.ACCELEROMETER to intArrayOf(Accelerometer.sensorId),
         SensorId.GYROSCOPE to intArrayOf(Gyroscope.sensorId),
         SensorId.MAGNETOMETER to intArrayOf(Magnetometer.sensorId),
         SensorId.ORIENTATION to OrientationSensor.sensorIds,
@@ -112,6 +114,7 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
         sensorManager: SensorManager,
         timeIntervalInMilliseconds: Long
     ): SensorStreamHandler = when (id) {
+        SensorId.ACCELEROMETER -> Accelerometer(sensorManager, timeIntervalInMilliseconds)
         SensorId.GYROSCOPE -> Gyroscope(sensorManager, timeIntervalInMilliseconds)
         SensorId.MAGNETOMETER -> Magnetometer(sensorManager, timeIntervalInMilliseconds)
         SensorId.ORIENTATION -> OrientationSensor(sensorManager, timeIntervalInMilliseconds)
@@ -121,7 +124,6 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
         )
         SensorId.BAROMETER -> Barometer(sensorManager, timeIntervalInMilliseconds)
         SensorId.THERMOMETER -> Thermometer(sensorManager, timeIntervalInMilliseconds)
-        else -> throw NotImplementedError()
     }
 
     /** Stops tracking of the sensor with the passed [SensorId]. */
