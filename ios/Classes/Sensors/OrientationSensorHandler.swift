@@ -43,7 +43,7 @@ public class OrientationSensorHandler: NSObject, ISensorStreamHandler {
     }
 
     func changeSensorTimeInterval(timeInterval: Int64) -> ResultWrapper {
-        // convert time interval from miliseconds into seconds
+        // convert time interval from milliseconds into seconds
         let updateTimeInterval: Double = Double(timeInterval) / 1000
         ManagerCollection.getMotionManager().deviceMotionUpdateInterval = updateTimeInterval
 
@@ -69,7 +69,7 @@ public class OrientationSensorHandler: NSObject, ISensorStreamHandler {
         ManagerCollection.getMotionManager().startDeviceMotionUpdates(using: .xMagneticNorthZVertical,
               to: OperationQueue.current!, withHandler: {(deviceMotionData: CMDeviceMotion?, err: Error?) in
             guard err != nil else {
-                // multiplying "roll" and "pitch" with negative one to get the same sign like described
+                // inverting "roll" and "pitch" to get the same sign as mentioned
                 // in the Android documentation
                 // (see https://developer.android.com/guide/topics/sensors/sensors_position#sensors-pos-orient)
                 let roll = -1 * (deviceMotionData?.attitude.roll)!
