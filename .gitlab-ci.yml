@@ -83,6 +83,7 @@ ktlint:
     - chmod +x /usr/local/bin/ktlint
     - npm i -g sarif-codeclimate@latest
   script:
+    - ktlint --help
     - ktlint --reporter=plain --reporter=sarif,output=report_outputs/ktlint_sarif.json --android || true
   after_script:
     - sarif-codeclimate --input report_outputs/ktlint_sarif.json --output report_outputs/ktlint.json
