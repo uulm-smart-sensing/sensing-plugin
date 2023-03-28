@@ -12,7 +12,7 @@ import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorManagerApi
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorTaskResult
 import de.uniulm.sensing_plugin.sensors.Barometer
 import de.uniulm.sensing_plugin.sensors.Gyroscope
-import de.uniulm.sensing_plugin.sensors.HeadingSensor
+import de.uniulm.sensing_plugin.sensors.OrientationSensor
 import de.uniulm.sensing_plugin.sensors.LinearAccelerationSensor
 import de.uniulm.sensing_plugin.sensors.Magnetometer
 import de.uniulm.sensing_plugin.sensors.Thermometer
@@ -31,11 +31,11 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
 
     private val sensorIdMap = mapOf(
         SensorId.GYROSCOPE to intArrayOf(Gyroscope.sensorId),
-        SensorId.ORIENTATION to HeadingSensor.sensorIds,
-        SensorId.THERMOMETER to intArrayOf(Thermometer.sensorId),
-        SensorId.BAROMETER to intArrayOf(Barometer.sensorId),
+        SensorId.MAGNETOMETER to intArrayOf(Magnetometer.sensorId),
+        SensorId.ORIENTATION to OrientationSensor.sensorIds,
         SensorId.LINEAR_ACCELERATION to intArrayOf(LinearAccelerationSensor.sensorId),
-        SensorId.MAGNETOMETER to intArrayOf(Magnetometer.sensorId)
+        SensorId.BAROMETER to intArrayOf(Barometer.sensorId),
+        SensorId.THERMOMETER to intArrayOf(Thermometer.sensorId)
     )
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
@@ -113,7 +113,14 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
         timeIntervalInMilliseconds: Long
     ): SensorStreamHandler = when (id) {
         SensorId.GYROSCOPE -> Gyroscope(sensorManager, timeIntervalInMilliseconds)
-        SensorId.ORIENTATION -> HeadingSensor(sensorManager, timeIntervalInMilliseconds)
+        SensorId.MAGNETOMETER -> Magnetometer(sensorManager, timeIntervalInMilliseconds)
+        SensorId.ORIENTATION -> OrientationSensor(sensorManager, timeIntervalInMilliseconds)
+        SensorId.LINEAR_ACCELERATION -> LinearAccelerationSensor(
+            sensorManager,
+            timeIntervalInMilliseconds
+        )
+        SensorId.BAROMETER -> Barometer(sensorManager, timeIntervalInMilliseconds)
+        SensorId.THERMOMETER -> Thermometer(sensorManager, timeIntervalInMilliseconds)
         else -> throw NotImplementedError()
     }
 
