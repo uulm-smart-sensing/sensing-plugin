@@ -61,46 +61,45 @@ public class OrientationSensorHandler: NSObject, ISensorStreamHandler {
 
     public func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
 
-        if isSensorAvailable() {
-            ManagerCollection.getMotionManager().startDeviceMotionUpdates(using: .xMagneticNorthZVertical,
-                                                                          to: OperationQueue.current!,
-                                                      withHandler: {(deviceMotionData: CMDeviceMotion?, err: Error?) in
-                guard err != nil else {
-                    // multiplying "roll" and "pitch" with negative one to get the same sign like described
-                    // in the Android documentation
-                    // (see https://developer.android.com/guide/topics/sensors/sensors_position#sensors-pos-orient)
-                    let roll = -1 * (deviceMotionData?.attitude.roll)!
-                    let pitch = -1 * (deviceMotionData?.attitude.pitch)!
-
-                    // Because the "yaw" value is relative to the reference frame "xMagneticNorth" and
-                    // the angle is from -180 to 180 relative to the north, but expected as
-                    // 0 to 360, the "yaw" value would need to be converted. To spare this conversion,
-                    // the "heading" attribute is used, which ranges from 0 to 360 degrees and is relative to
-                    // the magnetic north (indicated by angle = 0). Because it is provided in degrees, it
-                    // need to be converted to radians
-                    let azimuth = (deviceMotionData?.heading)! * .pi / 180
-
-                    let timestamp = TimestampConverter.convertSensorEventToUnixTimestamp(
-                        sensorEventTimestamp: deviceMotionData!.timestamp)
-
-                    // TODO: check, what maxPrecision is
-                    // wrap the sensor values to `SensorData` object and "send" it to the event stream
-                    let sensorData = SensorData(data: [roll, pitch, azimuth],
-                                                maxPrecision: -1,
-                                                unit: Unit.radians,
-                                                timestampInMicroseconds: timestamp)
-
-                    events(sensorData.toList())
-
-                    return
-                }
-            })
-
-            return nil
+        if !isSensorAvailable() {
+            return FlutterError(code: "SENSOR_NOT_AVAILABLE",
+                                message: "Orientation sensor is not available, so it cannot be started.",
+                                details: "")
         }
-        return FlutterError(code: "SENSOR_NOT_AVAILABLE",
-                            message: "Orientation sensor is not available, so it cannot be started.",
-                            details: "")
+        ManagerCollection.getMotionManager().startDeviceMotionUpdates(using: .xMagneticNorthZVertical,
+              to: OperationQueue.current!, withHandler: {(deviceMotionData: CMDeviceMotion?, err: Error?) in
+            guard err != nil else {
+                // multiplying "roll" and "pitch" with negative one to get the same sign like described
+                // in the Android documentation
+                // (see https://developer.android.com/guide/topics/sensors/sensors_position#sensors-pos-orient)
+                let roll = -1 * (deviceMotionData?.attitude.roll)!
+                let pitch = -1 * (deviceMotionData?.attitude.pitch)!
+
+                // Because the "yaw" value is relative to the reference frame "xMagneticNorth" and
+                // the angle is from -180 to 180 relative to the north, but expected as
+                // 0 to 360, the "yaw" value would need to be converted. To spare this conversion,
+                // the "heading" attribute is used, which ranges from 0 to 360 degrees and is relative to
+                // the magnetic north (indicated by angle = 0). Because it is provided in degrees, it
+                // need to be converted to radians
+                let azimuth = (deviceMotionData?.heading)! * .pi / 180
+
+                let timestamp = TimestampConverter.convertSensorEventToUnixTimestamp(
+                    sensorEventTimestamp: deviceMotionData!.timestamp)
+
+                // TODO: check, what maxPrecision is
+                // wrap the sensor values to `SensorData` object and "send" it to the event stream
+                let sensorData = SensorData(data: [roll, pitch, azimuth],
+                                            maxPrecision: -1,
+                                            unit: Unit.radians,
+                                            timestampInMicroseconds: timestamp)
+
+                events(sensorData.toList())
+
+                return
+            }
+        })
+
+        return nil
     }
 
     public func onCancel(withArguments arguments: Any?) -> FlutterError? {
