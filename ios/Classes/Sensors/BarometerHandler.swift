@@ -11,7 +11,7 @@ import CoreMotion
 /**
  The object for starting and stopping the barometer sensor and receiving its sensor data
 
- The ``BarometerHandler``wraps the part of the ``CMAltimeter``, which handles the
+ The ``BarometerHandler`` wraps the part of the ``CMAltimeter``, which handles the
  magnetometer sensor.
 
  So this handler provide methods to ...
@@ -71,45 +71,46 @@ public class BarometerHandler: NSObject, ISensorStreamHandler {
     }
 
     public func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
-        if isSensorAvailable() {
-
-            ManagerCollection.getAltimeter().startRelativeAltitudeUpdates(to: OperationQueue.current!,
-                                                  withHandler: {(pressureData: CMAltitudeData?, err: Error?) in
-                guard err != nil else {
-                    self.latestPressureValue = pressureData!.pressure.doubleValue
-                    return
-                }
-            })
-
-            self.isBarometerInUse = true
-
-            // create timer for sending the heading angles
-            if self.pressurePublisher == nil {
-                self.pressurePublisher = Timer(fire: Date(), interval: requestUpdateTimeInterval, repeats: true,
-                                                   block: { (_) in
-
-                    // check, if the app is still allowed to send sensor data
-                    if self.isSensorAvailable() {
-
-                        // send the latest heading angle
-                        let sensorData = SensorData(data: [self.latestPressureValue], maxPrecision: -1,
-                                                    unit: Unit.kiloPascal,
-                                                    timestampInMicroseconds: Int64(NSDate().timeIntervalSince1970
-                                                                                   * 1000 * 1000))
-                        events(sensorData.toList())
-                    }
-
-                })
-            }
-
-            // add the timer to the current run loop
-            RunLoop.current.add(self.pressurePublisher!, forMode: RunLoop.Mode.default)
-
-            return nil
+        if !isSensorAvailable() {
+            return FlutterError(code: "SENSOR_NOT_AVAILABLE",
+                                message: "Barometer is not available, so it cannot be started.",
+                                details: "")
         }
-        return FlutterError(code: "SENSOR_NOT_AVAILABLE",
-                            message: "Barometer is not available, so it cannot be started.",
-                            details: "")
+
+        ManagerCollection.getAltimeter().startRelativeAltitudeUpdates(to: OperationQueue.current!,
+            withHandler: {(pressureData: CMAltitudeData?, err: Error?) in
+            
+            guard err != nil else {
+                self.latestPressureValue = pressureData!.pressure.doubleValue
+                return
+            }
+        })
+
+        self.isBarometerInUse = true
+
+        // create timer for sending the heading angles
+        if self.pressurePublisher == nil {
+            self.pressurePublisher = Timer(fire: Date(), interval: requestUpdateTimeInterval, repeats: true,
+                                               block: { (_) in
+
+                // check, if the app is still allowed to send sensor data
+                if self.isSensorAvailable() {
+
+                    // send the latest heading angle
+                    let sensorData = SensorData(data: [self.latestPressureValue], maxPrecision: -1,
+                                                unit: Unit.kiloPascal,
+                                                timestampInMicroseconds: Int64(NSDate().timeIntervalSince1970
+                                                                               * 1000 * 1000))
+                    events(sensorData.toList())
+                }
+
+            })
+        }
+
+        // add the timer to the current run loop
+        RunLoop.current.add(self.pressurePublisher!, forMode: RunLoop.Mode.default)
+
+        return nil
     }
 
     public func onCancel(withArguments arguments: Any?) -> FlutterError? {
