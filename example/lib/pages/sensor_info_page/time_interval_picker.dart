@@ -35,7 +35,7 @@ class TimeIntervalPicker extends CommonPickerModel {
   String? rightStringAtIndex(int index) {
     // Configuring the available options is weird
     // Step sizes don't seem to be supported
-    if (index >= 0 && index < 1000) {
+    if (index >= 10 && index < 1000) {
       return digits(index, 4);
     } else {
       return null;
