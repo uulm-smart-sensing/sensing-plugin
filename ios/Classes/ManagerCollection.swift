@@ -11,7 +11,7 @@ import CoreLocation
 
 /**
  This object is a collection of all needed "sensor manager" existing in Swift, which can be used to access sensors
- 
+
  Therefor this class provide instances for the different manager (simalar to a collection singleton instances), so the
  different sensor stream handler can access them.
  - Important: This collection is used to prevent, that the manager (e. g. the CMMotionManager) are created
@@ -22,6 +22,7 @@ public class ManagerCollection: NSObject {
 
     private static var motionManager: CMMotionManager?
     private static var locationManager: CLLocationManager?
+    private static var altimeterManager: CMAltimeter?
 
     static func getMotionManager() -> CMMotionManager {
         if self.motionManager == nil {
@@ -37,5 +38,13 @@ public class ManagerCollection: NSObject {
         }
 
         return self.locationManager!
+    }
+
+    static func getAltimeter() -> CMAltimeter {
+        if self.altimeterManager == nil {
+            self.altimeterManager = CMAltimeter()
+        }
+
+        return self.altimeterManager!
     }
 }
