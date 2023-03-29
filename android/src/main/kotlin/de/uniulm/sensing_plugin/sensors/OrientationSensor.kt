@@ -9,7 +9,7 @@ import de.uniulm.sensing_plugin.generated.ApiSensorManager.Unit
 import de.uniulm.sensing_plugin.getAccuracyEnumFromValue
 import de.uniulm.sensing_plugin.streamhandlers.SensorStreamHandler
 
-class HeadingSensor(
+class OrientationSensor(
     private val sensorManager: SensorManager,
     timeIntervalInMilliseconds: Long
 ) : SensorStreamHandler(
@@ -81,7 +81,7 @@ class HeadingSensor(
     }
 
     /**
-     * Calculates heading with the data of the accelerometer and magnetometer.
+     * Calculates orientation with the data of the accelerometer and magnetometer.
      *
      * Source: https://developer.android.com/guide/topics/sensors/sensors_position#sensors-pos-orient
      */
