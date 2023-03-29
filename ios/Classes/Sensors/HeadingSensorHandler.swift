@@ -25,7 +25,8 @@ import CoreLocation
  can be called and managed by the ``SensorManager``.
  
  */
-@available(iOS 14.0, *)
+@available(iOS, introduced: 14.0, deprecated, message:
+            "Use the orientation sensor instead (extended heading angle by roll and pitch angle)")
 public class HeadingSensorHandler: NSObject, ISensorStreamHandler, CLLocationManagerDelegate {
 
     /// 
