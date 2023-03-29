@@ -59,9 +59,11 @@ public class SensorManager: NSObject, FlutterPlugin, SensorManagerApi {
         streamHandlers.updateValue(LinearAccelerometerHandler(), forKey: SensorId.linearAcceleration)
         streamHandlers.updateValue(AccelerometerHandler(), forKey: SensorId.accelerometer)
 
-        // add heading sensor as implemented sensor
+        // add orientation sensor as implemented sensor
         streamHandlers.updateValue(OrientationSensorHandler(), forKey: SensorId.orientation)
 
+        // add baromter as implemented sensor
+        streamHandlers.updateValue(BarometerHandler(), forKey: SensorId.barometer)
     }
 
     func isSensorAvailable(id: SensorId, completion: @escaping (Result<Bool, Error>) -> Void) {

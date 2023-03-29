@@ -72,6 +72,7 @@ enum Unit {
   degrees,
   // Pressure
   hectoPascal,
+  kiloPascal,
   bar,
   // Temperature
   celsius,
