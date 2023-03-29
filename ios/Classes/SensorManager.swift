@@ -60,9 +60,8 @@ public class SensorManager: NSObject, FlutterPlugin, SensorManagerApi {
         streamHandlers.updateValue(AccelerometerHandler(), forKey: SensorId.accelerometer)
 
         // add heading sensor as implemented sensor
-        if #available(iOS 14.0, *) {
-            streamHandlers.updateValue(HeadingSensorHandler(), forKey: SensorId.heading)
-        }
+        streamHandlers.updateValue(OrientationSensorHandler(), forKey: SensorId.orientation)
+
     }
 
     func isSensorAvailable(id: SensorId, completion: @escaping (Result<Bool, Error>) -> Void) {
