@@ -42,12 +42,12 @@ class SensorManager {
       SensorManagerApi().isSensorUsed(id);
 
   /// Checks if the Sensor is available and returns the SensorID.
-  Future<bool> _isSensorAvailable(SensorId id) async =>
+  Future<bool> isSensorAvailable(SensorId id) async =>
       SensorManagerApi().isSensorAvailable(id);
 
   /// Changes the interval of the sensor event channel with the passed
   /// [SensorId] to [timeIntervalInMilliseconds] ms.
-  Future<ResultWrapper> _changeSensorTimeInterval(
+  Future<ResultWrapper> changeSensorTimeInterval(
     SensorId id,
     int timeIntervalInMilliseconds,
   ) async =>
@@ -55,7 +55,7 @@ class SensorManager {
           .changeSensorTimeInterval(id, timeIntervalInMilliseconds);
 
   /// Retrieves information about the sensor with the passed [SensorId].
-  Future<SensorInfo> _getSensorInfo(SensorId id) async =>
+  Future<SensorInfo> getSensorInfo(SensorId id) async =>
       SensorManagerApi().getSensorInfo(id);
 
   /// Starts the tracking of a [SensorId] and returns an matching
@@ -70,7 +70,7 @@ class SensorManager {
       return SensorTaskResult.alreadyTrackingSensor;
     }
 
-    if (!await _isSensorAvailable(id)) {
+    if (!await isSensorAvailable(id)) {
       return SensorTaskResult.sensorNotAvailable;
     }
 
@@ -126,7 +126,7 @@ class SensorManager {
   Future<List<SensorId>> getUsableSensors() async {
     var usableSensors = <SensorId>[];
     for (var id in SensorId.values) {
-      if (_usedSensors.contains(id) && await _isSensorAvailable(id)) {
+      if (_usedSensors.contains(id) && await isSensorAvailable(id)) {
         usableSensors.add(id);
       }
     }
