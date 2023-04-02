@@ -1,7 +1,7 @@
 import 'generated/api_sensor_manager.dart' show Unit, SensorId;
 
 /// [SensorPropertyValidator] checks if the properties defined for a sensor
-/// (tracking) is valid , so there are no errors when tracking a sensor 
+/// (tracking) is valid , so there are no errors when tracking a sensor
 class SensorPropertyValidator {
   /// Checks if the precision is valid
   ///
