@@ -2,14 +2,41 @@ import 'generated/api_sensor_manager.dart' show Unit, SensorId;
 
 /// empty class
 class SensorPropertyValidator {
+  /// Checks if the precision is valid
   ///
+  /// Example usage:
+  /// ```dart
+  /// var result = checkPrecision(9);
+  /// ```
+  /// will result in
+  /// ```text
+  /// true
+  /// ```
   bool checkPrecision(int precision) => precision < 10 && precision > 0;
 
+  /// Checks if the timeInterval is valid
   ///
+  /// Example usage:
+  /// ```dart
+  /// var result = checktimeInterval(9);
+  /// ```
+  /// will result in
+  /// ```text
+  /// true
+  /// ```
   bool checkTimeInterval(int interval) =>
       interval < 31536000000 && interval > 0;
 
+  /// Checks if the unit is valid
   ///
+  /// Example usage:
+  /// ```dart
+  /// var result = checkUnit(Accelerometer,MetersPerSecondSquared);
+  /// ```
+  /// will result in
+  /// ```text
+  /// true
+  /// ```
   bool checkUnit(SensorId id, Unit unit) {
     switch (id) {
       case SensorId.accelerometer:
