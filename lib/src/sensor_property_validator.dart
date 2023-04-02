@@ -3,11 +3,11 @@ import 'generated/api_sensor_manager.dart' show Unit, SensorId;
 /// empty class
 class SensorPropertyValidator {
   ///
-  bool checkPrecision(int precision) => precision < 10 || precision > 0;
+  bool checkPrecision(int precision) => precision < 10 && precision > 0;
 
   ///
   bool checkTimeInterval(int interval) =>
-      interval < 31536000000 || interval > 0;
+      interval < 31536000000 && interval > 0;
 
   ///
   bool checkUnit(SensorId id, Unit unit) {
