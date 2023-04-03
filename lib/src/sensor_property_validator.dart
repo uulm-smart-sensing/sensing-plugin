@@ -11,7 +11,7 @@ import 'generated/api_sensor_manager.dart' show Unit, SensorId;
   /// ```text
   /// true
   /// ```
-  bool checkPrecision(int precision) => precision < 10 && precision >= 0;
+  bool validatePrecision(int precision) => precision < 10 && precision >= 0;
 
   /// Checks whether the passed [timeInterval] is valid
   ///
@@ -23,7 +23,7 @@ import 'generated/api_sensor_manager.dart' show Unit, SensorId;
   /// ```text
   /// true
   /// ```
-  bool checkTimeInterval(int interval) =>
+  bool validateTimInterval(int interval) =>
       interval < 31536000000 && interval >= 0;
 
   /// Checks if the unit is valid
@@ -36,7 +36,7 @@ import 'generated/api_sensor_manager.dart' show Unit, SensorId;
   /// ```text
   /// true
   /// ```
-  bool checkUnit(SensorId id, Unit unit) {
+  bool validateUnit(SensorId id, Unit unit) {
     switch (id) {
       case SensorId.accelerometer:
         return unit == Unit.metersPerSecondSquared ||
