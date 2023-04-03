@@ -13,7 +13,7 @@ class SensorPropertyValidator {
   /// ```text
   /// true
   /// ```
-  bool checkPrecision(int precision) => precision < 10 && precision > 0;
+  bool checkPrecision(int precision) => precision < 10 && precision >= 0;
 
   /// Checks if the timeInterval is valid
   ///
@@ -26,7 +26,7 @@ class SensorPropertyValidator {
   /// true
   /// ```
   bool checkTimeInterval(int interval) =>
-      interval < 31536000000 && interval > 0;
+      interval < 31536000000 && interval >= 0;
 
   /// Checks if the unit is valid
   ///
