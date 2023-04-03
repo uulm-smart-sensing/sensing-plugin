@@ -11,9 +11,9 @@ import 'generated/api_sensor_manager.dart' show Unit, SensorId;
   /// ```text
   /// true
   /// ```
-  bool validatePrecision(int precision) => precision < 10 && precision >= 0;
+  bool validatePrecision(int precision) => precision >= 0 &&  precision <= 10 ;
 
-  /// Checks whether the passed [timeInterval] is valid. The unit we use as
+  /// Checks whether the passed [interval] is valid. The unit we use as
   /// timeInterval is milliseconds. It is valid if the interval is between 10
   /// and one week, 23 hours, 59 minutes and 59 seconds. The minimum was not 0
   /// because a sensor can hardly have such high frequencies.
@@ -31,12 +31,12 @@ import 'generated/api_sensor_manager.dart' show Unit, SensorId;
     return interval >= 10 && interval <= almost2Weeks;
   }
 
-  /// Checks whether the passed [Unit] is valid. It is valid if it is
-  /// between 0 and 10.
+  /// Checks whether the passed [Unit] is valid. It is valid if the
+  /// corresponding id returns the corresponding unit.
   ///
   /// Example usage:
   /// ```dart
-  /// var result = checkUnit(Accelerometer,MetersPerSecondSquared);
+  /// var result = validateUnit(Accelerometer,MetersPerSecondSquared);
   /// ```
   /// will result in
   /// ```text
