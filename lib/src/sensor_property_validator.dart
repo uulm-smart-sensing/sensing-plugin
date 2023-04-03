@@ -1,9 +1,7 @@
 import 'generated/api_sensor_manager.dart' show Unit, SensorId;
 
-/// [SensorPropertyValidator] checks if the properties defined for a sensor
-/// (tracking) is valid , so there are no errors when tracking a sensor
-class SensorPropertyValidator {
-  /// Checks if the precision is valid
+  /// Checks whether the passed [precision] is valid. It is valid if it is
+  /// between 0 and 10.
   ///
   /// Example usage:
   /// ```dart
@@ -15,7 +13,7 @@ class SensorPropertyValidator {
   /// ```
   bool checkPrecision(int precision) => precision < 10 && precision >= 0;
 
-  /// Checks if the timeInterval is valid
+  /// Checks whether the passed [timeInterval] is valid
   ///
   /// Example usage:
   /// ```dart
@@ -62,4 +60,4 @@ class SensorPropertyValidator {
             unit == Unit.celsius;
     }
   }
-}
+
