@@ -1,6 +1,7 @@
-// ignore_for_file: unused_element, unused_field
+// ignore_for_file: unused_field
 
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/services.dart';
 
@@ -23,7 +24,6 @@ class SensorManager {
   final Map<SensorId, StreamPair<SensorData>> _sensorDataStreams =
       <SensorId, StreamPair<SensorData>>{};
 
-
   /// Map Object with a SensorId and a Preprocessor
   final Map<SensorId, Preprocessor> _sensorIdToPreprocessor =
       <SensorId, Preprocessor>{};
@@ -39,7 +39,7 @@ class SensorManager {
   /// and decode it.Furthermore saves every [Stream] with the matching
   /// [SensorId] in [_sensorDataStreams]
   Stream<SensorData>? getSensorStream(SensorId id) =>
-  _sensorDataStreams[id]?._streamController.stream;
+      _sensorDataStreams[id]?._streamController.stream;
 
   /// Checks if the Sensor is currently used and returns an bool.
   Future<bool> isSensorUsed(SensorId id) async =>
@@ -93,14 +93,7 @@ class SensorManager {
       var eventStream = eventChannel
           .receiveBroadcastStream()
           .map((data) => SensorData.decode(data as Object));
-
-      var tmpController = StreamController<SensorData>();
-      var tmpSub = eventStream.listen((event) {
-          if(!tmpController.isClosed){
-            tmpController.add(event);
-          }
-      });
-      _sensorDataStreams[id] = StreamPair(tmpController, tmpSub);
+      _sensorDataStreams[id] = StreamPair(eventStream);
       _usedSensors.add(id);
     }
     return startTrack;
@@ -113,6 +106,16 @@ class SensorManager {
       return SensorTaskResult.notTrackingSensor;
     }
 
+    ///Stops Flutter specific sensor subscribtion first.
+    ///Otherwise the speficic platform returns an error.
+    try {
+      await _sensorDataStreams[id]?._streamSubscription.cancel();
+      await _sensorDataStreams[id]?._streamController.close();
+    } on Exception catch (e) {
+      log(e.toString());
+      return SensorTaskResult.failure;
+    }
+
     /// Stops tracking on the specific platform and returns a
     /// SensorTaskResult
     var stopTrack = await SensorManagerApi()
@@ -121,8 +124,6 @@ class SensorManager {
 
     if (stopTrack == SensorTaskResult.success) {
       _usedSensors.remove(id);
-      await _sensorDataStreams[id]?._streamController.close();
-      await _sensorDataStreams[id]?._streamSubscription.cancel();
       _sensorDataStreams.remove(id);
     }
 
@@ -148,13 +149,20 @@ class SensorManager {
   /// configure the sensor properties
   bool editSensor() => false;
 }
-///
-class StreamPair<T>{
 
-late final StreamController<T>  _streamController;
-late final StreamSubscription<T>  _streamSubscription;
+///Class to convert a stream to a stream controller.
+///Contains both the controller and
+///the base subscription to the initial stream.
+class StreamPair<T> {
+  final StreamController<T> _streamController = StreamController<T>();
+  late final StreamSubscription<T> _streamSubscription;
 
-///
-StreamPair(this._streamController, this._streamSubscription);
-
+  ///Constructor to convert a regular stream to a stream controller.
+  StreamPair(Stream<T> baseStream) {
+    _streamSubscription = baseStream.listen((event) {
+      if (!_streamController.isClosed || !_streamController.isPaused) {
+        _streamController.add(event);
+      }
+    });
+  }
 }
