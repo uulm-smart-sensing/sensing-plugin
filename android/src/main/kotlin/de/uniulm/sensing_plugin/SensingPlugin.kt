@@ -137,6 +137,7 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
             streamHandlers.remove(id)
             val eventChannel = eventChannels[id]!!
             eventChannel.setStreamHandler(null)
+            eventChannels.remove(id)
             SensorTaskResult.SUCCESS
         } else {
             SensorTaskResult.NOT_TRACKING_SENSOR
