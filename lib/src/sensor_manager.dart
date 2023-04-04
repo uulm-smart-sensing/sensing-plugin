@@ -1,5 +1,7 @@
 // ignore_for_file: unused_element, unused_field
 
+import 'dart:async';
+
 import 'package:flutter/services.dart';
 
 import 'generated/api_sensor_manager.dart'
@@ -18,8 +20,9 @@ class SensorManager {
   final List<SensorId> _usedSensors = [];
 
   /// Stores all received [Stream] with the matching [SensorId] as [SensorData].
-  final Map<SensorId, Stream<SensorData>> _sensorDataStreams =
-      <SensorId, Stream<SensorData>>{};
+  final Map<SensorId, StreamPair<SensorData>> _sensorDataStreams =
+      <SensorId, StreamPair<SensorData>>{};
+
 
   /// Map Object with a SensorId and a Preprocessor
   final Map<SensorId, Preprocessor> _sensorIdToPreprocessor =
@@ -35,7 +38,8 @@ class SensorManager {
   /// Process the [SensorData] with a matching [SensorId] from the Native side
   /// and decode it.Furthermore saves every [Stream] with the matching
   /// [SensorId] in [_sensorDataStreams]
-  Stream<SensorData>? getSensorStream(SensorId id) => _sensorDataStreams[id];
+  Stream<SensorData>? getSensorStream(SensorId id) =>
+  _sensorDataStreams[id]?._streamController.stream;
 
   /// Checks if the Sensor is currently used and returns an bool.
   Future<bool> isSensorUsed(SensorId id) async =>
@@ -90,7 +94,13 @@ class SensorManager {
           .receiveBroadcastStream()
           .map((data) => SensorData.decode(data as Object));
 
-      _sensorDataStreams[id] = eventStream;
+      var tmpController = StreamController<SensorData>();
+      var tmpSub = eventStream.listen((event) {
+          if(!tmpController.isClosed){
+            tmpController.add(event);
+          }
+      });
+      _sensorDataStreams[id] = StreamPair(tmpController, tmpSub);
       _usedSensors.add(id);
     }
     return startTrack;
@@ -111,6 +121,8 @@ class SensorManager {
 
     if (stopTrack == SensorTaskResult.success) {
       _usedSensors.remove(id);
+      await _sensorDataStreams[id]?._streamController.close();
+      await _sensorDataStreams[id]?._streamSubscription.cancel();
       _sensorDataStreams.remove(id);
     }
 
@@ -135,4 +147,14 @@ class SensorManager {
 
   /// configure the sensor properties
   bool editSensor() => false;
+}
+///
+class StreamPair<T>{
+
+late final StreamController<T>  _streamController;
+late final StreamSubscription<T>  _streamSubscription;
+
+///
+StreamPair(this._streamController, this._streamSubscription);
+
 }
