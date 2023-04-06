@@ -17,7 +17,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
-  pigeon: ^9.0.6
+  pigeon: ^9.2.3
   test_cov_console: ^0.2.2
   junitreport: ^2.0.2
   cobertura: ^1.0.3
