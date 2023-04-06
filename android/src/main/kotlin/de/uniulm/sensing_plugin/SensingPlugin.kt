@@ -53,13 +53,13 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
     }
 
     /** Checks whether the sensor with the passed [SensorId] is available. */
-    override fun isSensorAvailable(id: SensorId, result: Result<Boolean>?) {
+    override fun isSensorAvailable(id: SensorId, result: Result<Boolean>) {
         var isAvailable = false
         if (id in sensorIdMap) {
             isAvailable = sensorIdMap[id]!!.all { sensorManager.getSensorList(it).isNotEmpty() }
         }
 
-        result?.success(isAvailable)
+        result.success(isAvailable)
     }
 
     /**
@@ -70,9 +70,9 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
      */
     override fun isSensorUsed(
         id: SensorId,
-        result: Result<Boolean>?
+        result: Result<Boolean>
     ) {
-        result!!.success(streamHandlers.containsKey(id))
+        result.success(streamHandlers.containsKey(id))
     }
 
     /**
@@ -84,7 +84,7 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
     override fun startSensorTracking(
         id: SensorId,
         timeIntervalInMilliseconds: Long,
-        result: Result<ResultWrapper>?
+        result: Result<ResultWrapper>
     ) {
         if (id !in eventChannels) {
             val channelName = screamingSnakeCaseToCamelCase(id.name)
@@ -106,7 +106,7 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
             .setState(taskResult)
             .build()
 
-        result!!.success(resultWrapper)
+        result.success(resultWrapper)
     }
 
     private fun createSensorStreamHandlerFromId(
@@ -129,7 +129,7 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
     /** Stops tracking of the sensor with the passed [SensorId]. */
     override fun stopSensorTracking(
         id: SensorId,
-        result: Result<ResultWrapper>?
+        result: Result<ResultWrapper>
     ) {
         val taskResult = if (id in streamHandlers) {
             val streamHandler = streamHandlers[id]!!
@@ -147,7 +147,7 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
             .setState(taskResult)
             .build()
 
-        result!!.success(resultWrapper)
+        result.success(resultWrapper)
     }
 
     /**
@@ -157,7 +157,7 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
     override fun changeSensorTimeInterval(
         id: SensorId,
         timeIntervalInMilliseconds: Long,
-        result: Result<ResultWrapper>?
+        result: Result<ResultWrapper>
     ) {
         val taskResult = if (timeIntervalInMilliseconds < 0) {
             SensorTaskResult.INVALID_TIME_INTERVAL
@@ -172,19 +172,19 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
             .setState(taskResult)
             .build()
 
-        result!!.success(resultWrapper)
+        result.success(resultWrapper)
     }
 
     /** Retrieves information about the sensor with the passed [SensorId]. */
     override fun getSensorInfo(
         id: SensorId,
-        result: Result<SensorInfo>?
+        result: Result<SensorInfo>
     ) {
         if (id in streamHandlers) {
             val streamHandler = streamHandlers[id]!!
-            result!!.success(streamHandler.getSensorInfo())
+            result.success(streamHandler.getSensorInfo())
         } else {
-            result!!.error(SensorNotRegisteredException(id))
+            result.error(SensorNotRegisteredException(id))
         }
     }
 
