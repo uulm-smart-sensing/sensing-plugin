@@ -23,56 +23,118 @@ void main() {
   group("Validiting timeInterval in milliseconds", () {
     test('When the interval is valid then validateTimeInterval returns true',
         () {
-      expect(validateTimeInterval(15), isTrue);
+      expect(validateIntervalInMilliseconds(15), isTrue);
     });
-    test('When the interval is negativ then validateTimeInterval returns false',
+    test(
+        'When the interval is negative then validateTimeInterval returns false',
         () {
-      expect(validateTimeInterval(-1), isFalse);
+      expect(validateIntervalInMilliseconds(-1), isFalse);
     });
     test(
         "When the interval is too large then validateTimeInterval returns false",
         () {
-      expect(validateTimeInterval(31536000001), isFalse);
+      expect(validateIntervalInMilliseconds(31536000001), isFalse);
     });
   });
 
   group("Validiting units", () {
-    test(
-        '''When the id passes back the appropriate unit then
-        validateUnitCompatibility return true''',
-        () {
+    test('''When the id passes back accelerometer then
+        validateUnitCompatibility return true''', () {
       expect(
         validateUnitCompatibility(
-            SensorId.accelerometer, Unit.metersPerSecondSquared),
+          SensorId.accelerometer,
+          Unit.metersPerSecondSquared,
+        ),
         isTrue,
       );
     });
-    test(
-        '''When the specified unit does not match the id
-        then validateUnitCompatibility return false''',
-        () {
+    test('''When the id passes back gyroscope then
+        validateUnitCompatibility return true''', () {
       expect(
-        validateUnitCompatibility(SensorId.barometer, Unit.microTeslas),
-        isFalse,
+        validateUnitCompatibility(
+          SensorId.gyroscope,
+          Unit.radiansPerSecond,
+        ),
+        isTrue,
       );
     });
-    test(
-        '''When the given id does not correspond to the unit then
-        validateUnitCompatibility return false''',
-        () {
+
+    test('''When the id passes back magnetometer then
+        validateUnitCompatibility return true''', () {
       expect(
-        validateUnitCompatibility(SensorId.accelerometer, Unit.kelvin),
-        isFalse,
+        validateUnitCompatibility(
+          SensorId.magnetometer,
+          Unit.microTeslas,
+        ),
+        isTrue,
       );
     });
-    test(
-        '''When both id and unit are different and have nothing in common then
-        validateUnitCompatibility return false''',
-        () {
+
+    test('''When the id passes back orientation then
+        validateUnitCompatibility return true''', () {
       expect(
-        validateUnitCompatibility(SensorId.gyroscope, Unit.kiloPascal),
-        isFalse,
+        validateUnitCompatibility(
+          SensorId.orientation,
+          Unit.radians,
+        ),
+        isTrue,
       );
     });
+
+    test('''When the id passes back linearAcceleration then
+        validateUnitCompatibility return true''', () {
+      expect(
+        validateUnitCompatibility(
+          SensorId.linearAcceleration,
+          Unit.metersPerSecondSquared,
+        ),
+        isTrue,
+      );
+    });
+
+    test('''When the id passes back barometer then
+        validateUnitCompatibility return true''', () {
+      expect(
+        validateUnitCompatibility(
+          SensorId.barometer,
+          Unit.hectoPascal,
+        ),
+        isTrue,
+      );
+    });
+
+    test('''When the id passes back thermometer then
+        validateUnitCompatibility return true''', () {
+      expect(
+        validateUnitCompatibility(
+          SensorId.thermometer,
+          Unit.kelvin,
+        ),
+        isTrue,
+      );
+    });
+  });
+
+  test('''When the specified unit does not match the id
+        then validateUnitCompatibility return false''', () {
+    expect(
+      validateUnitCompatibility(SensorId.barometer, Unit.microTeslas),
+      isFalse,
+    );
+  });
+
+  test('''When the given id does not correspond to the unit then
+        validateUnitCompatibility return false''', () {
+    expect(
+      validateUnitCompatibility(SensorId.accelerometer, Unit.kelvin),
+      isFalse,
+    );
+  });
+  test('''When both id and unit are different and have nothing in common then
+        validateUnitCompatibility return false''', () {
+    expect(
+      validateUnitCompatibility(SensorId.gyroscope, Unit.kiloPascal),
+      isFalse,
+    );
   });
 }
