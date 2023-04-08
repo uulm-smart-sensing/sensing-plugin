@@ -14,10 +14,9 @@ import 'generated/api_sensor_manager.dart' show Unit, SensorId;
 bool validatePrecision(int precision) => precision >= 0 && precision <= 10;
 
 /// Variable for validating TimeInterval
-const int almost2WeeksInMilliseconds = 691199000;
+const int almost2WeeksInMilliseconds = 1209599999;
 
 ///
-/// 604800000 + 82800000 +3540000 +59000
 /// Checks whether the passed [interval] is valid.It is valid if the interval
 /// is between 10 and one week, 23 hours, 59 minutes and 59 seconds.The
 /// minimum was not 0 because a sensor can hardly have such high frequencies.
