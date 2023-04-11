@@ -154,7 +154,7 @@ class SensorManager {
 ///Contains both the controller and
 ///the base subscription to the initial stream.
 class StreamPair<T> {
-  final StreamController<T> _streamController = StreamController<T>();
+  final StreamController<T> _streamController = StreamController<T>.broadcast();
   late final StreamSubscription<T> _streamSubscription;
 
   ///Constructor to convert a regular stream to a stream controller.
