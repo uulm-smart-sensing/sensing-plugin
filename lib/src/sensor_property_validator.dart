@@ -6,6 +6,7 @@ import 'generated/api_sensor_manager.dart' show Unit, SensorId;
 /// Example usage:
 /// ```dart
 /// var result = validatePrecision(9);
+/// print(result);
 /// ```
 /// will result in
 /// ```text
@@ -14,7 +15,9 @@ import 'generated/api_sensor_manager.dart' show Unit, SensorId;
 bool validatePrecision(int precision) => precision >= 0 && precision <= 10;
 
 /// Variable for validating TimeInterval
-const int almost2WeeksInMilliseconds = 1209599999;
+/// one week, 23 hours, 59 minutes and 59 seconds is equivalent to
+/// [maxTimeInterval]
+const int maxTimeInterval = 1209599999;
 
 ///
 /// Checks whether the passed [interval] is valid.It is valid if the interval
@@ -24,20 +27,26 @@ const int almost2WeeksInMilliseconds = 1209599999;
 /// Example usage:
 /// ```dart
 /// var result = validateTimeInterval(20);
+/// print(result);
 /// ```
 /// will result in
 /// ```text
 /// true
 /// ```
 bool validateIntervalInMilliseconds(int interval) =>
-    interval >= 10 && interval <= almost2WeeksInMilliseconds;
+    interval >= 10 && interval <= maxTimeInterval;
 
-/// Checks whether the passed [Unit] is valid. It is valid if the
-/// corresponding id returns the corresponding unit.
+///Checks if the matching unit with the corresponding SensorUnit is the
+///same unit
+///
+///For example a SensorId can be an accelerometer and the corresponding Unit is
+///metersPerSecondSquared or gravitationalForce and if the given Unit does not
+///match then [validateUnitCompatibility] returns false.
 ///
 /// Example usage:
 /// ```dart
 /// var result = validateUnit(Accelerometer,MetersPerSecondSquared);
+/// print(result);
 /// ```
 /// will result in
 /// ```text
