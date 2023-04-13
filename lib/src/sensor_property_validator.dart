@@ -5,7 +5,6 @@ import 'generated/api_sensor_manager.dart' show Unit, SensorId;
 ///
 /// Example usage:
 /// ```dart
-/// import 'package:sensing_plugin/src/sensor_property_validator.dart';
 ///
 /// var result = validatePrecision(9);
 /// print(result);
@@ -19,7 +18,7 @@ bool validatePrecision(int precision) => precision >= 0 && precision <= 10;
 /// Variable for validating TimeInterval
 /// one week, 23 hours, 59 minutes and 59 seconds is equivalent to
 /// [maxTimeInterval]
-const int maxTimeInterval = 1209599999;
+const int maxTimeInterval = 691199000;
 
 ///
 /// Checks whether the passed [interval] is valid.It is valid if the interval
@@ -28,7 +27,7 @@ const int maxTimeInterval = 1209599999;
 ///
 /// Example usage:
 /// ```dart
-/// import 'package:sensing_plugin/src/sensor_property_validator.dart';
+///
 /// var result = validateTimeInterval(20);
 /// print(result);
 /// ```
@@ -39,8 +38,8 @@ const int maxTimeInterval = 1209599999;
 bool validateIntervalInMilliseconds(int interval) =>
     interval >= 10 && interval <= maxTimeInterval;
 
-///Checks if the matching unit with the corresponding SensorUnit is the
-///same unit
+///Checks if the matching unit with the corresponding SensorId is the
+///same category/compatible.
 ///
 ///For example a SensorId can be an accelerometer and the corresponding Unit is
 ///metersPerSecondSquared or gravitationalForce and if the given Unit does not
@@ -48,9 +47,10 @@ bool validateIntervalInMilliseconds(int interval) =>
 ///
 /// Example usage:
 /// ```dart
-/// import 'package:sensing_plugin/src/sensor_property_validator.dart';
 ///
-/// var result = validateUnit(Accelerometer,MetersPerSecondSquared);
+/// var result = validateUnit(SensorId.Accelerometer,
+/// Unit.MetersPerSecondSquared);
+///
 /// print(result);
 /// ```
 /// will result in
