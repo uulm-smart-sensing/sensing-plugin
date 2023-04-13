@@ -5,6 +5,8 @@ import 'generated/api_sensor_manager.dart' show Unit, SensorId;
 ///
 /// Example usage:
 /// ```dart
+/// import 'package:sensing_plugin/src/sensor_property_validator.dart';
+///
 /// var result = validatePrecision(9);
 /// print(result);
 /// ```
@@ -26,6 +28,7 @@ const int maxTimeInterval = 1209599999;
 ///
 /// Example usage:
 /// ```dart
+/// import 'package:sensing_plugin/src/sensor_property_validator.dart';
 /// var result = validateTimeInterval(20);
 /// print(result);
 /// ```
@@ -45,6 +48,8 @@ bool validateIntervalInMilliseconds(int interval) =>
 ///
 /// Example usage:
 /// ```dart
+/// import 'package:sensing_plugin/src/sensor_property_validator.dart';
+///
 /// var result = validateUnit(Accelerometer,MetersPerSecondSquared);
 /// print(result);
 /// ```
@@ -55,6 +60,7 @@ bool validateIntervalInMilliseconds(int interval) =>
 bool validateUnitCompatibility(SensorId id, Unit unit) {
   switch (id) {
     case SensorId.accelerometer:
+    case SensorId.linearAcceleration:
       return unit == Unit.metersPerSecondSquared ||
           unit == Unit.gravitationalForce;
     case SensorId.gyroscope:
@@ -63,9 +69,6 @@ bool validateUnitCompatibility(SensorId id, Unit unit) {
       return unit == Unit.microTeslas;
     case SensorId.orientation:
       return unit == Unit.radians || unit == Unit.degrees;
-    case SensorId.linearAcceleration:
-      return unit == Unit.metersPerSecondSquared ||
-          unit == Unit.gravitationalForce;
     case SensorId.barometer:
       return unit == Unit.hectoPascal ||
           unit == Unit.kiloPascal ||
