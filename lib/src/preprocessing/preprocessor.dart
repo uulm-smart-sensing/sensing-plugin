@@ -10,17 +10,19 @@ import 'unit_converter.dart';
 /// [SensorData.data]:
 /// - converting the unit from [SensorData.unit] to [SensorConfig.targetUnit]
 /// - converting the precision to [SensorConfig.targetPrecision]
-/// A copy of [sensorData] with the processed values and the adjusted
-/// precision is returned.
+///
+/// [SensorData.unit] and [SensorData.maxPrecision] are set to
+/// [SensorConfig.targetUnit] and [SensorConfig.targetPrecision] of the passed
+/// [sensorConfig].
+///
+/// The passed [sensorData] object is adjusted accordingly and returned.
 ///
 /// Examples:
 /// ```dart
-/// var preprocessor = Preprocessor(
-///   config: const SensorConfig(
-///     targetUnit: Unit.celsius,
-///     targetPrecision: 1,
-///     timeInterval: Duration(seconds: 1),
-///   ),
+/// var config = const SensorConfig(
+///   targetUnit: Unit.celsius,
+///   targetPrecision: 1,
+///   timeInterval: Duration(seconds: 1),
 /// );
 ///
 /// var sensorData = SensorData(
@@ -32,13 +34,18 @@ import 'unit_converter.dart';
 ///   ],
 ///   maxPrecision: 2,
 ///   unit: Unit.fahrenheit,
+///   timestampInMicroseconds: 123456789,
 /// );
-/// var processedData = preprocessor.processData(sensorData);
+/// var processedData = processData(
+///   sensorData: sensorData,
+///   sensorConfig: config,
+/// );
 /// // processedData is:
 /// // SensorData(
 /// //   data: [37.8, 43.3, 48.9],
 /// //   maxPrecision: 1,
 /// //   unit: Unit.fahrenheit,
+/// //   timestampInMicroseconds: 123456789,
 /// // )
 /// ```
 /// It is also possible to use for processing streams of sensor data e.g:
