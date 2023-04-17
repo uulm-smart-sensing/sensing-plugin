@@ -34,6 +34,7 @@ class SensorWidget extends StatefulWidget {
 class _SensorWidgetState extends State<SensorWidget> {
   var _isAvailable = false;
   var _isRunning = false;
+  final _targetPrecision = 2;
 
   SensorDataContainer? dataContainer;
 
@@ -58,14 +59,15 @@ class _SensorWidgetState extends State<SensorWidget> {
       id: widget._sensorId,
       config: SensorConfig(
         targetUnit: sensorIdToTargetUnit[widget._sensorId]!,
-        targetPrecision: 3,
-        timeInterval: const Duration(milliseconds: 50),
+        targetPrecision: _targetPrecision,
+        timeInterval: const Duration(milliseconds: 100),
       ),
     );
     if (result == SensorTaskResult.success) {
       setState(() {
         dataContainer = SensorDataContainer(
           stream: SensorManager().getSensorStream(widget._sensorId)!,
+          displayedDecimalPlaces: _targetPrecision,
         );
       });
     }
