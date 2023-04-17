@@ -79,6 +79,12 @@ class SensorManager {
   Future<SensorInfo> getSensorInfo(SensorId id) async =>
       SensorManagerApi().getSensorInfo(id);
 
+  /// Returns the stored [SensorConfig] for the passed [id].
+  ///
+  /// If there's no [SensorConfig] associated with the passed [id], null is
+  /// returned.
+  SensorConfig? getSensorConfig(SensorId id) => _sensorIdToSensorConfig[id];
+
   /// Starts the tracking of a sensor with the passed [id].
   ///
   /// If the tracking is started successfully, the passed [config] is stored and

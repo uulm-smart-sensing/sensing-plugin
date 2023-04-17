@@ -6,6 +6,23 @@ import 'package:sensing_plugin/sensing_plugin.dart';
 
 import 'time_interval_picker.dart';
 
+const unitToStringRepresentation = {
+  Unit.metersPerSecondSquared: "m/s^2",
+  Unit.gravitationalForce: "G",
+  Unit.radiansPerSecond: "rad/s",
+  Unit.degreesPerSecond: "deg/s",
+  Unit.microTeslas: "µT",
+  Unit.radians: "rad",
+  Unit.degrees: "deg",
+  Unit.hectoPascal: "hPa",
+  Unit.kiloPascal: "kPa",
+  Unit.bar: "Bar",
+  Unit.celsius: "°C",
+  Unit.fahrenheit: "°F",
+  Unit.kelvin: "K",
+  Unit.unitless: "",
+};
+
 class SensorInfoWidget extends StatefulWidget {
   final SensorId _sensorId;
 
@@ -33,9 +50,25 @@ class _SensorInfoWidgetState extends State<SensorInfoWidget> {
 
           if (snapshot.hasData) {
             var sensorInfo = SensorInfo.decode(jsonDecode(snapshot.data!));
+            var sensorConfig =
+                SensorManager().getSensorConfig(widget._sensorId)!;
+            var sensorInfoUnitText =
+                unitToStringRepresentation[sensorInfo.unit];
+            var sensorConfigUnitText =
+                unitToStringRepresentation[sensorConfig.targetUnit]!;
             return Column(
               children: [
-                Text("Unit: ${sensorInfo.unit.name}"),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("Unit: $sensorInfoUnitText"),
+                    const Icon(
+                      Icons.arrow_forward_rounded,
+                      size: 22,
+                    ),
+                    Text(sensorConfigUnitText),
+                  ],
+                ),
                 Text("Accuracy: ${sensorInfo.accuracy.name}"),
                 Text("Interval: ${sensorInfo.timeIntervalInMilliseconds} ms"),
                 const SizedBox(height: 10),
