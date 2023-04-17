@@ -13,7 +13,7 @@ import 'generated/api_sensor_manager.dart'
         SensorInfo,
         ResultWrapper,
         SensorTaskResult;
-import 'preprocessing/preprocessor.dart';
+import 'preprocessing/sensor_config.dart';
 
 /// Singleton sensor manager class
 class SensorManager {
@@ -24,9 +24,9 @@ class SensorManager {
   final Map<SensorId, StreamPair<SensorData>> _sensorDataStreams =
       <SensorId, StreamPair<SensorData>>{};
 
-  /// Map Object with a SensorId and a Preprocessor
-  final Map<SensorId, Preprocessor> _sensorIdToPreprocessor =
-      <SensorId, Preprocessor>{};
+  /// The defined [SensorConfig] for a [SensorId] used by the preprocessing.
+  final Map<SensorId, SensorConfig> _sensorIdToSensorConfig =
+      <SensorId, SensorConfig>{};
 
   static final SensorManager _singleton = SensorManager._internal();
 
