@@ -53,12 +53,11 @@ class _SensorInfoWidgetState extends State<SensorInfoWidget> {
                       return;
                     }
 
-                    var result = await SensorManager()
-                        .changeSensorTimeInterval(
-                          widget._sensorId,
+                    var result = await SensorManager().changeSensorTimeInterval(
+                      id: widget._sensorId,
+                      timeIntervalInMilliseconds:
                           newDateTime.millisecondsSinceEpoch,
-                        )
-                        .then((value) => value.state);
+                    );
 
                     if (result == SensorTaskResult.success) {
                       setState(() {});
