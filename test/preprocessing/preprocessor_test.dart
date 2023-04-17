@@ -52,30 +52,33 @@ void main() {
     expect(preprocessedData.data, equals([37.8, 43.3, 48.9]));
   });
 
-  test('When SensorData object is preprocessed, then unit stays the same', () {
-    var config = const SensorConfig(
-      targetUnit: Unit.celsius,
-      targetPrecision: 1,
-      timeInterval: Duration(seconds: 1),
-    );
+  test(
+    'When SensorData object is preprocessed, then unit is set to targetUnit',
+    () {
+      var config = const SensorConfig(
+        targetUnit: Unit.celsius,
+        targetPrecision: 1,
+        timeInterval: Duration(seconds: 1),
+      );
 
-    var sensorData = SensorData(
-      data: [
-        1,
-        2,
-        3,
-      ],
-      maxPrecision: 5,
-      unit: Unit.celsius,
-      timestampInMicroseconds: 0,
-    );
+      var sensorData = SensorData(
+        data: [
+          1,
+          2,
+          3,
+        ],
+        maxPrecision: 5,
+        unit: Unit.fahrenheit,
+        timestampInMicroseconds: 0,
+      );
 
-    var preprocessedData = processData(
-      sensorData: sensorData,
-      sensorConfig: config,
-    );
-    expect(preprocessedData.unit, equals(Unit.celsius));
-  });
+      var preprocessedData = processData(
+        sensorData: sensorData,
+        sensorConfig: config,
+      );
+      expect(preprocessedData.unit, equals(Unit.celsius));
+    },
+  );
 
   test(
       'When sensor data is preprocessed, then output data has precision of '

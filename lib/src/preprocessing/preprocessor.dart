@@ -75,6 +75,7 @@ SensorData processData({
           ),
         )
         .toList()
+    ..unit = sensorConfig.targetUnit
     ..maxPrecision = sensorConfig.targetPrecision;
   return sensorData;
 }
