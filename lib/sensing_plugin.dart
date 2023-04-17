@@ -6,5 +6,6 @@ export 'src/generated/api_sensor_manager.dart'
         SensorData,
         SensorInfo,
         SensorAccuracy;
+export 'src/preprocessing/sensor_config.dart' show SensorConfig;
 export 'src/preprocessing/unit_converter.dart' show convertUnit;
 export 'src/sensor_manager.dart' show SensorManager;
