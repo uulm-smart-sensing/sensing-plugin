@@ -44,7 +44,7 @@ import 'unit_converter.dart';
 /// // SensorData(
 /// //   data: [37.8, 43.3, 48.9],
 /// //   maxPrecision: 1,
-/// //   unit: Unit.fahrenheit,
+/// //   unit: Unit.celsius,
 /// //   timestampInMicroseconds: 123456789,
 /// // )
 /// ```

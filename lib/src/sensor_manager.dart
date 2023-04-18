@@ -17,7 +17,8 @@ class SensorManager {
   final Map<SensorId, StreamPair<SensorData>> _sensorDataStreams =
       <SensorId, StreamPair<SensorData>>{};
 
-  /// The defined [SensorConfig] for a [SensorId] used by the preprocessing.
+  /// The defined [SensorConfig] for a sensor identified by the [SensorId] used
+  /// by the preprocessing.
   final Map<SensorId, SensorConfig> _sensorIdToSensorConfig =
       <SensorId, SensorConfig>{};
 
@@ -79,7 +80,7 @@ class SensorManager {
   Future<SensorInfo> getSensorInfo(SensorId id) async =>
       SensorManagerApi().getSensorInfo(id);
 
-  /// Returns the stored [SensorConfig] for the passed [id].
+  /// Returns the stored [SensorConfig] for the sensor with the passed [id].
   ///
   /// If there's no [SensorConfig] associated with the passed [id], null is
   /// returned.
