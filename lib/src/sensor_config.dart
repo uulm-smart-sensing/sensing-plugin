@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart' show immutable;
 
-import '../generated/api_sensor_manager.dart' show Unit;
+import 'generated/api_sensor_manager.dart' show Unit;
 
 /// Configuration of a sensor's output data.
 @immutable

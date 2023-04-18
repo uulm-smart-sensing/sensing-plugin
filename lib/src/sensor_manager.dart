@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'generated/api_sensor_manager.dart'
     show SensorManagerApi, SensorData, SensorId, SensorInfo, SensorTaskResult;
 import 'preprocessing/preprocessor.dart';
-import 'preprocessing/sensor_config.dart';
+import 'sensor_config.dart';
 
 /// Singleton sensor manager class
 class SensorManager {

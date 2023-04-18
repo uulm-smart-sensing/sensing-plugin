@@ -1,6 +1,6 @@
 import '../generated/api_sensor_manager.dart' show SensorData;
+import '../sensor_config.dart';
 import 'precision_converter.dart';
-import 'sensor_config.dart';
 import 'unit_converter.dart';
 
 /// Processes the [SensorData.data] of the passed [sensorData] object
