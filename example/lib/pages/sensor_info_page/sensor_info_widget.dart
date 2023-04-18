@@ -45,7 +45,6 @@ class _SensorInfoWidgetState extends State<SensorInfoWidget> {
           if (snapshot.hasData) {
             var sensorInfo = snapshot.data!;
             return Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 _getSensorInfoColumn(sensorInfo),
                 const SizedBox(height: 10),
@@ -69,22 +68,27 @@ class _SensorInfoWidgetState extends State<SensorInfoWidget> {
     var sensorInfoUnitText = unitToStringRepresentation[sensorInfo.unit];
     var sensorConfigUnitText =
         unitToStringRepresentation[sensorConfig.targetUnit]!;
-    return Column(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Unit: $sensorInfoUnitText"),
-            const Icon(
-              Icons.arrow_forward_rounded,
-              size: 22,
+            Row(
+              children: [
+                Text("Unit: $sensorInfoUnitText"),
+                const Icon(
+                  Icons.arrow_forward_rounded,
+                  size: 22,
+                ),
+                Text(sensorConfigUnitText),
+              ],
             ),
-            Text(sensorConfigUnitText),
+            Text("Accuracy: ${sensorInfo.accuracy.name}"),
+            Text(
+              "Interval: ${sensorInfo.timeIntervalInMilliseconds} ms",
+            ),
           ],
-        ),
-        Text("Accuracy: ${sensorInfo.accuracy.name}"),
-        Text(
-          "Interval: ${sensorInfo.timeIntervalInMilliseconds} ms",
         ),
       ],
     );
