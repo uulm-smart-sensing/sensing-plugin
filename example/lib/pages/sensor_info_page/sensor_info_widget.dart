@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:sensing_plugin/sensing_plugin.dart';
@@ -7,7 +5,7 @@ import 'package:sensing_plugin/sensing_plugin.dart';
 import 'time_interval_picker.dart';
 
 const unitToStringRepresentation = {
-  Unit.metersPerSecondSquared: "m/s^2",
+  Unit.metersPerSecondSquared: "m/s²",
   Unit.gravitationalForce: "G",
   Unit.radiansPerSecond: "rad/s",
   Unit.degreesPerSecond: "deg/s",
@@ -35,11 +33,7 @@ class SensorInfoWidget extends StatefulWidget {
 class _SensorInfoWidgetState extends State<SensorInfoWidget> {
   @override
   Widget build(BuildContext context) => FutureBuilder(
-        future: Future.sync(() async {
-          var sensorInfo =
-              await SensorManager().getSensorInfo(widget._sensorId);
-          return jsonEncode(sensorInfo.encode());
-        }),
+        future: _getSensorInfo(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return const Text(
@@ -49,54 +43,13 @@ class _SensorInfoWidgetState extends State<SensorInfoWidget> {
           }
 
           if (snapshot.hasData) {
-            var sensorInfo = SensorInfo.decode(jsonDecode(snapshot.data!));
-            var sensorConfig =
-                SensorManager().getSensorConfig(widget._sensorId)!;
-            var sensorInfoUnitText =
-                unitToStringRepresentation[sensorInfo.unit];
-            var sensorConfigUnitText =
-                unitToStringRepresentation[sensorConfig.targetUnit]!;
+            var sensorInfo = snapshot.data!;
             return Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("Unit: $sensorInfoUnitText"),
-                    const Icon(
-                      Icons.arrow_forward_rounded,
-                      size: 22,
-                    ),
-                    Text(sensorConfigUnitText),
-                  ],
-                ),
-                Text("Accuracy: ${sensorInfo.accuracy.name}"),
-                Text("Interval: ${sensorInfo.timeIntervalInMilliseconds} ms"),
+                _getSensorInfoColumn(sensorInfo),
                 const SizedBox(height: 10),
-                MaterialButton(
-                  color: Colors.blue,
-                  shape: const StadiumBorder(),
-                  child: const Text("Update interval"),
-                  onPressed: () async {
-                    var newDateTime = await updateSensorInterval(
-                      context,
-                      sensorInfo.timeIntervalInMilliseconds,
-                    );
-
-                    if (newDateTime == null) {
-                      return;
-                    }
-
-                    var result = await SensorManager().changeSensorTimeInterval(
-                      id: widget._sensorId,
-                      timeIntervalInMilliseconds:
-                          newDateTime.millisecondsSinceEpoch,
-                    );
-
-                    if (result == SensorTaskResult.success) {
-                      setState(() {});
-                    }
-                  },
-                ),
+                _getUpdateIntervalButton(sensorInfo),
               ],
             );
           }
@@ -105,6 +58,60 @@ class _SensorInfoWidgetState extends State<SensorInfoWidget> {
             "Loading sensor information ...",
             style: TextStyle(color: Colors.grey),
           );
+        },
+      );
+
+  Future<SensorInfo> _getSensorInfo() =>
+      SensorManager().getSensorInfo(widget._sensorId);
+
+  Widget _getSensorInfoColumn(SensorInfo sensorInfo) {
+    var sensorConfig = SensorManager().getSensorConfig(widget._sensorId)!;
+    var sensorInfoUnitText = unitToStringRepresentation[sensorInfo.unit];
+    var sensorConfigUnitText =
+        unitToStringRepresentation[sensorConfig.targetUnit]!;
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text("Unit: $sensorInfoUnitText"),
+            const Icon(
+              Icons.arrow_forward_rounded,
+              size: 22,
+            ),
+            Text(sensorConfigUnitText),
+          ],
+        ),
+        Text("Accuracy: ${sensorInfo.accuracy.name}"),
+        Text(
+          "Interval: ${sensorInfo.timeIntervalInMilliseconds} ms",
+        ),
+      ],
+    );
+  }
+
+  Widget _getUpdateIntervalButton(SensorInfo sensorInfo) => MaterialButton(
+        color: Colors.blue,
+        shape: const StadiumBorder(),
+        child: const Text("Update interval"),
+        onPressed: () async {
+          var newDateTime = await updateSensorInterval(
+            context,
+            sensorInfo.timeIntervalInMilliseconds,
+          );
+
+          if (newDateTime == null) {
+            return;
+          }
+
+          var result = await SensorManager().changeSensorTimeInterval(
+            id: widget._sensorId,
+            timeIntervalInMilliseconds: newDateTime.millisecondsSinceEpoch,
+          );
+
+          if (result == SensorTaskResult.success) {
+            setState(() {});
+          }
         },
       );
 }
