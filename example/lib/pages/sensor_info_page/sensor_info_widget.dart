@@ -76,12 +76,12 @@ class _SensorInfoWidgetState extends State<SensorInfoWidget> {
           children: [
             Row(
               children: [
-                Text("Unit: $sensorInfoUnitText"),
+                Text("Unit: $sensorInfoUnitText (source)"),
                 const Icon(
                   Icons.arrow_forward_rounded,
                   size: 22,
                 ),
-                Text(sensorConfigUnitText),
+                Text("$sensorConfigUnitText (target)"),
               ],
             ),
             Text("Accuracy: ${sensorInfo.accuracy.name}"),
