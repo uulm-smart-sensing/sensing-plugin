@@ -6,6 +6,7 @@ import 'package:sensing_plugin/sensing_plugin.dart';
 import '../sensor_info_page/sensor_info_page.dart';
 import 'sensor_data_container.dart';
 
+/// Example target [Unit]s for each [SensorId] using by this demo app.
 const sensorIdToTargetUnit = {
   SensorId.accelerometer: Unit.metersPerSecondSquared,
   SensorId.gyroscope: Unit.degreesPerSecond,
