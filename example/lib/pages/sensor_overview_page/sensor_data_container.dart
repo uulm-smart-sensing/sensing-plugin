@@ -5,8 +5,13 @@ import 'package:sensing_plugin/sensing_plugin.dart';
 
 class SensorDataContainer extends StatefulWidget {
   final Stream<SensorData> stream;
+  final int displayedDecimalPlaces;
 
-  const SensorDataContainer({super.key, required this.stream});
+  const SensorDataContainer({
+    super.key,
+    required this.stream,
+    required this.displayedDecimalPlaces,
+  });
 
   @override
   State<SensorDataContainer> createState() => _SensorDataContainerState();
@@ -58,30 +63,30 @@ class _SensorDataContainerState extends State<SensorDataContainer> {
       ],
     );
   }
-}
 
-Widget formatData(List<double> data) {
-  var widgets = <Widget>[];
-  while (data.isNotEmpty) {
-    widgets.add(formatRow(data.take(3)));
-    data.removeRange(0, min(3, data.length));
+  Widget formatData(List<double> data) {
+    var widgets = <Widget>[];
+    while (data.isNotEmpty) {
+      widgets.add(formatRow(data.take(3)));
+      data.removeRange(0, min(3, data.length));
+    }
+    return Column(
+      children: widgets,
+    );
   }
-  return Column(
-    children: widgets,
-  );
-}
 
-Widget formatRow(Iterable<double> data) => Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        ...data.map(
-          (value) => Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Text(
-              value.toStringAsFixed(3),
-              textAlign: TextAlign.center,
+  Widget formatRow(Iterable<double> data) => Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          ...data.map(
+            (value) => Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Text(
+                value.toStringAsFixed(widget.displayedDecimalPlaces),
+                textAlign: TextAlign.center,
+              ),
             ),
           ),
-        ),
-      ],
-    );
+        ],
+      );
+}
