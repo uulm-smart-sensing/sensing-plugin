@@ -1,19 +1,12 @@
-// ignore_for_file: unused_field
-
 import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/services.dart';
 
 import 'generated/api_sensor_manager.dart'
-    show
-        SensorManagerApi,
-        SensorData,
-        SensorId,
-        SensorInfo,
-        ResultWrapper,
-        SensorTaskResult;
+    show SensorManagerApi, SensorData, SensorId, SensorInfo, SensorTaskResult;
 import 'preprocessing/preprocessor.dart';
+import 'sensor_config.dart';
 
 /// Singleton sensor manager class
 class SensorManager {
@@ -24,9 +17,10 @@ class SensorManager {
   final Map<SensorId, StreamPair<SensorData>> _sensorDataStreams =
       <SensorId, StreamPair<SensorData>>{};
 
-  /// Map Object with a SensorId and a Preprocessor
-  final Map<SensorId, Preprocessor> _sensorIdToPreprocessor =
-      <SensorId, Preprocessor>{};
+  /// The defined [SensorConfig] for a sensor identified by the [SensorId] used
+  /// by the preprocessing.
+  final Map<SensorId, SensorConfig> _sensorIdToSensorConfig =
+      <SensorId, SensorConfig>{};
 
   static final SensorManager _singleton = SensorManager._internal();
 
@@ -49,27 +43,63 @@ class SensorManager {
   Future<bool> isSensorAvailable(SensorId id) async =>
       SensorManagerApi().isSensorAvailable(id);
 
-  /// Changes the interval of the sensor event channel with the passed
-  /// [SensorId] to [timeIntervalInMilliseconds] ms.
-  Future<ResultWrapper> changeSensorTimeInterval(
-    SensorId id,
-    int timeIntervalInMilliseconds,
-  ) async =>
-      SensorManagerApi()
-          .changeSensorTimeInterval(id, timeIntervalInMilliseconds);
+  /// Changes the interval of the sensor with the passed [id] to
+  /// [timeIntervalInMilliseconds] ms.
+  ///
+  /// The corresponding [SensorConfig] is adjusted accordingly, if the change
+  /// was successful.
+  ///
+  /// If the sensor is not already being tracked
+  /// [SensorTaskResult.notTrackingSensor] is returned.
+  Future<SensorTaskResult> changeSensorTimeInterval({
+    required SensorId id,
+    required int timeIntervalInMilliseconds,
+  }) async {
+    if (!_usedSensors.contains(id)) {
+      return SensorTaskResult.notTrackingSensor;
+    }
+
+    var result = await SensorManagerApi()
+        .changeSensorTimeInterval(id, timeIntervalInMilliseconds)
+        .then((value) => value.state);
+
+    if (result == SensorTaskResult.success) {
+      var oldConfig = _sensorIdToSensorConfig[id]!;
+      var newConfig = oldConfig.copyWith(
+        timeInterval: Duration(
+          milliseconds: timeIntervalInMilliseconds,
+        ),
+      );
+      _sensorIdToSensorConfig[id] = newConfig;
+    }
+
+    return result;
+  }
 
   /// Retrieves information about the sensor with the passed [SensorId].
   Future<SensorInfo> getSensorInfo(SensorId id) async =>
       SensorManagerApi().getSensorInfo(id);
 
-  /// Starts the tracking of a [SensorId] and returns an matching
-  /// [SensorTaskResult].
-  Future<SensorTaskResult> startSensorTracking(
-    SensorId id,
-    int timeIntervalInMilliseconds,
-  ) async {
-    /// Checks whether the sensor is in use and outputs a corresponding
-    /// SensorTaskResult
+  /// Returns the stored [SensorConfig] for the sensor with the passed [id].
+  ///
+  /// If there's no [SensorConfig] associated with the passed [id], null is
+  /// returned.
+  SensorConfig? getSensorConfig(SensorId id) => _sensorIdToSensorConfig[id];
+
+  /// Starts the tracking of a sensor with the passed [id].
+  ///
+  /// If the tracking is started successfully, the passed [config] is stored and
+  /// used to configure the time interval and how the sensor data is
+  /// preprocessed.
+  ///
+  /// If the sensor is already being tracked
+  /// [SensorTaskResult.alreadyTrackingSensor] is returned.
+  /// If the sensor is not available (according to [isSensorAvailable])
+  /// [SensorTaskResult.sensorNotAvailable] is returned.
+  Future<SensorTaskResult> startSensorTracking({
+    required SensorId id,
+    required SensorConfig config,
+  }) async {
     if (_usedSensors.contains(id)) {
       return SensorTaskResult.alreadyTrackingSensor;
     }
@@ -78,36 +108,43 @@ class SensorManager {
       return SensorTaskResult.sensorNotAvailable;
     }
 
-    /// Starts tracking it on the specific platform and returns a
-    /// SensorTaskResult
-    var startTrack = await SensorManagerApi()
-        .startSensorTracking(id, timeIntervalInMilliseconds)
+    var result = await SensorManagerApi()
+        .startSensorTracking(id, config.timeInterval.inMilliseconds)
         .then((value) => value.state);
 
-    /// Checks if the expected result from startTrack is a success
-    if (startTrack == SensorTaskResult.success) {
-      /// Creates an eventChannel to get the sensorData from native Side and
-      /// saves it in [_sensorDataStreams]
+    if (result == SensorTaskResult.success) {
+      // Creates an eventChannel to get the sensorData from native side and
+      // saves it in _sensorDataStreams
       var sensorName = id.name;
       var eventChannel = EventChannel('sensors/$sensorName');
-      var eventStream = eventChannel
-          .receiveBroadcastStream()
-          .map((data) => SensorData.decode(data as Object));
+      var eventStream = eventChannel.receiveBroadcastStream().map(
+            (data) => processData(
+              sensorData: SensorData.decode(data as Object),
+              sensorConfig: config,
+            ),
+          );
       _sensorDataStreams[id] = StreamPair(eventStream);
       _usedSensors.add(id);
+      _sensorIdToSensorConfig[id] = config;
     }
-    return startTrack;
+
+    return result;
   }
 
-  /// Stops the tracking from Sensor and returns an bool.
+  /// Stops the tracking of a sensor with the passed [id].
+  ///
+  /// If the tracking is stopped successfully the stored [SensorConfig] is
+  /// removed.
+  ///
+  /// If the sensor is not already being tracked
+  /// [SensorTaskResult.notTrackingSensor] is returned.
   Future<SensorTaskResult> stopSensorTracking(SensorId id) async {
-    /// Checks if the Sensor is being used.
     if (!_usedSensors.contains(id)) {
       return SensorTaskResult.notTrackingSensor;
     }
 
-    ///Stops Flutter specific sensor subscribtion first.
-    ///Otherwise the speficic platform returns an error.
+    // Stops Flutter specific sensor subscribtion first.
+    // Otherwise the speficic platform returns an error.
     try {
       await _sensorDataStreams[id]?._streamSubscription.cancel();
       await _sensorDataStreams[id]?._streamController.close();
@@ -116,21 +153,18 @@ class SensorManager {
       return SensorTaskResult.failure;
     }
 
-    /// Stops tracking on the specific platform and returns a
-    /// SensorTaskResult
-    var stopTrack = await SensorManagerApi()
+    var result = await SensorManagerApi()
         .stopSensorTracking(id)
         .then((value) => value.state);
 
-    if (stopTrack == SensorTaskResult.success) {
+    if (result == SensorTaskResult.success) {
       _usedSensors.remove(id);
       _sensorDataStreams.remove(id);
+      _sensorIdToSensorConfig.remove(id);
     }
 
-    return stopTrack;
+    return result;
   }
-
-  /// These methods below are probably not to be used.
 
   /// returns all Sensor that are being used.
   List<SensorId> getUsedSensors() => _usedSensors;

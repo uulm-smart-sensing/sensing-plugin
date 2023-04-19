@@ -6,6 +6,17 @@ import 'package:sensing_plugin/sensing_plugin.dart';
 import '../sensor_info_page/sensor_info_page.dart';
 import 'sensor_data_container.dart';
 
+/// Example target [Unit]s for each [SensorId] using by this demo app.
+const sensorIdToTargetUnit = {
+  SensorId.accelerometer: Unit.metersPerSecondSquared,
+  SensorId.gyroscope: Unit.degreesPerSecond,
+  SensorId.magnetometer: Unit.microTeslas,
+  SensorId.orientation: Unit.degrees,
+  SensorId.linearAcceleration: Unit.metersPerSecondSquared,
+  SensorId.barometer: Unit.hectoPascal,
+  SensorId.thermometer: Unit.celsius,
+};
+
 class SensorWidget extends StatefulWidget {
   final SensorId _sensorId;
   final bool _showWhenUnavailable;
@@ -24,6 +35,7 @@ class SensorWidget extends StatefulWidget {
 class _SensorWidgetState extends State<SensorWidget> {
   var _isAvailable = false;
   var _isRunning = false;
+  final _targetPrecision = 2;
 
   SensorDataContainer? dataContainer;
 
@@ -44,12 +56,19 @@ class _SensorWidgetState extends State<SensorWidget> {
   }
 
   Future<SensorTaskResult> _startSensor() async {
-    var result =
-        await SensorManager().startSensorTracking(widget._sensorId, 50);
+    var result = await SensorManager().startSensorTracking(
+      id: widget._sensorId,
+      config: SensorConfig(
+        targetUnit: sensorIdToTargetUnit[widget._sensorId]!,
+        targetPrecision: _targetPrecision,
+        timeInterval: const Duration(milliseconds: 100),
+      ),
+    );
     if (result == SensorTaskResult.success) {
       setState(() {
         dataContainer = SensorDataContainer(
           stream: SensorManager().getSensorStream(widget._sensorId)!,
+          displayedDecimalPlaces: _targetPrecision,
         );
       });
     }
