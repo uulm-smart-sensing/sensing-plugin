@@ -64,22 +64,15 @@ enum SensorUnit {
   gravitationalForce,
   // Angular velocity
   radiansPerSecond,
-  degreesPerSecond,
   // Magnetic flux density
   microTeslas,
   // Angle
   radians,
-  degrees,
   // Pressure
   hectoPascal,
   kiloPascal,
-  bar,
   // Temperature
   celsius,
-  fahrenheit,
-  kelvin,
-  // Miscellaneous
-  unitless,
 }
 
 /// Wrappes [SensorTaskResult] enum.
