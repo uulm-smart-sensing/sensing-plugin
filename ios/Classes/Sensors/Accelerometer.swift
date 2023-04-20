@@ -10,18 +10,18 @@ import CoreMotion
 
 /**
  The object for starting and stopping the accelerometer sensor and receiving its sensor data.
- 
+
  The ``AccelerometerHandler``wraps the part of the ``CMMotionManager``,
  which handles the accelerometer  sensor.
- 
+
  So this handler provide methods to ...
  - check, whether the accelerometer is available or already used
  - change the time interval at which the accelerometer data are collected
  - "start" and "stop" the accelerometer, so whether the accelerometer should provide acceleromation data or not
- 
+
  - Important: Therefor it conforms the ``ISensorStreamHandler`` protocol, so it
  can be called and managed by the ``SensorManager``.
- 
+
  */
 public class AccelerometerHandler: NSObject, ISensorStreamHandler {
 
@@ -58,7 +58,7 @@ public class AccelerometerHandler: NSObject, ISensorStreamHandler {
         // convert time interval from seconds to milliseconds
         let timeIntervalInMilliSec: Int64 = Int64(ManagerCollection.getMotionManager().deviceMotionUpdateInterval
                                                   * 1000)
-        return SensorInfo(unit: Unit.gravitationalForce, accuracy: SensorAccuracy.high,
+        return SensorInfo(unit: SensorUnit.gravitationalForce, accuracy: SensorAccuracy.high,
                           timeIntervalInMilliseconds: timeIntervalInMilliSec)
     }
 
@@ -79,7 +79,7 @@ public class AccelerometerHandler: NSObject, ISensorStreamHandler {
                     // wrap the sensor values to `SensorData` object and "send" it to the event stream
                     let sensorData = SensorData(data: [xValue, yValue, zValue],
                                                 maxPrecision: -1,
-                                                unit: Unit.gravitationalForce,
+                                                unit: SensorUnit.gravitationalForce,
                                                 timestampInMicroseconds: timestamp)
 
                     events(sensorData.toList())

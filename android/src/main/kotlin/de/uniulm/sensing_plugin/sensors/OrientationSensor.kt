@@ -5,7 +5,7 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorAccuracy
-import de.uniulm.sensing_plugin.generated.ApiSensorManager.Unit
+import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorUnit
 import de.uniulm.sensing_plugin.getAccuracyEnumFromValue
 import de.uniulm.sensing_plugin.streamhandlers.SensorStreamHandler
 
@@ -16,7 +16,7 @@ class OrientationSensor(
     sensorManager,
     sensorIds,
     timeIntervalInMilliseconds,
-    Unit.RADIANS
+    SensorUnit.RADIANS
 ),
     SensorEventListener {
 

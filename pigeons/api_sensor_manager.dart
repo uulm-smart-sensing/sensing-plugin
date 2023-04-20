@@ -58,7 +58,7 @@ enum SensorId {
 }
 
 /// The unit of the sensor output data
-enum Unit {
+enum SensorUnit {
   // Acceleration
   metersPerSecondSquared,
   gravitationalForce,
@@ -127,7 +127,7 @@ class SensorInfo {
     this.timeIntervalInMilliseconds,
   );
 
-  Unit unit;
+  SensorUnit unit;
   SensorAccuracy accuracy;
   int timeIntervalInMilliseconds;
 }
@@ -144,7 +144,7 @@ class SensorData {
 
   List<double?> data;
   int maxPrecision;
-  Unit unit;
+  SensorUnit unit;
   int timestampInMicroseconds;
 }
 

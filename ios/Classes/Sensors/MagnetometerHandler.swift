@@ -45,7 +45,7 @@ public class MagnetometerHandler: NSObject, ISensorStreamHandler {
         // convert time interval from seconds to milliseconds
         let timeIntervalInMilliSec: Int64 = Int64(ManagerCollection.getMotionManager().magnetometerUpdateInterval
                                                   * 1000)
-        return SensorInfo(unit: Unit.microTeslas, accuracy: SensorAccuracy.high,
+        return SensorInfo(unit: SensorUnit.microTeslas, accuracy: SensorAccuracy.high,
                           timeIntervalInMilliseconds: timeIntervalInMilliSec)
     }
 
@@ -66,7 +66,7 @@ public class MagnetometerHandler: NSObject, ISensorStreamHandler {
                     // wrap the sensor values to `SensorData` object and "send" it to the event stream
                     let sensorData = SensorData(data: [xValue, yValue, zValue],
                                                 maxPrecision: -1,
-                                                unit: Unit.microTeslas,
+                                                unit: SensorUnit.microTeslas,
                                                 timestampInMicroseconds: timestamp)
 
                     events(sensorData.toList())

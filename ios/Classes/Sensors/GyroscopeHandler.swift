@@ -57,7 +57,7 @@ public class GyroscopeHandler: NSObject, ISensorStreamHandler {
     func getSensorInfo() -> SensorInfo {
         // convert time interval from seconds to milliseconds
         let timeIntervalInMilliSec: Int64 = Int64(ManagerCollection.getMotionManager().gyroUpdateInterval * 1000)
-        return SensorInfo(unit: Unit.radiansPerSecond, accuracy: SensorAccuracy.high,
+        return SensorInfo(unit: SensorUnit.radiansPerSecond, accuracy: SensorAccuracy.high,
                           timeIntervalInMilliseconds: timeIntervalInMilliSec)
     }
 
@@ -80,7 +80,7 @@ public class GyroscopeHandler: NSObject, ISensorStreamHandler {
                     // wrap the sensor values to `SensorData` object and "send" it to the event stream
                     let sensorData = SensorData(data: [xValue, yValue, zValue],
                                                 maxPrecision: -1,
-                                                unit: Unit.radiansPerSecond,
+                                                unit: SensorUnit.radiansPerSecond,
                                                 timestampInMicroseconds: timestamp)
 
                     events(sensorData.toList())
