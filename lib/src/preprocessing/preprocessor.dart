@@ -1,26 +1,26 @@
-import '../generated/api_sensor_manager.dart' show SensorData;
+import '../generated/api_sensor_manager.dart' show SensorData, SensorUnit;
 import '../sensor_config.dart';
 import 'precision_converter.dart';
-import 'unit_converter.dart';
+import 'processed_sensor_data.dart';
+import 'unit.dart';
 
-/// Processes the [SensorData.data] of the passed [sensorData] object
-/// according to the passed [sensorConfig].
+/// Processes the passed [sensorData] object according to the passed
+/// [sensorConfig] and returns the result as [ProcessedSensorData].
 ///
-/// The following operations are performed on all non-null elements in
+/// The following operations are performed on all **non-null** elements in
 /// [SensorData.data]:
 /// - converting the unit from [SensorData.unit] to [SensorConfig.targetUnit]
 /// - converting the precision to [SensorConfig.targetPrecision]
+/// - null values are omitted
 ///
-/// [SensorData.unit] and [SensorData.maxPrecision] are set to
+/// [ProcessedSensorData.unit] and [ProcessedSensorData.maxPrecision] are set to
 /// [SensorConfig.targetUnit] and [SensorConfig.targetPrecision] of the passed
 /// [sensorConfig].
-///
-/// The passed [sensorData] object is adjusted accordingly and returned.
 ///
 /// Examples:
 /// ```dart
 /// var config = const SensorConfig(
-///   targetUnit: Unit.celsius,
+///   targetUnit: Temperature.celsius,
 ///   targetPrecision: 1,
 ///   timeInterval: Duration(seconds: 1),
 /// );
@@ -33,7 +33,7 @@ import 'unit_converter.dart';
 ///     120,
 ///   ],
 ///   maxPrecision: 2,
-///   unit: Unit.fahrenheit,
+///   unit: SensorUnit.fahrenheit,
 ///   timestampInMicroseconds: 123456789,
 /// );
 /// var processedData = processData(
@@ -41,41 +41,62 @@ import 'unit_converter.dart';
 ///   sensorConfig: config,
 /// );
 /// // processedData is:
-/// // SensorData(
+/// // ProcessedSensorData(
 /// //   data: [37.8, 43.3, 48.9],
 /// //   maxPrecision: 1,
-/// //   unit: Unit.celsius,
-/// //   timestampInMicroseconds: 123456789,
+/// //   unit: Temperature.celsius,
+/// //   timestamp: DateTime.fromMicrosecondsSinceEpoch(123456789, isUtc: true),
 /// // )
 /// ```
 /// It is also possible to use for processing streams of sensor data e.g:
 /// ```dart
-/// sensorDataStream.
-///   .map(preprocessor.processData)
-///   .listen(...)
+/// sensorDataStream.map(
+///   (sensorData) => processData(sensorData, sensorConfig),
+/// );
 /// ```
-SensorData processData({
-  required SensorData sensorData,
-  required SensorConfig sensorConfig,
-}) {
-  sensorData
-    ..data = sensorData.data
-        .whereType<double>()
-        .map(
-          (value) => convertUnit(
-            value: value,
-            sourceUnit: sensorData.unit,
-            targetUnit: sensorConfig.targetUnit,
-          ),
-        )
-        .map(
-          (value) => convertPrecision(
-            value: value,
-            targetPrecision: sensorConfig.targetPrecision,
-          ),
-        )
-        .toList()
-    ..unit = sensorConfig.targetUnit
-    ..maxPrecision = sensorConfig.targetPrecision;
-  return sensorData;
+ProcessedSensorData processData<T extends Unit<T>>(
+  SensorData sensorData,
+  SensorConfig<T> sensorConfig,
+) =>
+    ProcessedSensorData<T>(
+      data: sensorData.data
+          .whereType<double>()
+          .map(
+            (value) => _sensorUnitToUnit(sensorData.unit)
+                .convertTo(sensorConfig.targetUnit, value),
+          )
+          .map(
+            (value) => convertPrecision(
+              value: value,
+              targetPrecision: sensorConfig.targetPrecision,
+            ),
+          )
+          .toList(),
+      maxPrecision: sensorConfig.targetPrecision,
+      unit: sensorConfig.targetUnit,
+      timestamp: DateTime.fromMicrosecondsSinceEpoch(
+        sensorData.timestampInMicroseconds,
+        isUtc: true,
+      ),
+    );
+
+Unit _sensorUnitToUnit(SensorUnit sensorUnit) {
+  switch (sensorUnit) {
+    case SensorUnit.metersPerSecondSquared:
+      return Acceleration.meterPerSecondSquared;
+    case SensorUnit.gravitationalForce:
+      return Acceleration.gravity;
+    case SensorUnit.radiansPerSecond:
+      return AngularVelocity.radiansPerSecond;
+    case SensorUnit.microTeslas:
+      return MagneticFluxDensity.microTesla;
+    case SensorUnit.radians:
+      return Angle.radians;
+    case SensorUnit.hectoPascal:
+      return Pressure.hectoPascal;
+    case SensorUnit.kiloPascal:
+      return Pressure.kiloPascal;
+    case SensorUnit.celsius:
+      return Temperature.celsius;
+  }
 }

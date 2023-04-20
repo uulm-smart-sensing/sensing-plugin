@@ -1,12 +1,14 @@
 import 'package:flutter/foundation.dart' show immutable;
 
-import 'generated/api_sensor_manager.dart' show Unit;
+import 'preprocessing/unit.dart';
 
 /// Configuration of a sensor's output data.
+///
+/// [T] is the unit category of the unit of this [SensorConfig].
 @immutable
-class SensorConfig {
+class SensorConfig<T extends Unit<T>> {
   /// The [Unit] that the output values should have.
-  final Unit targetUnit;
+  final Unit<T> targetUnit;
 
   /// The number of decimal places which the output values should have.
   final int targetPrecision;
@@ -44,11 +46,11 @@ class SensorConfig {
   /// // )
   /// ```
   SensorConfig copyWith({
-    Unit? targetUnit,
+    Unit<T>? targetUnit,
     int? targetPrecision,
     Duration? timeInterval,
   }) =>
-      SensorConfig(
+      SensorConfig<T>(
         targetUnit: targetUnit ?? this.targetUnit,
         targetPrecision: targetPrecision ?? this.targetPrecision,
         timeInterval: timeInterval ?? this.timeInterval,
