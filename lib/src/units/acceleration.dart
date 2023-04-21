@@ -25,7 +25,7 @@ enum Acceleration implements Unit<Acceleration> {
 
   @override
   double convertTo(Acceleration targetUnit, double value) =>
-      value * _factor / targetUnit._factor;
+      value / _factor * targetUnit._factor;
 
   @override
   String toTextDisplay({bool isShort = false}) => _displayText;

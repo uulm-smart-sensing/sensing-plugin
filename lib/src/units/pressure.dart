@@ -31,7 +31,7 @@ enum Pressure implements Unit<Pressure> {
 
   @override
   double convertTo(Pressure targetUnit, double value) =>
-      value * targetUnit._factor / _factor;
+      value / _factor * targetUnit._factor;
 
   @override
   String toTextDisplay({bool isShort = false}) =>

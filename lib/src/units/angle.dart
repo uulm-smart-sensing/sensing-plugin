@@ -29,7 +29,7 @@ enum Angle implements Unit<Angle> {
 
   @override
   double convertTo(Angle targetUnit, double value) =>
-      value * targetUnit._factor / _factor;
+      value / _factor * targetUnit._factor;
 
   @override
   String toTextDisplay({bool isShort = false}) =>

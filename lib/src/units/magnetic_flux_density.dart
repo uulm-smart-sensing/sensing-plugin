@@ -26,7 +26,7 @@ enum MagneticFluxDensity implements Unit<MagneticFluxDensity> {
 
   @override
   double convertTo(MagneticFluxDensity targetUnit, double value) =>
-      value * _factor / targetUnit._factor;
+      value / _factor * targetUnit._factor;
 
   @override
   String toTextDisplay({bool isShort = false}) =>
