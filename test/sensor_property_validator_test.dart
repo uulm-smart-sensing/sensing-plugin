@@ -45,7 +45,8 @@ void main() {
         },
       );
       test(
-        "When the interval is too large then validateTimeInterval returns false",
+        "When the interval is too large"
+        "then validateTimeInterval returns false",
         () {
           expect(validateIntervalInMilliseconds(31536000001), isFalse);
         },
