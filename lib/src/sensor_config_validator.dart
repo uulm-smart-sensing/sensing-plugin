@@ -7,7 +7,10 @@ bool validatePrecision(int precision) => precision >= 0 && precision <= 10;
 /// Variable for validating TimeInterval
 /// one week, 23 hours, 59 minutes and 59 seconds is equivalent to
 /// [maxTimeInterval]
-const int maxTimeInterval = 691199000;
+const maxTimeInterval = 691199000;
+
+const configValidatorMinPrecision = 0;
+const configvalidatorMaxPrecision = 10;
 
 /// Checks whether the passed [interval] is valid.It is valid if the interval
 /// is between 10 and one week, 23 hours, 59 minutes and 59 seconds.The
@@ -15,6 +18,8 @@ const int maxTimeInterval = 691199000;
 ///
 bool validateIntervalInMilliseconds(int interval) =>
     interval >= 10 && interval <= maxTimeInterval;
+
+//TODO: will be replaced
 
 ///Checks if the matching unit with the corresponding SensorId is the
 ///same category/compatible.

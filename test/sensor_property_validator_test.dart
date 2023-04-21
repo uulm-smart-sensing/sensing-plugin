@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sensing_plugin/sensing_plugin.dart';
-import 'package:sensing_plugin/src/sensor_property_validator.dart';
+import 'package:sensing_plugin/src/sensor_config_validator.dart';
 
 void main() {
   group(
