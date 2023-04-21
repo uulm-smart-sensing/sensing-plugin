@@ -8,6 +8,9 @@ enum Acceleration implements Unit<Acceleration> {
   /// Acceleration in Gs = Acceleration in m/s^2 / gravity on earth.
   gravity(1 / 9.80665, "G", "standard gravity"),
 
+  /// Acceleration in cm/s^2 (Gal).
+  gal(100, "cm/s²", "Gal"),
+
   /// Acceleration in m/s^2
   meterPerSecondSquared(1, "m/s²", "meter/second²"),
 
