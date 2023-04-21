@@ -37,5 +37,5 @@ enum Acceleration implements Unit<Acceleration> {
 
   @override
   String toTextDisplay({bool isShort = false}) =>
-      isShort ? _shortDisplayText : _shortDisplayText;
+      isShort ? _shortDisplayText : _longDisplayText;
 }
