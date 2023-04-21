@@ -7,6 +7,10 @@ enum Angle implements Unit<Angle> {
   /// Angle in radians (rad).
   radians(1, "rad", "radians"),
 
+  /// Angle in gradians (gon).
+  /// Also known as grad, gradian, or grade.
+  gradian(200 / pi, "gon", "gradians"),
+
   /// Angle in degrees (deg).
   degrees(180 / pi, "deg", "degrees"),
 
