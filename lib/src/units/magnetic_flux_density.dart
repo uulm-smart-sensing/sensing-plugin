@@ -8,7 +8,7 @@ enum MagneticFluxDensity implements Unit<MagneticFluxDensity> {
   tesla(1, "T", "Tesla"),
 
   /// Magnetic flux density in gauss (Gs).
-  gauss(10000, "Gs", "Gauss"),
+  gauss(10000, "G", "Gauss"),
 
   /// Magnetic flux density in microtesla (μT).
   microTesla(1000000, "μT", "Microtesla");

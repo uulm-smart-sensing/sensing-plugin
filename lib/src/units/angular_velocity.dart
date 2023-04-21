@@ -16,11 +16,11 @@ enum AngularVelocity implements Unit<AngularVelocity> {
   /// Angular velocity in degrees per hour (deg/h).
   degreesPerHour(648000 / pi, "deg/h", "degrees/h"),
 
-  /// Angular velocity in revolutions per second (RPS).
-  revolutionPerMinute(60 / (2 * pi), "RPS", "RPS"),
-
   /// Angular velocity in revolutions per minute (RPM).
-  revolutionPerHour(3600 / (2 * pi), "RPM", "RPM");
+  revolutionPerMinute(60 / (2 * pi), "RPM", "RPM"),
+
+  /// Angular velocity in revolutions per hour (RPH).
+  revolutionPerHour(3600 / (2 * pi), "RPH", "RPH");
 
   /// Creates a new enum value for [AngularVelocity].
   const AngularVelocity(
@@ -35,7 +35,7 @@ enum AngularVelocity implements Unit<AngularVelocity> {
 
   @override
   double convertTo(AngularVelocity targetUnit, double value) =>
-      value * targetUnit._factor / _factor;
+      value / _factor * targetUnit._factor;
 
   @override
   String toTextDisplay({bool isShort = false}) =>
