@@ -14,13 +14,13 @@ enum Pressure implements Unit<Pressure> {
   hectoPascal(1000, "hPa", "hectopascal"),
 
   /// Pressure in pounds per square inch (psi).
-  psi(14.5037738, "psi", "pounds/inch²"),
+  psi(14.503773773022, "psi", "pounds/inch²"),
 
   /// Pressure in standard atmospheres (atm).
-  atmosphere(0.9869233, "atm", "standard atmosphere"),
+  atmosphere(1 / 1.01325, "atm", "standard atmosphere"),
 
   /// Pressure in torr (Torr).
-  torr(750.0616827, "mmHg", "Torr");
+  torr(760 * (1 / 1.01325), "Torr", "Torr");
 
   /// Creates a new enum value for [Pressure].
   const Pressure(this._factor, this._shortDisplayText, this._longDisplayText);

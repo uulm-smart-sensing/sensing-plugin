@@ -6,16 +6,16 @@ part of unit;
 /// [SensorId.linearAcceleration].
 enum Acceleration implements Unit<Acceleration> {
   /// Acceleration in Gs = Acceleration in m/s^2 / gravity on earth.
-  gravity(9.80665, "G", "standard gravity"),
+  gravity(1 / 9.80665, "G", "standard gravity"),
 
   /// Acceleration in m/s^2
   meterPerSecondSquared(1, "m/s²", "meter/second²"),
 
   /// Acceleration in in/s^2
-  inchPerSecondSquared(0.0254, "in/s²", "inch/second²"),
+  inchPerSecondSquared(100 / 2.54, "in/s²", "inch/second²"),
 
   /// Acceleration in ft/s^2
-  footPerSecondSquared(0.3048, "ft/s²", "foot/second²");
+  footPerSecondSquared(100 / 30.48, "ft/s²", "foot/second²");
 
   /// Creates a new enum value for [Acceleration].
   const Acceleration(
