@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sensing_plugin/sensing_plugin.dart';
+import 'package:sensing_plugin/src/generated/api_sensor_manager.dart';
 import 'package:sensing_plugin/src/sensor_config_validator.dart';
 
 void main() {
