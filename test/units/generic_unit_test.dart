@@ -29,8 +29,10 @@ void main() {
 
   test('When value is converted back and forth, then result is the same', () {
     for (var sourceUnit in allUnits) {
-      for (var targetUnit in allUnits.where((unit) =>
-          unit != sourceUnit && unit.runtimeType == sourceUnit.runtimeType)) {
+      for (var targetUnit in allUnits.where(
+        (unit) =>
+            unit != sourceUnit && unit.runtimeType == sourceUnit.runtimeType,
+      )) {
         var source = sourceUnit.toTextDisplay(isShort: true);
         var target = targetUnit.toTextDisplay(isShort: true);
         var valueInTargetUnit = sourceUnit.convertTo(targetUnit, 42);
