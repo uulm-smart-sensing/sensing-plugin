@@ -2,17 +2,6 @@ import 'generated/api_sensor_manager.dart' show Unit, SensorId;
 
 /// Checks whether the passed [precision] is valid. It is valid if it is
 /// between 0 and 10.
-///
-/// Example usage:
-/// ```dart
-///
-/// var result = validatePrecision(9);
-/// print(result);
-/// ```
-/// will result in
-/// ```text
-/// true
-/// ```
 bool validatePrecision(int precision) => precision >= 0 && precision <= 10;
 
 /// Variable for validating TimeInterval
@@ -20,21 +9,10 @@ bool validatePrecision(int precision) => precision >= 0 && precision <= 10;
 /// [maxTimeInterval]
 const int maxTimeInterval = 691199000;
 
-///
 /// Checks whether the passed [interval] is valid.It is valid if the interval
 /// is between 10 and one week, 23 hours, 59 minutes and 59 seconds.The
 /// minimum was not 0 because a sensor can hardly have such high frequencies.
 ///
-/// Example usage:
-/// ```dart
-///
-/// var result = validateTimeInterval(20);
-/// print(result);
-/// ```
-/// will result in
-/// ```text
-/// true
-/// ```
 bool validateIntervalInMilliseconds(int interval) =>
     interval >= 10 && interval <= maxTimeInterval;
 
@@ -44,19 +22,6 @@ bool validateIntervalInMilliseconds(int interval) =>
 ///For example a SensorId can be an accelerometer and the corresponding Unit is
 ///metersPerSecondSquared or gravitationalForce and if the given Unit does not
 ///match then [validateUnitCompatibility] returns false.
-///
-/// Example usage:
-/// ```dart
-///
-/// var result = validateUnit(SensorId.Accelerometer,
-/// Unit.MetersPerSecondSquared);
-///
-/// print(result);
-/// ```
-/// will result in
-/// ```text
-/// true
-/// ```
 bool validateUnitCompatibility(SensorId id, Unit unit) {
   switch (id) {
     case SensorId.accelerometer:
