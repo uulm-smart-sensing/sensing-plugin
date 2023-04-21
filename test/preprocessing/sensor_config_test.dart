@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sensing_plugin/sensing_plugin.dart';
-import 'package:sensing_plugin/src/units/unit.dart';
 
 void main() {
   test(
