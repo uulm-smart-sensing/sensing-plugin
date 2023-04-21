@@ -1,19 +1,21 @@
 import 'generated/api_sensor_manager.dart' show Unit, SensorId;
 
+/// Variable for validating minPrecision
+const configValidatorMinPrecision = 0;
+
+/// Variable for validating maxPrecision
+const configValidatorMaxPrecision = 10;
+
 /// Checks whether the passed [precision] is valid. It is valid if it is
-/// between 0 and 10.
-bool validatePrecision(int precision) => precision >= 0 && precision <= 10;
+/// between [configValidatorMinPrecision] and [configValidatorMaxPrecision].
+bool validatePrecision(int precision) =>
+    precision >= configValidatorMinPrecision &&
+    precision <= configValidatorMaxPrecision;
 
 /// Variable for validating TimeInterval
 /// one week, 23 hours, 59 minutes and 59 seconds is equivalent to
 /// [maxTimeInterval]
 const maxTimeInterval = 691199000;
-
-/// Variable for validating minPrecision
-const configValidatorMinPrecision = 0;
-
-/// Variable for validating maxPrecision
-const configvalidatorMaxPrecision = 10;
 
 /// Checks whether the passed [interval] is valid.It is valid if the interval
 /// is between 10 and one week, 23 hours, 59 minutes and 59 seconds.The
