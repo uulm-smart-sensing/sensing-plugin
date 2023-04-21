@@ -2,11 +2,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sensing_plugin/src/generated/api_sensor_manager.dart';
 import 'package:sensing_plugin/src/preprocessing/preprocessor.dart';
 import 'package:sensing_plugin/src/sensor_config.dart';
+import 'package:sensing_plugin/src/units/unit.dart';
 
 void main() {
   test('When null values are passed then they are filtered out', () {
     var config = const SensorConfig(
-      targetUnit: Unit.unitless,
+      targetUnit: Acceleration.gravity,
       targetPrecision: 1,
       timeInterval: Duration(seconds: 1),
     );
@@ -16,19 +17,16 @@ void main() {
         null,
       ],
       maxPrecision: 1,
-      unit: Unit.unitless,
+      unit: SensorUnit.gravitationalForce,
       timestampInMicroseconds: 0,
     );
-    var preprocessedData = processData(
-      sensorData: sensorData,
-      sensorConfig: config,
-    );
+    var preprocessedData = processData(sensorData, config);
     expect(preprocessedData.data, isEmpty);
   });
 
   test('When values are passed then they are preprocessed', () {
     var config = const SensorConfig(
-      targetUnit: Unit.celsius,
+      targetUnit: Temperature.fahrenheit,
       targetPrecision: 1,
       timeInterval: Duration(seconds: 1),
     );
@@ -41,22 +39,19 @@ void main() {
         120,
       ],
       maxPrecision: 2,
-      unit: Unit.fahrenheit,
+      unit: SensorUnit.celsius,
       timestampInMicroseconds: 0,
     );
-    var preprocessedData = processData(
-      sensorData: sensorData,
-      sensorConfig: config,
-    );
+    var preprocessedData = processData(sensorData, config);
     expect(preprocessedData.data, isNotEmpty);
-    expect(preprocessedData.data, equals([37.8, 43.3, 48.9]));
+    expect(preprocessedData.data, equals([212, 230, 248]));
   });
 
   test(
     'When SensorData object is preprocessed, then unit is set to targetUnit',
     () {
       var config = const SensorConfig(
-        targetUnit: Unit.celsius,
+        targetUnit: Temperature.kelvin,
         targetPrecision: 1,
         timeInterval: Duration(seconds: 1),
       );
@@ -68,15 +63,12 @@ void main() {
           3,
         ],
         maxPrecision: 5,
-        unit: Unit.fahrenheit,
+        unit: SensorUnit.celsius,
         timestampInMicroseconds: 0,
       );
 
-      var preprocessedData = processData(
-        sensorData: sensorData,
-        sensorConfig: config,
-      );
-      expect(preprocessedData.unit, equals(Unit.celsius));
+      var preprocessedData = processData(sensorData, config);
+      expect(preprocessedData.unit, equals(Temperature.kelvin));
     },
   );
 
@@ -84,7 +76,7 @@ void main() {
       'When sensor data is preprocessed, then output data has precision of '
       'sensor config', () {
     var config = const SensorConfig(
-      targetUnit: Unit.celsius,
+      targetUnit: Temperature.celsius,
       targetPrecision: 1,
       timeInterval: Duration(seconds: 1),
     );
@@ -96,13 +88,10 @@ void main() {
         3,
       ],
       maxPrecision: 2,
-      unit: Unit.fahrenheit,
+      unit: SensorUnit.celsius,
       timestampInMicroseconds: 0,
     );
-    var preprocessedData = processData(
-      sensorData: sensorData,
-      sensorConfig: config,
-    );
+    var preprocessedData = processData(sensorData, config);
     expect(preprocessedData.maxPrecision, config.targetPrecision);
   });
 }
