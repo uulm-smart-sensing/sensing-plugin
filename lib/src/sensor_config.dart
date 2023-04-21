@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart' show immutable;
-
-import 'preprocessing/unit.dart';
+import 'units/unit.dart';
 
 /// Configuration of a sensor's output data.
 ///

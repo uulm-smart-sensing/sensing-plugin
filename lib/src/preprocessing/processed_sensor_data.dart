@@ -1,6 +1,5 @@
-import '../../sensing_plugin.dart';
 import '../generated/api_sensor_manager.dart';
-import 'unit.dart';
+import '../units/unit.dart';
 
 /// Processed [SensorData].
 class ProcessedSensorData<T extends Unit<T>> {
