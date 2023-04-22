@@ -68,6 +68,7 @@ enum SensorUnit {
   microTeslas,
   // Angle
   radians,
+  degrees,
   // Pressure
   hectoPascal,
   kiloPascal,

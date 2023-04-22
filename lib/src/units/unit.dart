@@ -52,6 +52,8 @@ Unit sensorUnitToUnit(SensorUnit sensorUnit) {
       return MagneticFluxDensity.microTesla;
     case SensorUnit.radians:
       return Angle.radians;
+    case SensorUnit.degrees:
+      return Angle.degrees;
     case SensorUnit.hectoPascal:
       return Pressure.hectoPascal;
     case SensorUnit.kiloPascal:
