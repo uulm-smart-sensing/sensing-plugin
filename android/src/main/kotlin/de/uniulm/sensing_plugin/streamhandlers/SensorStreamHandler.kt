@@ -3,9 +3,9 @@ package de.uniulm.sensing_plugin.streamhandlers
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import de.uniulm.sensing_plugin.convertSensorEventTimestampToUnixTimestamp
+import de.uniulm.sensing_plugin.generated.ApiSensorManager.InternalSensorData
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.InternalSensorInfo
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorAccuracy
-import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorData
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorTaskResult
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorUnit
 import de.uniulm.sensing_plugin.toList
@@ -53,7 +53,7 @@ abstract class SensorStreamHandler(
             .build()
 
     /**
-     * Sends a [SensorData] object with the passed values to the Flutter side via the [EventChannel]
+     * Sends a [InternalSensorData] object with the passed values to the Flutter side via the [EventChannel]
      *
      * If the method is called too early ie. when the time since the last data transmission is less
      * than the configured [timeIntervalInMilliseconds], then the method returns false; otherwise
@@ -64,7 +64,7 @@ abstract class SensorStreamHandler(
         if (!isValidTime(currentTime)) {
             return false
         }
-        val sensorData = SensorData.Builder()
+        val sensorData = InternalSensorData.Builder()
             .setData(data)
             .setMaxPrecision(precision)
             .setUnit(unit)

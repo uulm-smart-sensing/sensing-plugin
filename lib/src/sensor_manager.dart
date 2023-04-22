@@ -4,9 +4,9 @@ import 'dart:developer';
 import 'package:flutter/services.dart';
 
 import 'generated/api_sensor_manager.dart'
-    show SensorManagerApi, SensorData, SensorId, SensorTaskResult;
+    show SensorManagerApi, InternalSensorData, SensorId, SensorTaskResult;
 import 'preprocessing/preprocessor.dart';
-import 'preprocessing/processed_sensor_data.dart';
+import 'preprocessing/sensor_data.dart';
 import 'sensor_config.dart';
 import 'sensor_info.dart';
 
@@ -119,7 +119,8 @@ class SensorManager {
       var sensorName = id.name;
       var eventChannel = EventChannel('sensors/$sensorName');
       var eventStream = eventChannel.receiveBroadcastStream().map(
-            (data) => processData(SensorData.decode(data as Object), config),
+            (data) =>
+                processData(InternalSensorData.decode(data as Object), config),
           );
       _sensorDataStreams[id] = StreamPair(eventStream);
       _usedSensors.add(id);

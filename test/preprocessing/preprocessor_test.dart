@@ -12,7 +12,7 @@ void main() {
       timeInterval: Duration(seconds: 1),
     );
 
-    var sensorData = SensorData(
+    var sensorData = InternalSensorData(
       data: [
         null,
       ],
@@ -31,7 +31,7 @@ void main() {
       timeInterval: Duration(seconds: 1),
     );
 
-    var sensorData = SensorData(
+    var sensorData = InternalSensorData(
       data: [
         100,
         null,
@@ -48,7 +48,7 @@ void main() {
   });
 
   test(
-    'When SensorData object is preprocessed, then unit is set to targetUnit',
+    '''When InternalSensorData object is preprocessed, then unit is set to targetUnit''',
     () {
       var config = const SensorConfig(
         targetUnit: Temperature.kelvin,
@@ -56,7 +56,7 @@ void main() {
         timeInterval: Duration(seconds: 1),
       );
 
-      var sensorData = SensorData(
+      var sensorData = InternalSensorData(
         data: [
           1,
           2,
@@ -81,7 +81,7 @@ void main() {
       timeInterval: Duration(seconds: 1),
     );
 
-    var sensorData = SensorData(
+    var sensorData = InternalSensorData(
       data: [
         1,
         2,

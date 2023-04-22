@@ -1,15 +1,16 @@
-import '../generated/api_sensor_manager.dart' show SensorData;
+import '../generated/api_sensor_manager.dart' show InternalSensorData;
 import '../sensor_config.dart';
 import '../units/unit.dart';
 import 'precision_converter.dart';
-import 'processed_sensor_data.dart';
+import 'sensor_data.dart';
 
 /// Processes the passed [sensorData] object according to the passed
 /// [sensorConfig] and returns the result as [ProcessedSensorData].
 ///
 /// The following operations are performed on all **non-null** elements in
-/// [SensorData.data]:
-/// - converting the unit from [SensorData.unit] to [SensorConfig.targetUnit]
+/// [InternalSensorData.data]:
+/// - converting the unit from [InternalSensorData.unit]
+/// to [SensorConfig.targetUnit]
 /// - converting the precision to [SensorConfig.targetPrecision]
 /// - null values are omitted
 ///
@@ -25,7 +26,7 @@ import 'processed_sensor_data.dart';
 ///   timeInterval: Duration(seconds: 1),
 /// );
 ///
-/// var sensorData = SensorData(
+/// var sensorData = InternalSensorData(
 ///   data: [
 ///     100,
 ///     null,
@@ -55,7 +56,7 @@ import 'processed_sensor_data.dart';
 /// ).listen(...);
 /// ```
 ProcessedSensorData processData(
-  SensorData sensorData,
+  InternalSensorData sensorData,
   SensorConfig sensorConfig,
 ) =>
     ProcessedSensorData(

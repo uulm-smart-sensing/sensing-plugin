@@ -149,7 +149,7 @@ public class SensorManager: NSObject, FlutterPlugin, SensorManagerApi {
     }
 
     // swiftlint:disable:next identifier_name
-    func _dummyMethod(data: SensorData) throws {
+    func _dummyMethod(data: InternalSensorData) throws {
         throw ImplementationError.notImplementedYet(methodName: "dummyMethod")
     }
 

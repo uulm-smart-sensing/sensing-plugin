@@ -97,7 +97,7 @@ public class BarometerHandler: NSObject, ISensorStreamHandler {
                 if self.isSensorAvailable() {
 
                     // send the latest heading angle
-                    let sensorData = SensorData(data: [self.latestPressureValue], maxPrecision: -1,
+                    let sensorData = InternalSensorData(data: [self.latestPressureValue], maxPrecision: -1,
                                                 unit: SensorUnit.kiloPascal,
                                                 timestampInMicroseconds: Int64(NSDate().timeIntervalSince1970
                                                                                * 1000 * 1000))

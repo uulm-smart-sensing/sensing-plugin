@@ -77,8 +77,8 @@ public class GyroscopeHandler: NSObject, ISensorStreamHandler {
                         sensorEventTimestamp: gyroscopeData!.timestamp)
 
                     // TODO: check, what maxPrecision is
-                    // wrap the sensor values to `SensorData` object and "send" it to the event stream
-                    let sensorData = SensorData(data: [xValue, yValue, zValue],
+                    // wrap the sensor values to `InternalSensorData` object and "send" it to the event stream
+                    let sensorData = InternalSensorData(data: [xValue, yValue, zValue],
                                                 maxPrecision: -1,
                                                 unit: SensorUnit.radiansPerSecond,
                                                 timestampInMicroseconds: timestamp)

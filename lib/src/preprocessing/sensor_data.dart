@@ -1,7 +1,7 @@
 import '../generated/api_sensor_manager.dart';
 import '../units/unit.dart';
 
-/// Processed [SensorData].
+/// Processed [InternalSensorData].
 class ProcessedSensorData {
   /// Processed sensor data
   final List<double> data;

@@ -39,12 +39,13 @@ abstract class SensorManagerApi {
   @async
   InternalSensorInfo getSensorInfo(SensorId id);
 
-  /// [SensorData] isn't used in any method but returned via the event channel.
+  /// [InternalSensorData] isn't used in any method but returned
+  ///  via the event channel.
   ///
   /// For the class to be generated on the platforms it must be referenced in at
   /// least one method.
   // ignore: unused_element
-  void _dummyMethod(SensorData data);
+  void _dummyMethod(InternalSensorData data);
 }
 
 enum SensorId {
@@ -128,8 +129,8 @@ class InternalSensorInfo {
 
 /// Sensor data with information about [maxPrecision], [unit] and the Unix
 /// [timestampInMicroseconds] of when the data was measured.
-class SensorData {
-  SensorData(
+class InternalSensorData {
+  InternalSensorData(
     this.data,
     this.maxPrecision,
     this.unit,
