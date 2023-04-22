@@ -16,8 +16,8 @@ class SensorManager {
   final _usedSensors = <SensorId>[];
 
   /// Stores all received [Stream] with the matching [SensorId] as
-  /// [ProcessedSensorData].
-  final _sensorDataStreams = <SensorId, StreamPair<ProcessedSensorData>>{};
+  /// [SensorData].
+  final _sensorDataStreams = <SensorId, StreamPair<SensorData>>{};
 
   /// The defined [SensorConfig] for a sensor identified by the [SensorId] used
   /// by the preprocessing.
@@ -30,10 +30,10 @@ class SensorManager {
 
   SensorManager._internal();
 
-  /// Process the [ProcessedSensorData] with a matching [SensorId] from the
+  /// Process the [SensorData] with a matching [SensorId] from the
   /// native side and decode it. Furthermore saves every [Stream] with the
   /// matching [SensorId] in [_sensorDataStreams]
-  Stream<ProcessedSensorData>? getSensorStream(SensorId id) =>
+  Stream<SensorData>? getSensorStream(SensorId id) =>
       _sensorDataStreams[id]?._streamController.stream;
 
   /// Checks if the Sensor is currently used and returns an bool.

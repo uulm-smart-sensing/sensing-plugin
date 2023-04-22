@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:sensing_plugin/sensing_plugin.dart';
 
 class SensorDataContainer extends StatefulWidget {
-  final Stream<ProcessedSensorData> stream;
+  final Stream<SensorData> stream;
   final int displayedDecimalPlaces;
 
   const SensorDataContainer({

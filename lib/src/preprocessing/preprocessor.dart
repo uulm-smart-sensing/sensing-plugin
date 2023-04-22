@@ -5,7 +5,7 @@ import 'precision_converter.dart';
 import 'sensor_data.dart';
 
 /// Processes the passed [sensorData] object according to the passed
-/// [sensorConfig] and returns the result as [ProcessedSensorData].
+/// [sensorConfig] and returns the result as [SensorData].
 ///
 /// The following operations are performed on all **non-null** elements in
 /// [InternalSensorData.data]:
@@ -14,7 +14,7 @@ import 'sensor_data.dart';
 /// - converting the precision to [SensorConfig.targetPrecision]
 /// - null values are omitted
 ///
-/// [ProcessedSensorData.unit] and [ProcessedSensorData.maxPrecision] are set to
+/// [SensorData.unit] and [SensorData.maxPrecision] are set to
 /// [SensorConfig.targetUnit] and [SensorConfig.targetPrecision] of the passed
 /// [sensorConfig].
 ///
@@ -55,11 +55,11 @@ import 'sensor_data.dart';
 ///   (sensorData) => processData(sensorData, sensorConfig),
 /// ).listen(...);
 /// ```
-ProcessedSensorData processData(
+SensorData processData(
   InternalSensorData sensorData,
   SensorConfig sensorConfig,
 ) =>
-    ProcessedSensorData(
+    SensorData(
       data: sensorData.data
           .whereType<double>()
           .map(

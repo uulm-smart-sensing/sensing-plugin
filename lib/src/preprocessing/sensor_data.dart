@@ -2,7 +2,7 @@ import '../generated/api_sensor_manager.dart';
 import '../units/unit.dart';
 
 /// Processed [InternalSensorData].
-class ProcessedSensorData {
+class SensorData {
   /// Processed sensor data
   final List<double> data;
 
@@ -15,8 +15,8 @@ class ProcessedSensorData {
   /// Timestamp when the values in [data] were measured.
   final DateTime timestamp;
 
-  /// Creates a new [ProcessedSensorData] object.
-  const ProcessedSensorData({
+  /// Creates a new [SensorData] object.
+  const SensorData({
     required this.data,
     required this.maxPrecision,
     required this.unit,
