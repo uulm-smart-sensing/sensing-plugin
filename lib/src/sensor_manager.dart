@@ -80,7 +80,7 @@ class SensorManager {
 
   /// Retrieves information about the sensor with the passed [SensorId].
   Future<SensorInfo> getSensorInfo(SensorId id) async =>
-      sensorInfoFromInternal(await SensorManagerApi().getSensorInfo(id));
+      SensorManagerApi().getSensorInfo(id).then(sensorInfoFromInternal);
 
   /// Returns the stored [SensorConfig] for the sensor with the passed [id].
   ///
