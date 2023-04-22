@@ -12,7 +12,7 @@ class ProcessedSensorData<T extends Unit<T>> {
   /// Unit of all values in [data]
   final Unit<T> unit;
 
-  /// Timestamp when the value in [data] were meassured.
+  /// Timestamp when the values in [data] were measured.
   final DateTime timestamp;
 
   /// Creates a new [ProcessedSensorData] object.
