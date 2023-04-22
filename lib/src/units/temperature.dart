@@ -8,13 +8,13 @@ enum Temperature implements Unit<Temperature> {
   kelvin(1, 0, "K", "Kelvin"),
 
   /// Temperature in celsius (°C).
-  celsius(1, 273.15, "°C", "Celsius"),
+  celsius(1, -273.15, "°C", "Celsius"),
 
   /// Temperature in rankine (°R).
   rankine(5 / 9, 0, "°R", "Rankine"),
 
   /// Temperature in fahrenheit (°F).
-  fahrenheit(5 / 9, 459.67, "°F", "Fahrenheit");
+  fahrenheit(5 / 9, -459.67, "°F", "Fahrenheit");
 
   /// Creates a new enum value for [Temperature].
   const Temperature(
@@ -31,7 +31,7 @@ enum Temperature implements Unit<Temperature> {
 
   @override
   double convertTo(Temperature targetUnit, double value) =>
-      ((value + _offset) * _factor) / targetUnit._factor - targetUnit._offset;
+      ((value - _offset) * _factor) / targetUnit._factor + targetUnit._offset;
 
   @override
   String toTextDisplay({bool isShort = false}) =>
