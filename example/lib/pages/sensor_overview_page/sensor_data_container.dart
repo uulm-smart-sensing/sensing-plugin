@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:sensing_plugin/sensing_plugin.dart';
 
 class SensorDataContainer extends StatefulWidget {
-  final Stream<SensorData> stream;
+  final Stream<ProcessedSensorData> stream;
   final int displayedDecimalPlaces;
 
   const SensorDataContainer({
@@ -28,9 +28,7 @@ class _SensorDataContainerState extends State<SensorDataContainer> {
       setState(() {
         _data = sensorData.data.whereType<double>().toList();
         _lastTimestamp = _timestamp;
-        _timestamp = DateTime.fromMicrosecondsSinceEpoch(
-          sensorData.timestampInMicroseconds,
-        );
+        _timestamp = sensorData.timestamp;
       });
     });
     super.initState();
