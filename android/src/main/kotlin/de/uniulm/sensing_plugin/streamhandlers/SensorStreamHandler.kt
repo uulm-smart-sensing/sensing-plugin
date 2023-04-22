@@ -7,7 +7,7 @@ import de.uniulm.sensing_plugin.generated.ApiSensorManager.InternalSensorInfo
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorAccuracy
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorData
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorTaskResult
-import de.uniulm.sensing_plugin.generated.ApiSensorManager.Unit
+import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorUnit
 import de.uniulm.sensing_plugin.toList
 import io.flutter.plugin.common.EventChannel
 
@@ -27,7 +27,7 @@ abstract class SensorStreamHandler(
     sensorManager: SensorManager,
     sensorIds: IntArray,
     private var timeIntervalInMilliseconds: Long,
-    private val unit: Unit
+    private val unit: SensorUnit
 ) : EventChannel.StreamHandler {
 
     protected val sensors: Array<Sensor> = sensorIds
