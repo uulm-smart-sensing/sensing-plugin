@@ -47,8 +47,10 @@ class _SensorInfoWidgetState extends State<SensorInfoWidget> {
       SensorManager().getSensorInfo(widget._sensorId);
 
   Widget _getSensorInfoColumn(SensorInfo sensorInfo) {
+    var sensorConfig = SensorManager().getSensorConfig(widget._sensorId)!;
     var sensorInfoUnitText = sensorInfo.unit.toTextDisplay(isShort: true);
-    var sensorConfigUnitText = sensorInfo.unit.toTextDisplay(isShort: false);
+    var sensorConfigUnitText =
+        sensorConfig.targetUnit.toTextDisplay(isShort: true);
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
