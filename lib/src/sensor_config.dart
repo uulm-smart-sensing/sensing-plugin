@@ -3,7 +3,7 @@ import 'units/unit.dart';
 
 /// Configuration of a sensor's output data.
 ///
-/// [T] is the unit category of the unit of this [SensorConfig].
+/// [T] is the unit category of the [targetUnit] of this [SensorConfig].
 @immutable
 class SensorConfig<T extends Unit<T>> {
   /// The [Unit] that the output values should have.
