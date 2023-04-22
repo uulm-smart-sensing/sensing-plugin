@@ -1,5 +1,6 @@
 export 'src/generated/api_sensor_manager.dart'
     show SensorId, SensorTaskResult, SensorData, SensorAccuracy;
+export 'src/preprocessing/processed_sensor_data.dart';
 export 'src/sensor_config.dart' show SensorConfig;
 export 'src/sensor_config_validator.dart';
 export 'src/sensor_info.dart' show SensorInfo;
