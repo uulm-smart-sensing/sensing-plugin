@@ -24,7 +24,8 @@ part 'temperature.dart';
 ///
 /// In most cases it is sufficient to define a factor for each enum value to
 /// calculate the ratio to each other. If the valence of a unit is not
-/// proportional to each other, you may need to use an offset.
+/// proportional to other units in the same category, you may need to
+/// use an offset (see [Temperature] for more information).
 abstract class Unit<T extends Unit<T>> {
   /// Converts a [value] of this unit category [T] to a target unit of the same
   /// unit category.
