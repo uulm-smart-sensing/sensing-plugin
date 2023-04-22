@@ -9,7 +9,6 @@ import 'preprocessing/preprocessor.dart';
 import 'preprocessing/processed_sensor_data.dart';
 import 'sensor_config.dart';
 import 'sensor_info.dart';
-import 'units/unit.dart';
 
 /// Singleton sensor manager class
 class SensorManager {
@@ -98,9 +97,9 @@ class SensorManager {
   /// [SensorTaskResult.alreadyTrackingSensor] is returned.
   /// If the sensor is not available (according to [isSensorAvailable])
   /// [SensorTaskResult.sensorNotAvailable] is returned.
-  Future<SensorTaskResult> startSensorTracking<T extends Unit<T>>({
+  Future<SensorTaskResult> startSensorTracking({
     required SensorId id,
-    required SensorConfig<T> config,
+    required SensorConfig config,
   }) async {
     if (_usedSensors.contains(id)) {
       return SensorTaskResult.alreadyTrackingSensor;

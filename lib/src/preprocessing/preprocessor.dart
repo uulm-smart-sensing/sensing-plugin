@@ -54,11 +54,11 @@ import 'processed_sensor_data.dart';
 ///   (sensorData) => processData(sensorData, sensorConfig),
 /// ).listen(...);
 /// ```
-ProcessedSensorData processData<T extends Unit<T>>(
+ProcessedSensorData processData(
   SensorData sensorData,
-  SensorConfig<T> sensorConfig,
+  SensorConfig sensorConfig,
 ) =>
-    ProcessedSensorData<T>(
+    ProcessedSensorData(
       data: sensorData.data
           .whereType<double>()
           .map(

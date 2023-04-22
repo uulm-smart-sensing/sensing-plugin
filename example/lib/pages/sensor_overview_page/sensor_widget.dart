@@ -55,11 +55,11 @@ class _SensorWidgetState extends State<SensorWidget> {
     super.dispose();
   }
 
-  Future<SensorTaskResult> _startSensor<T extends Unit<T>>() async {
+  Future<SensorTaskResult> _startSensor() async {
     var result = await SensorManager().startSensorTracking(
       id: widget._sensorId,
-      config: SensorConfig<T>(
-        targetUnit: sensorIdToTargetUnit[widget._sensorId]! as Unit<T>,
+      config: SensorConfig(
+        targetUnit: sensorIdToTargetUnit[widget._sensorId]!,
         targetPrecision: _targetPrecision,
         timeInterval: const Duration(milliseconds: 100),
       ),

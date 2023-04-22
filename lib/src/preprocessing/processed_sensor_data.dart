@@ -2,7 +2,7 @@ import '../generated/api_sensor_manager.dart';
 import '../units/unit.dart';
 
 /// Processed [SensorData].
-class ProcessedSensorData<T extends Unit<T>> {
+class ProcessedSensorData {
   /// Processed sensor data
   final List<double> data;
 
@@ -10,7 +10,7 @@ class ProcessedSensorData<T extends Unit<T>> {
   final int maxPrecision;
 
   /// Unit of all values in [data]
-  final Unit<T> unit;
+  final Unit unit;
 
   /// Timestamp when the values in [data] were measured.
   final DateTime timestamp;
