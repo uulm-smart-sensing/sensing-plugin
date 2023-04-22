@@ -52,7 +52,7 @@ import 'processed_sensor_data.dart';
 /// ```dart
 /// sensorDataStream.map(
 ///   (sensorData) => processData(sensorData, sensorConfig),
-/// );
+/// ).listen(...);
 /// ```
 ProcessedSensorData processData<T extends Unit<T>>(
   SensorData sensorData,
