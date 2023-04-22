@@ -3,9 +3,9 @@ package de.uniulm.sensing_plugin.streamhandlers
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import de.uniulm.sensing_plugin.convertSensorEventTimestampToUnixTimestamp
+import de.uniulm.sensing_plugin.generated.ApiSensorManager.InternalSensorInfo
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorAccuracy
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorData
-import de.uniulm.sensing_plugin.generated.ApiSensorManager.InternalSensorInfo
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorTaskResult
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.Unit
 import de.uniulm.sensing_plugin.toList
