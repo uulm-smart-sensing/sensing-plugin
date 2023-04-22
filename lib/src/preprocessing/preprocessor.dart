@@ -1,4 +1,4 @@
-import '../generated/api_sensor_manager.dart' show SensorData, SensorUnit;
+import '../generated/api_sensor_manager.dart' show SensorData;
 import '../sensor_config.dart';
 import '../units/unit.dart';
 import 'precision_converter.dart';
