@@ -4,10 +4,11 @@ import 'dart:developer';
 import 'package:flutter/services.dart';
 
 import 'generated/api_sensor_manager.dart'
-    show SensorManagerApi, SensorData, SensorId, SensorInfo, SensorTaskResult;
+    show SensorManagerApi, SensorData, SensorId, SensorTaskResult;
 import 'preprocessing/preprocessor.dart';
 import 'preprocessing/processed_sensor_data.dart';
 import 'sensor_config.dart';
+import 'sensor_info.dart';
 import 'units/unit.dart';
 
 /// Singleton sensor manager class
@@ -79,7 +80,7 @@ class SensorManager {
 
   /// Retrieves information about the sensor with the passed [SensorId].
   Future<SensorInfo> getSensorInfo(SensorId id) async =>
-      SensorManagerApi().getSensorInfo(id);
+      sensorInfoFromInternal(await SensorManagerApi().getSensorInfo(id));
 
   /// Returns the stored [SensorConfig] for the sensor with the passed [id].
   ///

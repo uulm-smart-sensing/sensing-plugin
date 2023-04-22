@@ -62,7 +62,7 @@ ProcessedSensorData processData<T extends Unit<T>>(
       data: sensorData.data
           .whereType<double>()
           .map(
-            (value) => _sensorUnitToUnit(sensorData.unit)
+            (value) => sensorUnitToUnit(sensorData.unit)
                 .convertTo(sensorConfig.targetUnit, value),
           )
           .map(
@@ -79,24 +79,3 @@ ProcessedSensorData processData<T extends Unit<T>>(
         isUtc: true,
       ),
     );
-
-Unit _sensorUnitToUnit(SensorUnit sensorUnit) {
-  switch (sensorUnit) {
-    case SensorUnit.metersPerSecondSquared:
-      return Acceleration.meterPerSecondSquared;
-    case SensorUnit.gravitationalForce:
-      return Acceleration.gravity;
-    case SensorUnit.radiansPerSecond:
-      return AngularVelocity.radiansPerSecond;
-    case SensorUnit.microTeslas:
-      return MagneticFluxDensity.microTesla;
-    case SensorUnit.radians:
-      return Angle.radians;
-    case SensorUnit.hectoPascal:
-      return Pressure.hectoPascal;
-    case SensorUnit.kiloPascal:
-      return Pressure.kiloPascal;
-    case SensorUnit.celsius:
-      return Temperature.celsius;
-  }
-}
