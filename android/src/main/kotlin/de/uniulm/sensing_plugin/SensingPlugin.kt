@@ -7,7 +7,7 @@ import de.uniulm.sensing_plugin.generated.ApiSensorManager.Result
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.ResultWrapper
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorData
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorId
-import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorInfo
+import de.uniulm.sensing_plugin.generated.ApiSensorManager.InternalSensorInfo
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorManagerApi
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorTaskResult
 import de.uniulm.sensing_plugin.sensors.Accelerometer
@@ -178,7 +178,7 @@ class SensingPlugin : FlutterPlugin, SensorManagerApi {
     /** Retrieves information about the sensor with the passed [SensorId]. */
     override fun getSensorInfo(
         id: SensorId,
-        result: Result<SensorInfo>
+        result: Result<InternalSensorInfo>
     ) {
         if (id in streamHandlers) {
             val streamHandler = streamHandlers[id]!!

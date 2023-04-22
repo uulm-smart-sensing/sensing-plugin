@@ -51,11 +51,11 @@ public class OrientationSensorHandler: NSObject, ISensorStreamHandler {
     }
 
     // TODO: check the accuracy of the heading sensor and do not return -1 (indicating no information) as accuracy
-    func getSensorInfo() -> SensorInfo {
+    func getSensorInfo() -> InternalSensorInfo {
         // convert time interval from seconds to milliseconds
         let timeIntervalInMilliSec: Int64 = Int64(ManagerCollection.getMotionManager().deviceMotionUpdateInterval
                                                   * 1000)
-        return SensorInfo(unit: SensorUnit.radians, accuracy: SensorAccuracy.high,
+        return InternalSensorInfo(unit: SensorUnit.radians, accuracy: SensorAccuracy.high,
                           timeIntervalInMilliseconds: timeIntervalInMilliSec)
     }
 

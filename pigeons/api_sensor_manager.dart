@@ -37,7 +37,7 @@ abstract class SensorManagerApi {
 
   /// Retrieves information about the sensor with the passed [SensorId].
   @async
-  SensorInfo getSensorInfo(SensorId id);
+  InternalSensorInfo getSensorInfo(SensorId id);
 
   /// [SensorData] isn't used in any method but returned via the event channel.
   ///
@@ -113,8 +113,8 @@ enum SensorTaskResult {
 ///
 /// The sensor will report data with an [accuracy] in the specified
 /// [timeIntervalInMilliseconds]. The values will be in the fixed [unit].
-class SensorInfo {
-  SensorInfo(
+class InternalSensorInfo {
+  InternalSensorInfo(
     this.unit,
     this.accuracy,
     this.timeIntervalInMilliseconds,

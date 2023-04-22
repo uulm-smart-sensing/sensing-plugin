@@ -41,11 +41,11 @@ public class MagnetometerHandler: NSObject, ISensorStreamHandler {
         return ResultWrapper(state: SensorTaskResult.success)
     }
 
-    func getSensorInfo() -> SensorInfo {
+    func getSensorInfo() -> InternalSensorInfo {
         // convert time interval from seconds to milliseconds
         let timeIntervalInMilliSec: Int64 = Int64(ManagerCollection.getMotionManager().magnetometerUpdateInterval
                                                   * 1000)
-        return SensorInfo(unit: SensorUnit.microTeslas, accuracy: SensorAccuracy.high,
+        return InternalSensorInfo(unit: SensorUnit.microTeslas, accuracy: SensorAccuracy.high,
                           timeIntervalInMilliseconds: timeIntervalInMilliSec)
     }
 

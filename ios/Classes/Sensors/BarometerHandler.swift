@@ -63,10 +63,10 @@ public class BarometerHandler: NSObject, ISensorStreamHandler {
         return ResultWrapper(state: SensorTaskResult.success)
     }
 
-    func getSensorInfo() -> SensorInfo {
+    func getSensorInfo() -> InternalSensorInfo {
         // convert time interval from seconds to milliseconds
         let timeIntervalInMilliSec: Int64 = Int64(self.requestUpdateTimeInterval * 1000)
-        return SensorInfo(unit: SensorUnit.kiloPascal, accuracy: SensorAccuracy.high,
+        return InternalSensorInfo(unit: SensorUnit.kiloPascal, accuracy: SensorAccuracy.high,
                           timeIntervalInMilliseconds: timeIntervalInMilliSec)
     }
 

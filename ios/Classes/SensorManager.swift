@@ -138,7 +138,7 @@ public class SensorManager: NSObject, FlutterPlugin, SensorManagerApi {
                                                                      sensorId: sensorId)))
     }
 
-    func getSensorInfo(id: SensorId, completion: @escaping (Result<SensorInfo, Error>) -> Void) {
+    func getSensorInfo(id: SensorId, completion: @escaping (Result<InternalSensorInfo, Error>) -> Void) {
         // check, whether the sensor with the given Id is implemented
         if streamHandlers.keys.contains(id) {
             // delegate method to sensor and return its answer

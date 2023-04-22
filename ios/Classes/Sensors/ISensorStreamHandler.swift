@@ -36,8 +36,8 @@ protocol ISensorStreamHandler: NSObject, FlutterStreamHandler {
 
     /**
      Get the information about this sensor
-     - Returns: SensorInfo object containing information about the unit, accuracy and
+     - Returns: InternalSensorInfo object containing information about the unit, accuracy and
                 the time interval at which the data from the sensor are provided
      */
-    func getSensorInfo() -> SensorInfo
+    func getSensorInfo() -> InternalSensorInfo
 }

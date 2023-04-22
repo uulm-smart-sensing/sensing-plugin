@@ -83,10 +83,10 @@ public class HeadingSensorHandler: NSObject, ISensorStreamHandler, CLLocationMan
     }
 
     // TODO: check the accuracy of the heading sensor and do not return -1 (indicating no information) as accuracy
-    func getSensorInfo() -> SensorInfo {
+    func getSensorInfo() -> InternalSensorInfo {
         // convert time interval from seconds to milliseconds
         let timeIntervalInMilliSec: Int64 = Int64(self.requestUpdateTimeInterval * 1000)
-        return SensorInfo(unit: SensorUnit.degrees, accuracy: SensorAccuracy.high,
+        return InternalSensorInfo(unit: SensorUnit.degrees, accuracy: SensorAccuracy.high,
                           timeIntervalInMilliseconds: timeIntervalInMilliSec)
     }
 

@@ -5,7 +5,7 @@ import android.hardware.SensorManager
 import de.uniulm.sensing_plugin.convertSensorEventTimestampToUnixTimestamp
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorAccuracy
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorData
-import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorInfo
+import de.uniulm.sensing_plugin.generated.ApiSensorManager.InternalSensorInfo
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorTaskResult
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.Unit
 import de.uniulm.sensing_plugin.toList
@@ -39,14 +39,14 @@ abstract class SensorStreamHandler(
     protected var precision: Long = 0
 
     /**
-     * Returns the [SensorInfo] object of this sensor.
+     * Returns the [InternalSensorInfo] object of this sensor.
      * This contains basic information about this sensor.
      *
      * The sensor will report data with an [accuracy] in the specified
      * [timeIntervalInMilliseconds]. The values will be in the fixed [unit].
      */
-    fun getSensorInfo(): SensorInfo =
-        SensorInfo.Builder()
+    fun getSensorInfo(): InternalSensorInfo =
+        InternalSensorInfo.Builder()
             .setAccuracy(accuracy)
             .setTimeIntervalInMilliseconds(timeIntervalInMilliseconds)
             .setUnit(unit)
