@@ -1,6 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sensing_plugin/src/sensor_config_validator.dart';
 
+import 'package:sensing_plugin/src/units/unit.dart';
+import 'package:sensing_plugin/src/generated/api_sensor_manager.dart';
+
 void main() {
   group(
     "Validiting precision",
@@ -52,4 +55,31 @@ void main() {
       );
     },
   );
+
+  group("Validating units for sensors", () {
+    test(
+      '''When the unit is valid for the sensor then validateUnit returns true''',
+      () {
+        expect(
+          validateUnit(
+            unit: Acceleration.gravity,
+            sensorId: SensorId.accelerometer,
+          ),
+          isTrue,
+        );
+      },
+    );
+    test(
+      '''When the unit is not valid for the sensor then validateUnit returns false''',
+      () {
+        expect(
+          validateUnit(
+            unit: MagneticFluxDensity.tesla,
+            sensorId: SensorId.gyroscope,
+          ),
+          isFalse,
+        );
+      },
+    );
+  });
 }

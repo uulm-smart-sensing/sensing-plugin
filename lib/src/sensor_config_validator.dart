@@ -1,3 +1,6 @@
+import 'generated/api_sensor_manager.dart';
+import 'units/unit.dart';
+
 /// Variable for validating minPrecision
 const configValidatorMinPrecision = 0;
 
@@ -21,3 +24,26 @@ const maxTimeInterval = 691199000;
 ///
 bool validateIntervalInMilliseconds(int interval) =>
     interval >= 10 && interval <= maxTimeInterval;
+
+/// Checks whether the passed [unit] is valid for the passed [sensorId].
+bool validateUnit({
+  required Unit unit,
+  required SensorId sensorId,
+}) {
+  switch (sensorId) {
+    case SensorId.accelerometer:
+      return unit.runtimeType == Acceleration;
+    case SensorId.linearAcceleration:
+      return unit.runtimeType == Acceleration;
+    case SensorId.gyroscope:
+      return unit.runtimeType == AngularVelocity;
+    case SensorId.magnetometer:
+      return unit.runtimeType == MagneticFluxDensity;
+    case SensorId.orientation:
+      return unit.runtimeType == Angle;
+    case SensorId.barometer:
+      return unit.runtimeType == Pressure;
+    case SensorId.thermometer:
+      return unit.runtimeType == Temperature;
+  }
+}
