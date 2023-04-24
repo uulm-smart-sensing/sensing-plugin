@@ -63,10 +63,10 @@ public class BarometerHandler: NSObject, ISensorStreamHandler {
         return ResultWrapper(state: SensorTaskResult.success)
     }
 
-    func getSensorInfo() -> SensorInfo {
+    func getSensorInfo() -> InternalSensorInfo {
         // convert time interval from seconds to milliseconds
         let timeIntervalInMilliSec: Int64 = Int64(self.requestUpdateTimeInterval * 1000)
-        return SensorInfo(unit: Unit.kiloPascal, accuracy: SensorAccuracy.high,
+        return InternalSensorInfo(unit: SensorUnit.kiloPascal, accuracy: SensorAccuracy.high,
                           timeIntervalInMilliseconds: timeIntervalInMilliSec)
     }
 
@@ -79,7 +79,7 @@ public class BarometerHandler: NSObject, ISensorStreamHandler {
 
         ManagerCollection.getAltimeter().startRelativeAltitudeUpdates(to: OperationQueue.current!,
             withHandler: {(pressureData: CMAltitudeData?, err: Error?) in
-            
+
             guard err != nil else {
                 self.latestPressureValue = pressureData!.pressure.doubleValue
                 return
@@ -97,8 +97,8 @@ public class BarometerHandler: NSObject, ISensorStreamHandler {
                 if self.isSensorAvailable() {
 
                     // send the latest heading angle
-                    let sensorData = SensorData(data: [self.latestPressureValue], maxPrecision: -1,
-                                                unit: Unit.kiloPascal,
+                    let sensorData = InternalSensorData(data: [self.latestPressureValue], maxPrecision: -1,
+                                                unit: SensorUnit.kiloPascal,
                                                 timestampInMicroseconds: Int64(NSDate().timeIntervalSince1970
                                                                                * 1000 * 1000))
                     events(sensorData.toList())

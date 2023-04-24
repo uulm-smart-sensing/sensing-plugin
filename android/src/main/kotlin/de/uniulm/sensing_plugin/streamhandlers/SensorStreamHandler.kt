@@ -3,11 +3,11 @@ package de.uniulm.sensing_plugin.streamhandlers
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import de.uniulm.sensing_plugin.convertSensorEventTimestampToUnixTimestamp
+import de.uniulm.sensing_plugin.generated.ApiSensorManager.InternalSensorData
+import de.uniulm.sensing_plugin.generated.ApiSensorManager.InternalSensorInfo
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorAccuracy
-import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorData
-import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorInfo
 import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorTaskResult
-import de.uniulm.sensing_plugin.generated.ApiSensorManager.Unit
+import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorUnit
 import de.uniulm.sensing_plugin.toList
 import io.flutter.plugin.common.EventChannel
 
@@ -27,7 +27,7 @@ abstract class SensorStreamHandler(
     sensorManager: SensorManager,
     sensorIds: IntArray,
     private var timeIntervalInMilliseconds: Long,
-    private val unit: Unit
+    private val unit: SensorUnit
 ) : EventChannel.StreamHandler {
 
     protected val sensors: Array<Sensor> = sensorIds
@@ -39,21 +39,21 @@ abstract class SensorStreamHandler(
     protected var precision: Long = 0
 
     /**
-     * Returns the [SensorInfo] object of this sensor.
+     * Returns the [InternalSensorInfo] object of this sensor.
      * This contains basic information about this sensor.
      *
      * The sensor will report data with an [accuracy] in the specified
      * [timeIntervalInMilliseconds]. The values will be in the fixed [unit].
      */
-    fun getSensorInfo(): SensorInfo =
-        SensorInfo.Builder()
+    fun getSensorInfo(): InternalSensorInfo =
+        InternalSensorInfo.Builder()
             .setAccuracy(accuracy)
             .setTimeIntervalInMilliseconds(timeIntervalInMilliseconds)
             .setUnit(unit)
             .build()
 
     /**
-     * Sends a [SensorData] object with the passed values to the Flutter side via the [EventChannel]
+     * Sends a [InternalSensorData] object with the passed values to the Flutter side via the [EventChannel]
      *
      * If the method is called too early ie. when the time since the last data transmission is less
      * than the configured [timeIntervalInMilliseconds], then the method returns false; otherwise
@@ -64,7 +64,7 @@ abstract class SensorStreamHandler(
         if (!isValidTime(currentTime)) {
             return false
         }
-        val sensorData = SensorData.Builder()
+        val sensorData = InternalSensorData.Builder()
             .setData(data)
             .setMaxPrecision(precision)
             .setUnit(unit)

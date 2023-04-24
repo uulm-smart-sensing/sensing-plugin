@@ -28,9 +28,7 @@ class _SensorDataContainerState extends State<SensorDataContainer> {
       setState(() {
         _data = sensorData.data.whereType<double>().toList();
         _lastTimestamp = _timestamp;
-        _timestamp = DateTime.fromMicrosecondsSinceEpoch(
-          sensorData.timestampInMicroseconds,
-        );
+        _timestamp = sensorData.timestamp;
       });
     });
     super.initState();

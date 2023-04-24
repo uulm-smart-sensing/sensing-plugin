@@ -37,14 +37,15 @@ abstract class SensorManagerApi {
 
   /// Retrieves information about the sensor with the passed [SensorId].
   @async
-  SensorInfo getSensorInfo(SensorId id);
+  InternalSensorInfo getSensorInfo(SensorId id);
 
-  /// [SensorData] isn't used in any method but returned via the event channel.
+  /// [InternalSensorData] isn't used in any method but returned
+  ///  via the event channel.
   ///
   /// For the class to be generated on the platforms it must be referenced in at
   /// least one method.
   // ignore: unused_element
-  void _dummyMethod(SensorData data);
+  void _dummyMethod(InternalSensorData data);
 }
 
 enum SensorId {
@@ -58,13 +59,12 @@ enum SensorId {
 }
 
 /// The unit of the sensor output data
-enum Unit {
+enum SensorUnit {
   // Acceleration
   metersPerSecondSquared,
   gravitationalForce,
   // Angular velocity
   radiansPerSecond,
-  degreesPerSecond,
   // Magnetic flux density
   microTeslas,
   // Angle
@@ -73,13 +73,8 @@ enum Unit {
   // Pressure
   hectoPascal,
   kiloPascal,
-  bar,
   // Temperature
   celsius,
-  fahrenheit,
-  kelvin,
-  // Miscellaneous
-  unitless,
 }
 
 /// Wrappes [SensorTaskResult] enum.
@@ -120,22 +115,22 @@ enum SensorTaskResult {
 ///
 /// The sensor will report data with an [accuracy] in the specified
 /// [timeIntervalInMilliseconds]. The values will be in the fixed [unit].
-class SensorInfo {
-  SensorInfo(
+class InternalSensorInfo {
+  InternalSensorInfo(
     this.unit,
     this.accuracy,
     this.timeIntervalInMilliseconds,
   );
 
-  Unit unit;
+  SensorUnit unit;
   SensorAccuracy accuracy;
   int timeIntervalInMilliseconds;
 }
 
 /// Sensor data with information about [maxPrecision], [unit] and the Unix
 /// [timestampInMicroseconds] of when the data was measured.
-class SensorData {
-  SensorData(
+class InternalSensorData {
+  InternalSensorData(
     this.data,
     this.maxPrecision,
     this.unit,
@@ -144,7 +139,7 @@ class SensorData {
 
   List<double?> data;
   int maxPrecision;
-  Unit unit;
+  SensorUnit unit;
   int timestampInMicroseconds;
 }
 

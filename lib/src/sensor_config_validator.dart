@@ -1,4 +1,5 @@
-import 'generated/api_sensor_manager.dart' show Unit, SensorId;
+import 'generated/api_sensor_manager.dart';
+import 'units/unit.dart';
 
 /// Variable for validating minPrecision
 const configValidatorMinPrecision = 0;
@@ -17,40 +18,32 @@ bool validatePrecision(int precision) =>
 /// [maxTimeInterval]
 const maxTimeInterval = 691199000;
 
-/// Checks whether the passed [interval] is valid.It is valid if the interval
-/// is between 10 and one week, 23 hours, 59 minutes and 59 seconds.The
+/// Checks whether the passed [interval] is valid. It is valid if the interval
+/// is between 10 and one week, 23 hours, 59 minutes and 59 seconds. The
 /// minimum was not 0 because a sensor can hardly have such high frequencies.
 ///
 bool validateIntervalInMilliseconds(int interval) =>
     interval >= 10 && interval <= maxTimeInterval;
 
-/// TODO: will be replaced
-///
-/// Checks if the matching unit with the corresponding SensorId is the
-/// same category/compatible.
-///
-/// For example a SensorId can be an accelerometer and the corresponding Unit is
-/// metersPerSecondSquared or gravitationalForce and if the given Unit does not
-/// match then [validateUnitCompatibility] returns false.
-bool validateUnitCompatibility(SensorId id, Unit unit) {
-  switch (id) {
+/// Checks whether the passed [unit] is valid for the passed [sensorId].
+bool validateUnit({
+  required Unit unit,
+  required SensorId sensorId,
+}) {
+  switch (sensorId) {
     case SensorId.accelerometer:
+      return unit.runtimeType == Acceleration;
     case SensorId.linearAcceleration:
-      return unit == Unit.metersPerSecondSquared ||
-          unit == Unit.gravitationalForce;
+      return unit.runtimeType == Acceleration;
     case SensorId.gyroscope:
-      return unit == Unit.radiansPerSecond || unit == Unit.degreesPerSecond;
+      return unit.runtimeType == AngularVelocity;
     case SensorId.magnetometer:
-      return unit == Unit.microTeslas;
+      return unit.runtimeType == MagneticFluxDensity;
     case SensorId.orientation:
-      return unit == Unit.radians || unit == Unit.degrees;
+      return unit.runtimeType == Angle;
     case SensorId.barometer:
-      return unit == Unit.hectoPascal ||
-          unit == Unit.kiloPascal ||
-          unit == Unit.bar;
+      return unit.runtimeType == Pressure;
     case SensorId.thermometer:
-      return unit == Unit.kelvin ||
-          unit == Unit.fahrenheit ||
-          unit == Unit.celsius;
+      return unit.runtimeType == Temperature;
   }
 }

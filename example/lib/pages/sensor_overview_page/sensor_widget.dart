@@ -7,14 +7,14 @@ import '../sensor_info_page/sensor_info_page.dart';
 import 'sensor_data_container.dart';
 
 /// Example target [Unit]s for each [SensorId] using by this demo app.
-const sensorIdToTargetUnit = {
-  SensorId.accelerometer: Unit.metersPerSecondSquared,
-  SensorId.gyroscope: Unit.degreesPerSecond,
-  SensorId.magnetometer: Unit.microTeslas,
-  SensorId.orientation: Unit.degrees,
-  SensorId.linearAcceleration: Unit.metersPerSecondSquared,
-  SensorId.barometer: Unit.hectoPascal,
-  SensorId.thermometer: Unit.celsius,
+final Map<SensorId, Unit> sensorIdToTargetUnit = {
+  SensorId.accelerometer: Acceleration.meterPerSecondSquared,
+  SensorId.gyroscope: AngularVelocity.degreesPerSecond,
+  SensorId.magnetometer: MagneticFluxDensity.microTesla,
+  SensorId.orientation: Angle.degrees,
+  SensorId.linearAcceleration: Acceleration.meterPerSecondSquared,
+  SensorId.barometer: Pressure.hectoPascal,
+  SensorId.thermometer: Temperature.celsius,
 };
 
 class SensorWidget extends StatefulWidget {

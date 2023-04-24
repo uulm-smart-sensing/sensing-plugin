@@ -4,23 +4,6 @@ import 'package:sensing_plugin/sensing_plugin.dart';
 
 import 'time_interval_picker.dart';
 
-const unitToStringRepresentation = {
-  Unit.metersPerSecondSquared: "m/s²",
-  Unit.gravitationalForce: "G",
-  Unit.radiansPerSecond: "rad/s",
-  Unit.degreesPerSecond: "deg/s",
-  Unit.microTeslas: "µT",
-  Unit.radians: "rad",
-  Unit.degrees: "deg",
-  Unit.hectoPascal: "hPa",
-  Unit.kiloPascal: "kPa",
-  Unit.bar: "Bar",
-  Unit.celsius: "°C",
-  Unit.fahrenheit: "°F",
-  Unit.kelvin: "K",
-  Unit.unitless: "",
-};
-
 class SensorInfoWidget extends StatefulWidget {
   final SensorId _sensorId;
 
@@ -65,9 +48,9 @@ class _SensorInfoWidgetState extends State<SensorInfoWidget> {
 
   Widget _getSensorInfoColumn(SensorInfo sensorInfo) {
     var sensorConfig = SensorManager().getSensorConfig(widget._sensorId)!;
-    var sensorInfoUnitText = unitToStringRepresentation[sensorInfo.unit];
+    var sensorInfoUnitText = sensorInfo.unit.toTextDisplay(isShort: true);
     var sensorConfigUnitText =
-        unitToStringRepresentation[sensorConfig.targetUnit]!;
+        sensorConfig.targetUnit.toTextDisplay(isShort: true);
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [

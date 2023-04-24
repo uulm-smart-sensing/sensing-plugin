@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sensing_plugin/src/generated/api_sensor_manager.dart';
 import 'package:sensing_plugin/src/sensor_config_validator.dart';
+import 'package:sensing_plugin/src/units/unit.dart';
 
 void main() {
   group(
@@ -54,248 +55,39 @@ void main() {
     },
   );
 
-  group(
-    "Validiting units",
-    () {
-      test(
-        "When the id & unit passes back accelerometer and"
-        "metersPerSecondSquared then validateUnitCompatibility return true",
-        () {
-          expect(
-            validateUnitCompatibility(
-              SensorId.accelerometer,
-              Unit.metersPerSecondSquared,
-            ),
-            isTrue,
-          );
-        },
-      );
-      test(
-        "When the id & unit passes back accelerometer and gravitationalForce"
-        "then validateUnitCompatibility return true",
-        () {
-          expect(
-            validateUnitCompatibility(
-              SensorId.accelerometer,
-              Unit.gravitationalForce,
-            ),
-            isTrue,
-          );
-        },
-      );
+  group("Validating unit category", () {
+    var idToUnitMap = <SensorId, Unit>{
+      SensorId.accelerometer: Acceleration.gal,
+      SensorId.linearAcceleration: Acceleration.gravity,
+      SensorId.gyroscope: AngularVelocity.radiansPerSecond,
+      SensorId.magnetometer: MagneticFluxDensity.gauss,
+      SensorId.orientation: Angle.gradian,
+      SensorId.barometer: Pressure.bar,
+      SensorId.thermometer: Temperature.rankine,
+    };
 
+    test(
+      'gets checked for every SensorId',
+      () {
+        expect(
+          idToUnitMap.length,
+          SensorId.values.length,
+        );
+      },
+    );
+
+    for (var element in idToUnitMap.entries) {
       test(
-        "When the id & unit passes back gyroscope and radiansPerSecond then"
-        "validateUnitCompatibility return true",
+        '''for ${element.key}''',
         () {
           expect(
-            validateUnitCompatibility(
-              SensorId.gyroscope,
-              Unit.radiansPerSecond,
-            ),
+            validateUnit(unit: element.value, sensorId: element.key),
             isTrue,
+            reason:
+                '''${element.value.runtimeType} should be the valid Unit category for ${element.key}''',
           );
         },
       );
-
-      test(
-        "When the id & unit passes back gyroscope and degreesPerSecond then"
-        "validateUnitCompatibility return true",
-        () {
-          expect(
-            validateUnitCompatibility(
-              SensorId.gyroscope,
-              Unit.degreesPerSecond,
-            ),
-            isTrue,
-          );
-        },
-      );
-
-      test(
-        "When the id & unit passes back magnetometer and magnometer then"
-        "validateUnitCompatibility return true",
-        () {
-          expect(
-            validateUnitCompatibility(
-              SensorId.magnetometer,
-              Unit.microTeslas,
-            ),
-            isTrue,
-          );
-        },
-      );
-
-      test(
-        "When the id & unit passes back orientation and radians then"
-        "validateUnitCompatibility return true",
-        () {
-          expect(
-            validateUnitCompatibility(
-              SensorId.orientation,
-              Unit.radians,
-            ),
-            isTrue,
-          );
-        },
-      );
-
-      test(
-        "When the id & unit passes back orientation and degrees then"
-        "validateUnitCompatibility return true",
-        () {
-          expect(
-            validateUnitCompatibility(
-              SensorId.orientation,
-              Unit.degrees,
-            ),
-            isTrue,
-          );
-        },
-      );
-
-      test(
-        "When the id & unit passes back linearAcceleration and"
-        "metersPerSecondSquared then validateUnitCompatibility return true",
-        () {
-          expect(
-            validateUnitCompatibility(
-              SensorId.linearAcceleration,
-              Unit.metersPerSecondSquared,
-            ),
-            isTrue,
-          );
-        },
-      );
-
-      test(
-        "When the id & unit passes back linearAcceleration and"
-        "gravitationalForce then validateUnitCompatibility return true",
-        () {
-          expect(
-            validateUnitCompatibility(
-              SensorId.linearAcceleration,
-              Unit.gravitationalForce,
-            ),
-            isTrue,
-          );
-        },
-      );
-
-      test(
-        "When the id & unit passes back barometer and hectoPascal then"
-        "validateUnitCompatibility return true",
-        () {
-          expect(
-            validateUnitCompatibility(
-              SensorId.barometer,
-              Unit.hectoPascal,
-            ),
-            isTrue,
-          );
-        },
-      );
-
-      test(
-        "When the id & unit passes back barometer and kiloPascal then"
-        "validateUnitCompatibility return true",
-        () {
-          expect(
-            validateUnitCompatibility(
-              SensorId.barometer,
-              Unit.kiloPascal,
-            ),
-            isTrue,
-          );
-        },
-      );
-
-      test(
-        "When the id & unit passes back barometer and bar then"
-        "validateUnitCompatibility return true",
-        () {
-          expect(
-            validateUnitCompatibility(
-              SensorId.barometer,
-              Unit.bar,
-            ),
-            isTrue,
-          );
-        },
-      );
-      test(
-        "When the id & unit passes back thermometer and kelvin then"
-        "validateUnitCompatibility return true",
-        () {
-          expect(
-            validateUnitCompatibility(
-              SensorId.thermometer,
-              Unit.kelvin,
-            ),
-            isTrue,
-          );
-        },
-      );
-
-      test(
-        "When the id & unit  passes back thermometer and fahrenheit then"
-        "validateUnitCompatibility return true",
-        () {
-          expect(
-            validateUnitCompatibility(
-              SensorId.thermometer,
-              Unit.fahrenheit,
-            ),
-            isTrue,
-          );
-        },
-      );
-
-      test(
-        "When the id & unit passes back thermometer and celsius then"
-        "validateUnitCompatibility return true",
-        () {
-          expect(
-            validateUnitCompatibility(
-              SensorId.thermometer,
-              Unit.celsius,
-            ),
-            isTrue,
-          );
-        },
-      );
-    },
-  );
-
-  test(
-    "When the specified unit does not match the id"
-    "then validateUnitCompatibility return false",
-    () {
-      expect(
-        validateUnitCompatibility(SensorId.barometer, Unit.microTeslas),
-        isFalse,
-      );
-    },
-  );
-
-  test(
-    "When the given id does not correspond to the unit then"
-    "validateUnitCompatibility return false",
-    () {
-      expect(
-        validateUnitCompatibility(SensorId.accelerometer, Unit.kelvin),
-        isFalse,
-      );
-    },
-  );
-  test(
-    "When both id and unit are different and have nothing in common then"
-    "validateUnitCompatibility return false",
-    () {
-      expect(
-        validateUnitCompatibility(SensorId.gyroscope, Unit.kiloPascal),
-        isFalse,
-      );
-    },
-  );
+    }
+  });
 }
