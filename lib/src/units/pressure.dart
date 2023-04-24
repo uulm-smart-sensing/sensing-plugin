@@ -13,6 +13,9 @@ enum Pressure implements Unit<Pressure> {
   /// Pressure in hectopascal (hPa).
   hectoPascal(1000, "hPa", "hectopascal"),
 
+  /// Pressure in pascal (Pa).
+  pascal(100000, "Pa", "pascal"),
+
   /// Pressure in pounds per square inch (psi).
   psi(14.503773773022, "psi", "pounds/inch²"),
 
