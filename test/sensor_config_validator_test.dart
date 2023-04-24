@@ -55,30 +55,39 @@ void main() {
     },
   );
 
-  group("Validating units for sensors", () {
+  group("Validating unit category", () {
+    var idToUnitMap = <SensorId, Unit>{
+      SensorId.accelerometer: Acceleration.gal,
+      SensorId.linearAcceleration: Acceleration.gravity,
+      SensorId.gyroscope: AngularVelocity.radiansPerSecond,
+      SensorId.magnetometer: MagneticFluxDensity.gauss,
+      SensorId.orientation: Angle.gradian,
+      SensorId.barometer: Pressure.bar,
+      SensorId.thermometer: Temperature.rankine,
+    };
+
     test(
-      '''When the unit is valid for the sensor then validateUnit returns true''',
+      'gets checked for every SensorId',
       () {
         expect(
-          validateUnit(
-            unit: Acceleration.gravity,
-            sensorId: SensorId.accelerometer,
-          ),
-          isTrue,
+          idToUnitMap.length,
+          SensorId.values.length,
         );
       },
     );
-    test(
-      '''When the unit is not valid for the sensor then validateUnit returns false''',
-      () {
-        expect(
-          validateUnit(
-            unit: MagneticFluxDensity.tesla,
-            sensorId: SensorId.gyroscope,
-          ),
-          isFalse,
-        );
-      },
-    );
+
+    for (var element in idToUnitMap.entries) {
+      test(
+        '''for ${element.key}''',
+        () {
+          expect(
+            validateUnit(unit: element.value, sensorId: element.key),
+            isTrue,
+            reason:
+                '''${element.value.runtimeType} should be the valid Unit category for ${element.key}''',
+          );
+        },
+      );
+    }
   });
 }
