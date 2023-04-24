@@ -15,7 +15,7 @@ abstract class SingleSensorStreamHandler(
     private val sensorManager: SensorManager,
     sensorId: Int,
     timeIntervalInMilliseconds: Long,
-    unit: ApiSensorManager.Unit
+    unit: ApiSensorManager.SensorUnit
 ) : SensorStreamHandler(
     sensorManager,
     intArrayOf(sensorId),

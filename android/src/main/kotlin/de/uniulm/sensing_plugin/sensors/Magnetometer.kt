@@ -2,7 +2,7 @@ package de.uniulm.sensing_plugin.sensors
 
 import android.hardware.Sensor
 import android.hardware.SensorManager
-import de.uniulm.sensing_plugin.generated.ApiSensorManager.Unit
+import de.uniulm.sensing_plugin.generated.ApiSensorManager.SensorUnit
 import de.uniulm.sensing_plugin.streamhandlers.SingleSensorStreamHandler
 
 class Magnetometer(
@@ -12,7 +12,7 @@ class Magnetometer(
     sensorManager,
     sensorId,
     timeIntervalInMilliseconds,
-    Unit.MICRO_TESLAS
+    SensorUnit.MICRO_TESLAS
 ) {
     companion object {
         const val sensorId = Sensor.TYPE_MAGNETIC_FIELD

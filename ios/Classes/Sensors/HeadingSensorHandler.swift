@@ -10,26 +10,26 @@ import CoreLocation
 
 /**
  The object for starting and stopping the sensor for measuring the heading angle.
- 
+
  The ``HeadingSensorHandler`` wraps the part of the ``CLLocationManager``,
  which handles the heading  sensor.
- 
+
  So this handler provide methods to ...
  - check, whether the heading sensor is available or already used
  - change the time interval at which the heading sensor data are collected
     or more detailed, at which frequency the data are sent
  - "start" and "stop" the heading sensor, so whether the heading sensor should
     provide heading angle  data or not
- 
+
  - Important: Therefor it conforms the ``ISensorStreamHandler`` protocol, so it
  can be called and managed by the ``SensorManager``.
- 
+
  */
 @available(iOS, introduced: 14.0, deprecated, message:
             "Use the orientation sensor instead (extended heading angle by roll and pitch angle)")
 public class HeadingSensorHandler: NSObject, ISensorStreamHandler, CLLocationManagerDelegate {
 
-    /// 
+    ///
     /// A Boolean value that indicates whether the user allowed the app to use the heading sensor
     private var isSensorUsageAllowedFromUser: Bool
 
@@ -83,10 +83,10 @@ public class HeadingSensorHandler: NSObject, ISensorStreamHandler, CLLocationMan
     }
 
     // TODO: check the accuracy of the heading sensor and do not return -1 (indicating no information) as accuracy
-    func getSensorInfo() -> SensorInfo {
+    func getSensorInfo() -> InternalSensorInfo {
         // convert time interval from seconds to milliseconds
         let timeIntervalInMilliSec: Int64 = Int64(self.requestUpdateTimeInterval * 1000)
-        return SensorInfo(unit: Unit.degrees, accuracy: SensorAccuracy.high,
+        return InternalSensorInfo(unit: SensorUnit.degrees, accuracy: SensorAccuracy.high,
                           timeIntervalInMilliseconds: timeIntervalInMilliSec)
     }
 
@@ -106,8 +106,8 @@ public class HeadingSensorHandler: NSObject, ISensorStreamHandler, CLLocationMan
                     if self.isSensorAvailable() {
 
                         // send the latest heading angle
-                        let sensorData = SensorData(data: [self.latestHeadingValue], maxPrecision: -1,
-                                                    unit: Unit.degrees,
+                        let sensorData = InternalSensorData(data: [self.latestHeadingValue], maxPrecision: -1,
+                                                    unit: SensorUnit.degrees,
                                                     timestampInMicroseconds: Int64(NSDate().timeIntervalSince1970
                                                                                    * 1000 * 1000))
                         events(sensorData.toList())
@@ -127,7 +127,7 @@ public class HeadingSensorHandler: NSObject, ISensorStreamHandler, CLLocationMan
 
     /**
      updates the last received heading angle value
-     
+
      - Parameters:
         - newHeading new `CLHeading` object, containg the heading sensor data
                    (true heading and magnetic heading as well as accuracy etc.)
@@ -138,7 +138,7 @@ public class HeadingSensorHandler: NSObject, ISensorStreamHandler, CLLocationMan
 
     /**
      updates the authorization status of the user, so whether the user allowed this app to use the location services
-     
+
     This information will be used to figure out, whether this app is allowed to send the sensor data or need to stop
      the sensor automatically
      */

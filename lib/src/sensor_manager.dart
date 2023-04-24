@@ -4,23 +4,24 @@ import 'dart:developer';
 import 'package:flutter/services.dart';
 
 import 'generated/api_sensor_manager.dart'
-    show SensorManagerApi, SensorData, SensorId, SensorInfo, SensorTaskResult;
+    show SensorManagerApi, InternalSensorData, SensorId, SensorTaskResult;
 import 'preprocessing/preprocessor.dart';
+import 'preprocessing/sensor_data.dart';
 import 'sensor_config.dart';
+import 'sensor_info.dart';
 
 /// Singleton sensor manager class
 class SensorManager {
   /// Stores all Sensors which is being used.
-  final List<SensorId> _usedSensors = [];
+  final _usedSensors = <SensorId>[];
 
-  /// Stores all received [Stream] with the matching [SensorId] as [SensorData].
-  final Map<SensorId, StreamPair<SensorData>> _sensorDataStreams =
-      <SensorId, StreamPair<SensorData>>{};
+  /// Stores all received [Stream] with the matching [SensorId] as
+  /// [SensorData].
+  final _sensorDataStreams = <SensorId, StreamPair<SensorData>>{};
 
   /// The defined [SensorConfig] for a sensor identified by the [SensorId] used
   /// by the preprocessing.
-  final Map<SensorId, SensorConfig> _sensorIdToSensorConfig =
-      <SensorId, SensorConfig>{};
+  final _sensorIdToSensorConfig = <SensorId, SensorConfig>{};
 
   static final SensorManager _singleton = SensorManager._internal();
 
@@ -29,9 +30,9 @@ class SensorManager {
 
   SensorManager._internal();
 
-  /// Process the [SensorData] with a matching [SensorId] from the Native side
-  /// and decode it.Furthermore saves every [Stream] with the matching
-  /// [SensorId] in [_sensorDataStreams]
+  /// Process the [SensorData] with a matching [SensorId] from the
+  /// native side and decode it. Furthermore saves every [Stream] with the
+  /// matching [SensorId] in [_sensorDataStreams]
   Stream<SensorData>? getSensorStream(SensorId id) =>
       _sensorDataStreams[id]?._streamController.stream;
 
@@ -46,8 +47,8 @@ class SensorManager {
   /// Changes the interval of the sensor with the passed [id] to
   /// [timeIntervalInMilliseconds] ms.
   ///
-  /// The corresponding [SensorConfig] is adjusted accordingly, if the change
-  /// was successful.
+  /// The corresponding [SensorConfig] is adjusted accordingly,
+  /// if the change was successful.
   ///
   /// If the sensor is not already being tracked
   /// [SensorTaskResult.notTrackingSensor] is returned.
@@ -78,7 +79,7 @@ class SensorManager {
 
   /// Retrieves information about the sensor with the passed [SensorId].
   Future<SensorInfo> getSensorInfo(SensorId id) async =>
-      SensorManagerApi().getSensorInfo(id);
+      SensorManagerApi().getSensorInfo(id).then(sensorInfoFromInternal);
 
   /// Returns the stored [SensorConfig] for the sensor with the passed [id].
   ///
@@ -118,10 +119,8 @@ class SensorManager {
       var sensorName = id.name;
       var eventChannel = EventChannel('sensors/$sensorName');
       var eventStream = eventChannel.receiveBroadcastStream().map(
-            (data) => processData(
-              sensorData: SensorData.decode(data as Object),
-              sensorConfig: config,
-            ),
+            (data) =>
+                processData(InternalSensorData.decode(data as Object), config),
           );
       _sensorDataStreams[id] = StreamPair(eventStream);
       _usedSensors.add(id);

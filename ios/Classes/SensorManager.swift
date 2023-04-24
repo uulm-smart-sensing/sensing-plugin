@@ -138,7 +138,7 @@ public class SensorManager: NSObject, FlutterPlugin, SensorManagerApi {
                                                                      sensorId: sensorId)))
     }
 
-    func getSensorInfo(id: SensorId, completion: @escaping (Result<SensorInfo, Error>) -> Void) {
+    func getSensorInfo(id: SensorId, completion: @escaping (Result<InternalSensorInfo, Error>) -> Void) {
         // check, whether the sensor with the given Id is implemented
         if streamHandlers.keys.contains(id) {
             // delegate method to sensor and return its answer
@@ -149,7 +149,7 @@ public class SensorManager: NSObject, FlutterPlugin, SensorManagerApi {
     }
 
     // swiftlint:disable:next identifier_name
-    func _dummyMethod(data: SensorData) throws {
+    func _dummyMethod(data: InternalSensorData) throws {
         throw ImplementationError.notImplementedYet(methodName: "dummyMethod")
     }
 
