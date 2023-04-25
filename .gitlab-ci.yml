@@ -100,6 +100,8 @@ typos:
   before_script:
     - mkdir -p report_outputs
     - curl -sSL https://github.com/crate-ci/typos/releases/download/v1.14.8/typos-v1.14.8-x86_64-unknown-linux-musl.tar.gz | tar -xz -C /usr/local/bin ./typos
+    - curl -sSL https://github.com/fgardt/typos_codeclimate/releases/latest/download/typos_codeclimate > /usr/local/bin/typos_codeclimate
+    - chmod +x /usr/local/bin/typos_codeclimate
   script:
     - typos --format brief --exclude "*.xc*" -j 1 > report_outputs/typos.txt || true
   after_script:
