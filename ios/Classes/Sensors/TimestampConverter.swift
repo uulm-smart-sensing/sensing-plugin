@@ -9,21 +9,21 @@ import Foundation
 
 /**
  This object converts different formats of timestamps
- 
+
  For example the timestamps from the sensor data represent the time since the booting process of the device,
- which needs to be converted to unix timestamps. 
+ which needs to be converted to unix timestamps.
  */
 public class TimestampConverter: NSObject {
 
     /**
      converts a time stamp of a sensor data to a unix time stamp
-     
+
      Therefore this method create a `Date()` object at the moment of the sensor event and subtracts the bias
      (= the boot timestamp contained in the `ProcessInfo.processInfo.systemUptime attribute).
-     This calculation result in a `Date()` object containg the absolute moment in time, the sensor event
-     occured (and not relative to boot time). This date will be converted into a unix timestamp
+     This calculation result in a `Date()` object containing the absolute moment in time, the sensor event
+     occurred (and not relative to boot time). This date will be converted into a unix timestamp
      (using the `timeIntervalSince1970` attribute) and returned.
-     
+
      - Important: The input timestamp coming from the sensor data (i. e. the `timestamp` attribute
                  from the `CMLogItem` class) is not a unix timestamp, but the elapsed time (in sec)
                  since the device was booted.

@@ -20,7 +20,7 @@ class _SensorInfoWidgetState extends State<SensorInfoWidget> {
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return const Text(
-              "An error occured while loading sensor information",
+              "An error occurred while loading sensor information",
               style: TextStyle(color: Colors.red),
             );
           }

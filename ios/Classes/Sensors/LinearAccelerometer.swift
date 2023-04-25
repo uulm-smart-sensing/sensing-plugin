@@ -10,7 +10,7 @@ import CoreMotion
 
 /**
  The object for starting and stopping the accelerometer sensor and receiving its sensor data.
- - Important: The "linear accelerometer" measures the acceleromation, but
+ - Important: The "linear accelerometer" measures the acceleration, but
              without considering the acceleration through gravity!
              So besides different values, the ``LinearAccelerometerHandler``
              works exactly like ``AccelerometerHandler``

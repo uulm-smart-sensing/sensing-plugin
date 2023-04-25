@@ -17,7 +17,7 @@ import CoreMotion
  So this handler provide methods to ...
  - check, whether the accelerometer is available or already used
  - change the time interval at which the accelerometer data are collected
- - "start" and "stop" the accelerometer, so whether the accelerometer should provide acceleromation data or not
+ - "start" and "stop" the accelerometer, so whether the accelerometer should provide acceleration data or not
 
  - Important: Therefor it conforms the ``ISensorStreamHandler`` protocol, so it
  can be called and managed by the ``SensorManager``.
@@ -40,7 +40,7 @@ public class AccelerometerHandler: NSObject, ISensorStreamHandler {
      that the update will not be performed or the change can not be notified.
      */
     func changeSensorTimeInterval(timeInterval: Int64) -> ResultWrapper {
-        // convert time interval from miliseconds into seconds
+        // convert time interval from milliseconds into seconds
         let timeIntervalInSec: TimeInterval = Double(timeInterval) / 1000
         ManagerCollection.getMotionManager().deviceMotionUpdateInterval = timeIntervalInSec
 
