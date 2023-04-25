@@ -5,7 +5,7 @@ import 'package:sensing_plugin/src/units/unit.dart';
 
 void main() {
   group(
-    "Validiting precision",
+    "Validating precision",
     () {
       test(
         'When the precision is valid, then validatePrecision returns true',
@@ -31,7 +31,7 @@ void main() {
   );
 
   group(
-    "Validiting timeInterval in milliseconds",
+    "Validating timeInterval in milliseconds",
     () {
       test(
         'When the interval is valid then validateTimeInterval returns true',

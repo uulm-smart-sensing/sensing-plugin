@@ -142,8 +142,8 @@ class SensorManager {
       return SensorTaskResult.notTrackingSensor;
     }
 
-    // Stops Flutter specific sensor subscribtion first.
-    // Otherwise the speficic platform returns an error.
+    // Stops Flutter specific sensor subscription first.
+    // Otherwise the specific platform returns an error.
     try {
       await _sensorDataStreams[id]?._streamSubscription.cancel();
       await _sensorDataStreams[id]?._streamController.close();

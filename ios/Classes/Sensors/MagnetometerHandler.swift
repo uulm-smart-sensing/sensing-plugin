@@ -34,7 +34,7 @@ public class MagnetometerHandler: NSObject, ISensorStreamHandler {
     }
 
     func changeSensorTimeInterval(timeInterval: Int64) -> ResultWrapper {
-        // convert time interval from miliseconds into seconds
+        // convert time interval from milliseconds into seconds
         let timeIntervalInSec: TimeInterval = Double(timeInterval) / 1000
         ManagerCollection.getMotionManager().magnetometerUpdateInterval = timeIntervalInSec
 

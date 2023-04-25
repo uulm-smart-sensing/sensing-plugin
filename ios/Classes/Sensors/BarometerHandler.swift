@@ -57,7 +57,7 @@ public class BarometerHandler: NSObject, ISensorStreamHandler {
     }
 
     func changeSensorTimeInterval(timeInterval: Int64) -> ResultWrapper {
-        // convert time interval from miliseconds into seconds
+        // convert time interval from milliseconds into seconds
         self.requestUpdateTimeInterval = Double(timeInterval) / 1000
 
         return ResultWrapper(state: SensorTaskResult.success)

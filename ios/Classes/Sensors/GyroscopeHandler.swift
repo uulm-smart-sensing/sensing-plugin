@@ -40,7 +40,7 @@ public class GyroscopeHandler: NSObject, ISensorStreamHandler {
      that the update will not be performed or the change can not be notified.
      */
     func changeSensorTimeInterval(timeInterval: Int64) -> ResultWrapper {
-        // convert time interval from miliseconds into seconds
+        // convert time interval from milliseconds into seconds
         let timeIntervalInSec: TimeInterval = Double(timeInterval) / 1000
         ManagerCollection.getMotionManager().gyroUpdateInterval = timeIntervalInSec
 
@@ -62,7 +62,7 @@ public class GyroscopeHandler: NSObject, ISensorStreamHandler {
     }
 
     // TODO: check, whether timer is not the better solution and provide the data at more precise frequency or
-    // if then data would be losen
+    // if then data would be loosen
     public func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
         if isSensorAvailable() {
             ManagerCollection.getMotionManager().startGyroUpdates(to: OperationQueue.current!,
