@@ -55,7 +55,7 @@ public class SensorManager: NSObject, FlutterPlugin, SensorManagerApi {
         // add magnetometer as implemented sensor
         streamHandlers.updateValue(MagnetometerHandler(), forKey: SensorId.magnetometer)
 
-        // add (linear) acceleromter as implemented sensor
+        // add (linear) accelerometer as implemented sensor
         streamHandlers.updateValue(LinearAccelerometerHandler(), forKey: SensorId.linearAcceleration)
         streamHandlers.updateValue(AccelerometerHandler(), forKey: SensorId.accelerometer)
 

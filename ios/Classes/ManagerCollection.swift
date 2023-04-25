@@ -12,7 +12,7 @@ import CoreLocation
 /**
  This object is a collection of all needed "sensor manager" existing in Swift, which can be used to access sensors
 
- Therefor this class provide instances for the different manager (simalar to a collection singleton instances), so the
+ Therefor this class provide instances for the different manager (similar to a collection singleton instances), so the
  different sensor stream handler can access them.
  - Important: This collection is used to prevent, that the manager (e. g. the CMMotionManager) are created
               multiple times, because this is not recommended (c. f. official Swift documentation for

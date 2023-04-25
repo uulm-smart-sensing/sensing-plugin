@@ -76,7 +76,7 @@ public class HeadingSensorHandler: NSObject, ISensorStreamHandler, CLLocationMan
     }
 
     func changeSensorTimeInterval(timeInterval: Int64) -> ResultWrapper {
-        // convert time interval from miliseconds into seconds
+        // convert time interval from milliseconds into seconds
         self.requestUpdateTimeInterval = Double(timeInterval) / 1000
 
         return ResultWrapper(state: SensorTaskResult.success)
@@ -129,7 +129,7 @@ public class HeadingSensorHandler: NSObject, ISensorStreamHandler, CLLocationMan
      updates the last received heading angle value
 
      - Parameters:
-        - newHeading new `CLHeading` object, containg the heading sensor data
+        - newHeading new `CLHeading` object, containing the heading sensor data
                    (true heading and magnetic heading as well as accuracy etc.)
      */
     public func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
