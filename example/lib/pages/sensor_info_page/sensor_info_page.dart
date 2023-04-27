@@ -135,29 +135,49 @@ class _SensorInfoPageState extends State<SensorInfoPage> {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Row(
-            children: _getTargetUnits(targetUnit)
-                .map(
-                  (unit) => Expanded(
-                    child: MaterialButton(
-                      color: unit == targetUnit ? Colors.blue : Colors.grey,
-                      shape: const StadiumBorder(),
-                      child: Text(unit.toTextDisplay(isShort: true)),
-                      onPressed: () {
-                        setState(() {
-                          newSensorConfig =
-                              newSensorConfig!.copyWith(targetUnit: unit);
-                        });
-                      },
-                    ),
-                  ),
-                )
-                .toList(),
+          child: ShaderMask(
+            shaderCallback: (rect) => const LinearGradient(
+              colors: [
+                Colors.black,
+                Colors.transparent,
+                Colors.transparent,
+                Colors.black,
+              ],
+              // 10% black, 80% transparent, 10% black
+              stops: [0.0, 0.05, 0.95, 1.0],
+            ).createShader(rect),
+            blendMode: BlendMode.dstOut,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              physics: const BouncingScrollPhysics(),
+              child: Row(
+                children: _getTargetUnits(targetUnit)
+                    .map(
+                      (unit) => [
+                        _getUnitSelectionButton(unit, targetUnit),
+                        const SizedBox(width: 10)
+                      ],
+                    )
+                    .expand((element) => element)
+                    .toList(),
+              ),
+            ),
           ),
         ),
       ],
     );
   }
+
+  Widget _getUnitSelectionButton(Unit unit, Unit targetUnit) => MaterialButton(
+        color: unit == targetUnit ? Colors.blue : Colors.grey,
+        shape: const StadiumBorder(),
+        child: Text(unit.toTextDisplay(isShort: true)),
+        onPressed: () {
+          setState(() {
+            newSensorConfig = newSensorConfig!.copyWith(targetUnit: unit);
+          });
+        },
+      );
 
   Widget _getTimeIntervalSection() {
     var timeIntervalInMilliseconds =
