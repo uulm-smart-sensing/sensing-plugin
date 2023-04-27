@@ -302,6 +302,34 @@ class SensorManager {
     _sensorIdToSensorConfig[sensorId] = newSensorConfig;
     return SensorTaskResult.success;
   }
+
+  /// Replaces the [SensorConfig] of a sensor with the passed [sensorId].
+  ///
+  /// Same as using [editSensorConfig] with all parameters set.
+  ///
+  /// Example:
+  /// ```dart
+  /// // Changes the time interval of the accelerometer to 1 second, the target
+  /// // precision to 2 and the target unit to m/s^2.
+  /// SensorManager().replaceSensorConfig(
+  ///   SensorId.accelerometer,
+  ///   SensorConfig(
+  ///     targetUnit: Unit.metersPerSecondSquared,
+  ///     targetPrecision: 2,
+  ///     timeInterval: Duration(seconds: 1),
+  ///   ),
+  /// );
+  /// ```
+  Future<SensorTaskResult> replaceSensorConfig(
+    SensorId sensorId,
+    SensorConfig config,
+  ) =>
+      editSensorConfig(
+        sensorId,
+        targetUnit: config.targetUnit,
+        targetPrecision: config.targetPrecision,
+        timeInterval: config.timeInterval,
+      );
 }
 
 /// Class to convert a stream to a stream controller.
