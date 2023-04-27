@@ -36,20 +36,20 @@ void main() {
       test(
         'When the interval is valid then validateTimeInterval returns true',
         () {
-          expect(validateIntervalInMilliseconds(15), isTrue);
+          expect(validateInterval(15), isTrue);
         },
       );
       test(
         'When the interval is negative then validateTimeInterval returns false',
         () {
-          expect(validateIntervalInMilliseconds(-1), isFalse);
+          expect(validateInterval(-1), isFalse);
         },
       );
       test(
         "When the interval is too large"
         "then validateTimeInterval returns false",
         () {
-          expect(validateIntervalInMilliseconds(31536000001), isFalse);
+          expect(validateInterval(31536000001), isFalse);
         },
       );
     },
