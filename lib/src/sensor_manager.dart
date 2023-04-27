@@ -17,12 +17,12 @@ class SensorManager {
   /// List of all sensors in use.
   final _usedSensors = <SensorId>[];
 
-  /// The [StreamPair] of a sensor with the corresponding [SensorId].
-  final _sensorDataStreams = <SensorId, StreamPair>{};
+  /// The [_StreamPair] of a sensor with the corresponding [SensorId].
+  final _sensorDataStreams = <SensorId, _StreamPair>{};
 
-  /// The defined [SensorConfig] for a sensor identified by the [SensorId] used
-  /// by the preprocessing.
-  final _sensorIdToSensorConfig = <SensorId, SensorConfig>{};
+  /// The defined [SensorConfig] wrapped in a [SensorConfigWrapper] for a
+  /// sensor identified by the [SensorId] used by the preprocessing.
+  final _sensorIdToSensorConfig = <SensorId, SensorConfigWrapper>{};
 
   static final SensorManager _singleton = SensorManager._internal();
 
@@ -75,13 +75,13 @@ class SensorManager {
         .then((value) => value.state);
 
     if (result == SensorTaskResult.success) {
-      var oldConfig = _sensorIdToSensorConfig[id]!;
+      var oldConfig = _sensorIdToSensorConfig[id]!.sensorConfig;
       var newConfig = oldConfig.copyWith(
         timeInterval: Duration(
           milliseconds: timeIntervalInMilliseconds,
         ),
       );
-      _sensorIdToSensorConfig[id] = newConfig;
+      _sensorIdToSensorConfig[id] = SensorConfigWrapper(newConfig);
     }
 
     return result;
@@ -96,7 +96,8 @@ class SensorManager {
   ///
   /// If there's no [SensorConfig] associated with the passed [id], null is
   /// returned.
-  SensorConfig? getSensorConfig(SensorId id) => _sensorIdToSensorConfig[id];
+  SensorConfig? getSensorConfig(SensorId id) =>
+      _sensorIdToSensorConfig[id]?.sensorConfig;
 
   /// Starts the tracking of a sensor with the passed [id].
   ///
@@ -134,17 +135,20 @@ class SensorManager {
         .then((value) => value.state);
 
     if (result == SensorTaskResult.success) {
+      var configWrapper = SensorConfigWrapper(config);
       // Creates an eventChannel to get the sensorData from native side and
       // saves it in _sensorDataStreams
       var sensorName = id.name;
       var eventChannel = EventChannel('sensors/$sensorName');
       var eventStream = eventChannel.receiveBroadcastStream().map(
-            (data) =>
-                processData(InternalSensorData.decode(data as Object), config),
+            (data) => processData(
+              InternalSensorData.decode(data as Object),
+              configWrapper,
+            ),
           );
-      _sensorDataStreams[id] = StreamPair(eventStream);
+      _sensorDataStreams[id] = _StreamPair(eventStream);
       _usedSensors.add(id);
-      _sensorIdToSensorConfig[id] = config;
+      _sensorIdToSensorConfig[id] = configWrapper;
     }
 
     return result;
@@ -272,7 +276,8 @@ class SensorManager {
       return SensorTaskResult.notTrackingSensor;
     }
 
-    var sensorConfig = _sensorIdToSensorConfig[sensorId]!;
+    var sensorConfigWrapper = _sensorIdToSensorConfig[sensorId]!;
+    var sensorConfig = sensorConfigWrapper.sensorConfig;
     var newSensorConfig = sensorConfig.copyWith(
       targetUnit: targetUnit,
       targetPrecision: targetPrecision,
@@ -300,7 +305,7 @@ class SensorManager {
       return sensorTaskResult;
     }
 
-    _sensorIdToSensorConfig[sensorId] = newSensorConfig;
+    sensorConfigWrapper.sensorConfig = newSensorConfig;
     return SensorTaskResult.success;
   }
 
@@ -336,17 +341,30 @@ class SensorManager {
 /// Class to convert a stream to a stream controller.
 /// Contains both the controller and the base subscription to the initial
 /// stream.
-class StreamPair {
+class _StreamPair {
   final StreamController<SensorData> _streamController =
       StreamController<SensorData>.broadcast();
   late final StreamSubscription<SensorData> _streamSubscription;
 
   ///Constructor to convert a regular stream to a stream controller.
-  StreamPair(Stream<SensorData> baseStream) {
+  _StreamPair(Stream<SensorData> baseStream) {
     _streamSubscription = baseStream.listen((event) {
       if (!_streamController.isClosed || !_streamController.isPaused) {
         _streamController.add(event);
       }
     });
   }
+}
+
+/// Wrapper class for [SensorConfig].
+///
+/// This class is used to change the [SensorConfig] of a sensor while tracking.
+class SensorConfigWrapper {
+  /// [SensorConfig] to be wrapped.
+  SensorConfig sensorConfig;
+
+  /// Creates a new [SensorConfigWrapper] object.
+  SensorConfigWrapper(
+    this.sensorConfig,
+  );
 }
