@@ -10,6 +10,7 @@ import 'preprocessing/sensor_data.dart';
 import 'sensor_config.dart';
 import 'sensor_config_validator.dart';
 import 'sensor_info.dart';
+import 'units/unit.dart';
 
 /// Singleton sensor manager class
 class SensorManager {
@@ -231,8 +232,76 @@ class SensorManager {
     return SensorTaskResult.success;
   }
 
-  /// configure the sensor properties
-  bool editSensor() => false;
+  /// Edits the [SensorConfig] of a sensor with the passed [sensorId].
+  ///
+  /// Returns:
+  /// * [SensorTaskResult.notTrackingSensor] if the sensor is not being tracked.
+  /// * The corresponding [SensorTaskResult] if the [SensorConfig] is invalid
+  /// (according to [validateSensorConfig]).
+  /// * [SensorTaskResult.success] if the [SensorConfig] was edited
+  /// successfully.
+  ///
+  /// Example:
+  /// ```dart
+  /// // Changes the time interval of the accelerometer to 1 second.
+  /// SensorManager().editSensorConfig(
+  ///   SensorId.accelerometer,
+  ///   timeInterval: Duration(seconds: 1),
+  /// );
+  ///
+  /// // Changes the precision of the accelerometer to 2.
+  /// SensorManager().editSensorConfig(
+  ///   SensorId.accelerometer,
+  ///   targetPrecision: 2,
+  /// );
+  ///
+  /// // Changes the unit of the accelerometer to m/s^2.
+  /// SensorManager().editSensorConfig(
+  ///   SensorId.accelerometer,
+  ///   targetUnit: Unit.metersPerSecondSquared,
+  /// );
+  /// ```
+  Future<SensorTaskResult> editSensorConfig(
+    SensorId sensorId, {
+    Unit? targetUnit,
+    int? targetPrecision,
+    Duration? timeInterval,
+  }) async {
+    if (!_sensorIdToSensorConfig.containsKey(sensorId)) {
+      return SensorTaskResult.notTrackingSensor;
+    }
+
+    var sensorConfig = _sensorIdToSensorConfig[sensorId]!;
+    var newSensorConfig = sensorConfig.copyWith(
+      targetUnit: targetUnit,
+      targetPrecision: targetPrecision,
+      timeInterval: timeInterval,
+    );
+
+    var configValidationResult = validateSensorConfig(
+      sensorId,
+      newSensorConfig,
+    );
+    if (configValidationResult != SensorTaskResult.success) {
+      return configValidationResult;
+    }
+
+    var sensorTaskResult = SensorTaskResult.success;
+    // If the time interval is changed, the sensor tracking has to be restarted.
+    if (sensorConfig.timeInterval != newSensorConfig.timeInterval) {
+      sensorTaskResult = await changeSensorTimeInterval(
+        id: sensorId,
+        timeIntervalInMilliseconds: newSensorConfig.timeInterval.inMilliseconds,
+      );
+    }
+
+    if (sensorTaskResult != SensorTaskResult.success) {
+      return sensorTaskResult;
+    }
+
+    _sensorIdToSensorConfig[sensorId] = newSensorConfig;
+    return SensorTaskResult.success;
+  }
 }
 
 /// Class to convert a stream to a stream controller.
