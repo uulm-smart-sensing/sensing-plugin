@@ -8,6 +8,7 @@ import 'generated/api_sensor_manager.dart'
 import 'preprocessing/preprocessor.dart';
 import 'preprocessing/sensor_data.dart';
 import 'sensor_config.dart';
+import 'sensor_config_validator.dart';
 import 'sensor_info.dart';
 
 /// Singleton sensor manager class
@@ -50,12 +51,20 @@ class SensorManager {
   /// The corresponding [SensorConfig] is adjusted accordingly,
   /// if the change was successful.
   ///
-  /// If the sensor is not already being tracked
-  /// [SensorTaskResult.notTrackingSensor] is returned.
+  /// Returns:
+  /// * [SensorTaskResult.invalidTimeInterval] if the time interval is invalid
+  /// (according to [validateInterval]).
+  /// * [SensorTaskResult.notTrackingSensor] if the sensor is not being tracked.
+  /// * [SensorTaskResult.success] if the time interval was changed
+  /// successfully.
   Future<SensorTaskResult> changeSensorTimeInterval({
     required SensorId id,
     required int timeIntervalInMilliseconds,
   }) async {
+    if (!validateInterval(timeIntervalInMilliseconds)) {
+      return SensorTaskResult.invalidTimeInterval;
+    }
+
     if (!_usedSensors.contains(id)) {
       return SensorTaskResult.notTrackingSensor;
     }
@@ -93,14 +102,23 @@ class SensorManager {
   /// used to configure the time interval and how the sensor data is
   /// preprocessed.
   ///
-  /// If the sensor is already being tracked
-  /// [SensorTaskResult.alreadyTrackingSensor] is returned.
-  /// If the sensor is not available (according to [isSensorAvailable])
-  /// [SensorTaskResult.sensorNotAvailable] is returned.
+  /// Returns:
+  /// * [SensorTaskResult.alreadyTrackingSensor] if the sensor is already being
+  /// tracked.
+  /// * [SensorTaskResult.sensorNotAvailable] if the sensor is not available
+  /// (according to [isSensorAvailable]).
+  /// * The corresponding [SensorTaskResult] if the [config] is invalid
+  /// (according to [validateSensorConfig]).
+  /// * [SensorTaskResult.success] if the tracking was started successfully.
   Future<SensorTaskResult> startSensorTracking({
     required SensorId id,
     required SensorConfig config,
   }) async {
+    var configValidationResult = validateSensorConfig(id, config);
+    if (configValidationResult != SensorTaskResult.success) {
+      return configValidationResult;
+    }
+
     if (_usedSensors.contains(id)) {
       return SensorTaskResult.alreadyTrackingSensor;
     }
@@ -179,6 +197,38 @@ class SensorManager {
       }
     }
     return usableSensors;
+  }
+
+  /// Checks whether the passed [config] is valid for the passed [sensorId].
+  ///
+  /// Returns:
+  /// * [SensorTaskResult.success] if the [config] is valid.
+  /// * [SensorTaskResult.invalidTimeInterval] if the
+  /// [SensorConfig.timeInterval] is invalid.
+  /// * [SensorTaskResult.invalidPrecision] if the
+  /// [SensorConfig.targetPrecision] is invalid.
+  /// * [SensorTaskResult.invalidUnit] if the [SensorConfig.targetUnit] is
+  /// invalid.
+  ///
+  /// Same as using [validateInterval], [validatePrecision] and
+  /// [validateUnit].
+  SensorTaskResult validateSensorConfig(
+    SensorId sensorId,
+    SensorConfig config,
+  ) {
+    if (!validateInterval(config.timeInterval.inMilliseconds)) {
+      return SensorTaskResult.invalidTimeInterval;
+    }
+
+    if (!validatePrecision(config.targetPrecision)) {
+      return SensorTaskResult.invalidPrecision;
+    }
+
+    if (!validateUnit(unit: config.targetUnit, sensorId: sensorId)) {
+      return SensorTaskResult.invalidUnit;
+    }
+
+    return SensorTaskResult.success;
   }
 
   /// configure the sensor properties
