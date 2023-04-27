@@ -303,7 +303,7 @@ class SensorManager {
     return SensorTaskResult.success;
   }
 
-  /// Replaces the [SensorConfig] of a sensor with the passed [sensorId].
+  /// Sets the [SensorConfig] of a sensor with the passed [sensorId].
   ///
   /// Same as using [editSensorConfig] with all parameters set.
   ///
@@ -311,7 +311,7 @@ class SensorManager {
   /// ```dart
   /// // Changes the time interval of the accelerometer to 1 second, the target
   /// // precision to 2 and the target unit to m/s^2.
-  /// SensorManager().replaceSensorConfig(
+  /// SensorManager().setSensorConfig(
   ///   SensorId.accelerometer,
   ///   SensorConfig(
   ///     targetUnit: Unit.metersPerSecondSquared,
@@ -320,7 +320,7 @@ class SensorManager {
   ///   ),
   /// );
   /// ```
-  Future<SensorTaskResult> replaceSensorConfig(
+  Future<SensorTaskResult> setSensorConfig(
     SensorId sensorId,
     SensorConfig config,
   ) =>
