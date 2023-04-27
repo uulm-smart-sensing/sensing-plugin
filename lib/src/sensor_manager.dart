@@ -235,15 +235,16 @@ class SensorManager {
   bool editSensor() => false;
 }
 
-///Class to convert a stream to a stream controller.
-///Contains both the controller and
-///the base subscription to the initial stream.
-class StreamPair<T> {
-  final StreamController<T> _streamController = StreamController<T>.broadcast();
-  late final StreamSubscription<T> _streamSubscription;
+/// Class to convert a stream to a stream controller.
+/// Contains both the controller and the base subscription to the initial
+/// stream.
+class StreamPair {
+  final StreamController<SensorData> _streamController =
+      StreamController<SensorData>.broadcast();
+  late final StreamSubscription<SensorData> _streamSubscription;
 
   ///Constructor to convert a regular stream to a stream controller.
-  StreamPair(Stream<T> baseStream) {
+  StreamPair(Stream<SensorData> baseStream) {
     _streamSubscription = baseStream.listen((event) {
       if (!_streamController.isClosed || !_streamController.isPaused) {
         _streamController.add(event);
