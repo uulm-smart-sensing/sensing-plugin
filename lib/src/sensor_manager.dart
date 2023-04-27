@@ -12,12 +12,11 @@ import 'sensor_info.dart';
 
 /// Singleton sensor manager class
 class SensorManager {
-  /// Stores all Sensors which is being used.
+  /// List of all sensors in use.
   final _usedSensors = <SensorId>[];
 
-  /// Stores all received [Stream] with the matching [SensorId] as
-  /// [SensorData].
-  final _sensorDataStreams = <SensorId, StreamPair<SensorData>>{};
+  /// The [StreamPair] of a sensor with the corresponding [SensorId].
+  final _sensorDataStreams = <SensorId, StreamPair>{};
 
   /// The defined [SensorConfig] for a sensor identified by the [SensorId] used
   /// by the preprocessing.
@@ -30,21 +29,22 @@ class SensorManager {
 
   SensorManager._internal();
 
-  /// Process the [SensorData] with a matching [SensorId] from the
-  /// native side and decode it. Furthermore saves every [Stream] with the
-  /// matching [SensorId] in [_sensorDataStreams]
+  /// Returns the [Stream] of the sensor with the passed [id].
+  ///
+  /// If the sensor is not being tracked, i.e. no stream is available, null is
+  /// returned.
   Stream<SensorData>? getSensorStream(SensorId id) =>
       _sensorDataStreams[id]?._streamController.stream;
 
-  /// Checks if the Sensor is currently used and returns an bool.
+  /// Checks whether the sensor with the passed [id] is currently used.
   Future<bool> isSensorUsed(SensorId id) async =>
       SensorManagerApi().isSensorUsed(id);
 
-  /// Checks if the Sensor is available and returns the SensorID.
+  /// Checks whether the sensor with the passed [id] is available.
   Future<bool> isSensorAvailable(SensorId id) async =>
       SensorManagerApi().isSensorAvailable(id);
 
-  /// Changes the interval of the sensor with the passed [id] to
+  /// Changes the time interval of the sensor with the passed [id] to
   /// [timeIntervalInMilliseconds] ms.
   ///
   /// The corresponding [SensorConfig] is adjusted accordingly,
@@ -77,7 +77,7 @@ class SensorManager {
     return result;
   }
 
-  /// Retrieves information about the sensor with the passed [SensorId].
+  /// Retrieves information about the sensor with the passed [id].
   Future<SensorInfo> getSensorInfo(SensorId id) async =>
       SensorManagerApi().getSensorInfo(id).then(sensorInfoFromInternal);
 
@@ -135,8 +135,10 @@ class SensorManager {
   /// If the tracking is stopped successfully the stored [SensorConfig] is
   /// removed.
   ///
-  /// If the sensor is not already being tracked
-  /// [SensorTaskResult.notTrackingSensor] is returned.
+  /// Returns:
+  /// * [SensorTaskResult.notTrackingSensor] if the sensor is not being tracked.
+  /// * [SensorTaskResult.failure] if the tracking could not be stopped.
+  /// * [SensorTaskResult.success] if the tracking was stopped successfully.
   Future<SensorTaskResult> stopSensorTracking(SensorId id) async {
     if (!_usedSensors.contains(id)) {
       return SensorTaskResult.notTrackingSensor;
@@ -165,14 +167,14 @@ class SensorManager {
     return result;
   }
 
-  /// returns all Sensor that are being used.
+  /// Returns all sensors in use.
   List<SensorId> getUsedSensors() => _usedSensors;
 
-  /// checks if the Sensor can be used and returns a List.
+  /// Returns all sensors that are available and not in use.
   Future<List<SensorId>> getUsableSensors() async {
     var usableSensors = <SensorId>[];
     for (var id in SensorId.values) {
-      if (_usedSensors.contains(id) && await isSensorAvailable(id)) {
+      if (!_usedSensors.contains(id) && await isSensorAvailable(id)) {
         usableSensors.add(id);
       }
     }
