@@ -97,11 +97,17 @@ enum SensorTaskResult {
   /// The sensor corresponding to the task is already being tracked.
   alreadyTrackingSensor,
 
-  // The sensor corresponding to the task was not being tracked.
+  /// The sensor corresponding to the task was not being tracked.
   notTrackingSensor,
 
-  // The sensor time interval corresponding to the task was invalid.
+  /// The sensor time interval corresponding to the task was invalid.
   invalidTimeInterval,
+
+  /// The sensor precision corresponding to the task was invalid.
+  invalidPrecision,
+
+  /// The sensor unit corresponding to the task was invalid.
+  invalidUnit,
 
   /// The action was executed successfully, but there are some warnings
   /// (e.g. sensor updates not always possible, depending on the device)

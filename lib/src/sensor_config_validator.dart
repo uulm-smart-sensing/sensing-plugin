@@ -18,12 +18,13 @@ bool validatePrecision(int precision) =>
 /// [maxTimeInterval]
 const maxTimeInterval = 691199000;
 
-/// Checks whether the passed [interval] is valid. It is valid if the interval
-/// is between 10 and one week, 23 hours, 59 minutes and 59 seconds. The
-/// minimum was not 0 because a sensor can hardly have such high frequencies.
-///
-bool validateIntervalInMilliseconds(int interval) =>
-    interval >= 10 && interval <= maxTimeInterval;
+/// Checks whether the passed [timeIntervalInMilliseconds] is valid. It is valid
+/// if the interval is between 10 ms and one week, 23 hours, 59 minutes and 59
+/// seconds. The minimum was not 0 ms because a sensor can hardly have such high
+/// frequencies.
+bool validateInterval(int timeIntervalInMilliseconds) =>
+    timeIntervalInMilliseconds >= 10 &&
+    timeIntervalInMilliseconds <= maxTimeInterval;
 
 /// Checks whether the passed [unit] is valid for the passed [sensorId].
 bool validateUnit({
