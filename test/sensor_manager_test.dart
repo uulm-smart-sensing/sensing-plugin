@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sensing_plugin/sensing_plugin.dart';
-import 'package:sensing_plugin/src/sensor_manager_api_platform.dart';
+import 'package:sensing_plugin/src/sensor_manager/sensor_manager_api_platform.dart';
 
 import 'platform_mock.dart';
 
@@ -26,7 +26,7 @@ void main() {
 
   setUp(
     () {
-      var fakePlatform = MockSensorManagerApiPlatform();
+      var fakePlatform = MockSensorManagerApi();
       SensorManagerApiPlatform.instance = fakePlatform;
     },
   );

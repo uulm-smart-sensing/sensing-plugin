@@ -1,9 +1,9 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:sensing_plugin/src/generated/api_sensor_manager.dart';
 import 'package:sensing_plugin/src/sensor_config.dart';
-import 'package:sensing_plugin/src/sensor_manager_api_platform.dart';
+import 'package:sensing_plugin/src/sensor_manager/sensor_manager_api_platform.dart';
 
-class MockSensorManagerApiPlatform
+class MockSensorManagerApi
     with
         // ignore: prefer_mixin
         MockPlatformInterfaceMixin

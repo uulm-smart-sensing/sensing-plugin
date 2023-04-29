@@ -3,17 +3,21 @@ import 'dart:developer';
 
 import 'package:flutter/services.dart';
 
-import 'generated/api_sensor_manager.dart'
+import '../generated/api_sensor_manager.dart'
     show InternalSensorData, SensorId, SensorTaskResult;
-import 'preprocessing/preprocessor.dart';
-import 'preprocessing/sensor_data.dart';
-import 'sensor_config.dart';
-import 'sensor_config_validator.dart';
-import 'sensor_info.dart';
+import '../preprocessing/preprocessor.dart';
+import '../preprocessing/sensor_data.dart';
+import '../sensor_config.dart';
+import '../sensor_config_validator.dart';
+import '../sensor_info.dart';
+import '../units/unit.dart';
 import 'sensor_manager_api_platform.dart';
-import 'units/unit.dart';
 
-/// Singleton sensor manager class
+/// Sensor manager, which calls the native platforms to
+/// * check the availability of a sensor
+/// * start and stop sensors
+/// * configure sensors
+/// TODO: extend this comment with further information / an example
 class SensorManager extends SensorManagerApiPlatform {
   /// List of all sensors in use.
   final _usedSensors = <SensorId>[];
