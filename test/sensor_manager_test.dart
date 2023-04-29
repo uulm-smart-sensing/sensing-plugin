@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sensing_plugin/sensing_plugin.dart';
+import 'package:sensing_plugin/src/sensor_manager/sensor_manager_api_pigeon.dart';
 import 'package:sensing_plugin/src/sensor_manager/sensor_manager_api_platform.dart';
 
 import 'platform_mock.dart';
@@ -12,7 +13,7 @@ void main() {
   var initialPlatform = SensorManagerApiPlatform.instance;
 
   test('$SensorManager is the default instance', () {
-    expect(initialPlatform, isInstanceOf<SensorManager>());
+    expect(initialPlatform, isInstanceOf<SensorManagerPigeonApi>());
   });
 
   test("Sensor manager implements singleton pattern", () {
