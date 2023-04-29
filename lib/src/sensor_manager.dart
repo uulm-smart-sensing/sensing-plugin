@@ -4,7 +4,7 @@ import 'dart:developer';
 import 'package:flutter/services.dart';
 
 import 'generated/api_sensor_manager.dart'
-    show SensorManagerApi, InternalSensorData, SensorId, SensorTaskResult;
+    show InternalSensorData, SensorId, SensorTaskResult;
 import 'preprocessing/preprocessor.dart';
 import 'preprocessing/sensor_data.dart';
 import 'sensor_config.dart';
@@ -95,9 +95,10 @@ class SensorManager extends SensorManagerApiPlatform {
 
   /// Retrieves information (collected in a [SensorInfo] object) about the
   /// sensor with the passed [id].
-  @override
   Future<SensorInfo> getSensorInfo(SensorId id) async =>
-      SensorManagerApi().getSensorInfo(id).then(sensorInfoFromInternal);
+      SensorManagerApiPlatform.instance
+          .getInternalSensorInfo(id)
+          .then(sensorInfoFromInternal);
 
   /// Returns the stored [SensorConfig] for the sensor with the passed [id].
   ///
@@ -138,9 +139,8 @@ class SensorManager extends SensorManagerApiPlatform {
       return SensorTaskResult.sensorNotAvailable;
     }
 
-    var result = await SensorManagerApi()
-        .startSensorTracking(id, config.timeInterval.inMilliseconds)
-        .then((value) => value.state);
+    var result = await SensorManagerApiPlatform.instance
+        .startSensorTracking(id: id, config: config);
 
     if (result == SensorTaskResult.success) {
       var configWrapper = SensorConfigWrapper(config);
@@ -171,6 +171,7 @@ class SensorManager extends SensorManagerApiPlatform {
   /// * [SensorTaskResult.notTrackingSensor] if the sensor is not being tracked.
   /// * [SensorTaskResult.failure] if the tracking could not be stopped.
   /// * [SensorTaskResult.success] if the tracking was stopped successfully.
+  @override
   Future<SensorTaskResult> stopSensorTracking(SensorId id) async {
     if (!_usedSensors.contains(id)) {
       return SensorTaskResult.notTrackingSensor;
@@ -186,9 +187,7 @@ class SensorManager extends SensorManagerApiPlatform {
       return SensorTaskResult.failure;
     }
 
-    var result = await SensorManagerApi()
-        .stopSensorTracking(id)
-        .then((value) => value.state);
+    var result = await SensorManagerApiPlatform.instance.stopSensorTracking(id);
 
     if (result == SensorTaskResult.success) {
       _usedSensors.remove(id);

@@ -38,14 +38,14 @@ abstract class SensorManagerApiPlatform extends PlatformInterface {
   Future<SensorTaskResult> startSensorTracking({
     required SensorId id,
     required SensorConfig config,
-  }) async {
-    throw UnimplementedError('`startSensorTracking` is not implemented yet');
-  }
+  }) async =>
+      SensorManagerApi()
+          .startSensorTracking(id, config.timeInterval.inMilliseconds)
+          .then((value) => value.state);
 
   /// Stops tracking of the sensor with the passed [SensorId].
-  Future<SensorTaskResult> stopSensorTracking(SensorId id) async {
-    throw UnimplementedError('`stopSensorTracking` is not implemented yet');
-  }
+  Future<SensorTaskResult> stopSensorTracking(SensorId id) async =>
+      SensorManagerApi().stopSensorTracking(id).then((value) => value.state);
 
   /// Changes the interval of the sensor event channel with the passed
   /// [SensorId] to [timeIntervalInMilliseconds] ms.
@@ -58,9 +58,8 @@ abstract class SensorManagerApiPlatform extends PlatformInterface {
           .then((value) => value.state);
 
   /// Retrieves information about the sensor with the passed [SensorId].
-  Future<SensorInfo> getSensorInfo(SensorId id) {
-    throw UnimplementedError('`getSensorInfo` is not implemented yet');
-  }
+  Future<InternalSensorInfo> getInternalSensorInfo(SensorId id) =>
+      SensorManagerApi().getSensorInfo(id);
 
   /// [InternalSensorData] isn't used in any method but returned
   ///  via the event channel.
