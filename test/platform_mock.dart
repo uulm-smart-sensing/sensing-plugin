@@ -4,8 +4,11 @@ import 'package:sensing_plugin/src/sensor_config.dart';
 import 'package:sensing_plugin/src/sensor_manager_api_platform.dart';
 
 class MockSensorManagerApiPlatform
-    with MockPlatformInterfaceMixin
-    implements SensorManagerApiPlatform {
+    with
+        // ignore: prefer_mixin
+        MockPlatformInterfaceMixin
+    implements
+        SensorManagerApiPlatform {
   final _usedSensors = <SensorId>[];
 
   @override
