@@ -3,17 +3,22 @@ import 'dart:developer';
 
 import 'package:flutter/services.dart';
 
-import 'generated/api_sensor_manager.dart'
-    show SensorManagerApi, InternalSensorData, SensorId, SensorTaskResult;
-import 'preprocessing/preprocessor.dart';
-import 'preprocessing/sensor_data.dart';
-import 'sensor_config.dart';
-import 'sensor_config_validator.dart';
-import 'sensor_info.dart';
-import 'units/unit.dart';
+import '../generated/api_sensor_manager.dart'
+    show InternalSensorData, SensorId, SensorTaskResult;
+import '../preprocessing/preprocessor.dart';
+import '../preprocessing/sensor_data.dart';
+import '../sensor_config.dart';
+import '../sensor_config_validator.dart';
+import '../sensor_info.dart';
+import '../units/unit.dart';
+import 'sensor_manager_api_platform.dart';
 
-/// Singleton sensor manager class
-class SensorManager {
+/// Sensor manager, which calls the native platforms to
+/// * check the availability of a sensor
+/// * start and stop sensors
+/// * configure sensors
+/// TODO: extend this comment with further information / an example
+class SensorManager extends SensorManagerApiPlatform {
   /// List of all sensors in use.
   final _usedSensors = <SensorId>[];
 
@@ -39,12 +44,14 @@ class SensorManager {
       _sensorDataStreams[id]?._streamController.stream;
 
   /// Checks whether the sensor with the passed [id] is currently used.
+  @override
   Future<bool> isSensorUsed(SensorId id) async =>
-      SensorManagerApi().isSensorUsed(id);
+      SensorManagerApiPlatform.instance.isSensorUsed(id);
 
   /// Checks whether the sensor with the passed [id] is available.
+  @override
   Future<bool> isSensorAvailable(SensorId id) async =>
-      SensorManagerApi().isSensorAvailable(id);
+      SensorManagerApiPlatform.instance.isSensorAvailable(id);
 
   /// Changes the time interval of the sensor with the passed [id] to
   /// [timeIntervalInMilliseconds] ms.
@@ -58,6 +65,7 @@ class SensorManager {
   /// * [SensorTaskResult.notTrackingSensor] if the sensor is not being tracked.
   /// * [SensorTaskResult.success] if the time interval was changed
   /// successfully.
+  @override
   Future<SensorTaskResult> changeSensorTimeInterval({
     required SensorId id,
     required int timeIntervalInMilliseconds,
@@ -70,9 +78,11 @@ class SensorManager {
       return SensorTaskResult.notTrackingSensor;
     }
 
-    var result = await SensorManagerApi()
-        .changeSensorTimeInterval(id, timeIntervalInMilliseconds)
-        .then((value) => value.state);
+    var result =
+        await SensorManagerApiPlatform.instance.changeSensorTimeInterval(
+      id: id,
+      timeIntervalInMilliseconds: timeIntervalInMilliseconds,
+    );
 
     if (result == SensorTaskResult.success) {
       var oldConfig = _sensorIdToSensorConfig[id]!.sensorConfig;
@@ -90,7 +100,9 @@ class SensorManager {
   /// Retrieves information (collected in a [SensorInfo] object) about the
   /// sensor with the passed [id].
   Future<SensorInfo> getSensorInfo(SensorId id) async =>
-      SensorManagerApi().getSensorInfo(id).then(sensorInfoFromInternal);
+      SensorManagerApiPlatform.instance
+          .getInternalSensorInfo(id)
+          .then(sensorInfoFromInternal);
 
   /// Returns the stored [SensorConfig] for the sensor with the passed [id].
   ///
@@ -113,6 +125,7 @@ class SensorManager {
   /// * The corresponding [SensorTaskResult] if the [config] is invalid
   /// (according to [validateSensorConfig]).
   /// * [SensorTaskResult.success] if the tracking was started successfully.
+  @override
   Future<SensorTaskResult> startSensorTracking({
     required SensorId id,
     required SensorConfig config,
@@ -130,9 +143,8 @@ class SensorManager {
       return SensorTaskResult.sensorNotAvailable;
     }
 
-    var result = await SensorManagerApi()
-        .startSensorTracking(id, config.timeInterval.inMilliseconds)
-        .then((value) => value.state);
+    var result = await SensorManagerApiPlatform.instance
+        .startSensorTracking(id: id, config: config);
 
     if (result == SensorTaskResult.success) {
       var configWrapper = SensorConfigWrapper(config);
@@ -163,6 +175,7 @@ class SensorManager {
   /// * [SensorTaskResult.notTrackingSensor] if the sensor is not being tracked.
   /// * [SensorTaskResult.failure] if the tracking could not be stopped.
   /// * [SensorTaskResult.success] if the tracking was stopped successfully.
+  @override
   Future<SensorTaskResult> stopSensorTracking(SensorId id) async {
     if (!_usedSensors.contains(id)) {
       return SensorTaskResult.notTrackingSensor;
@@ -178,9 +191,7 @@ class SensorManager {
       return SensorTaskResult.failure;
     }
 
-    var result = await SensorManagerApi()
-        .stopSensorTracking(id)
-        .then((value) => value.state);
+    var result = await SensorManagerApiPlatform.instance.stopSensorTracking(id);
 
     if (result == SensorTaskResult.success) {
       _usedSensors.remove(id);

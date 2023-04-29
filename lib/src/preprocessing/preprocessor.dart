@@ -1,6 +1,6 @@
 import '../generated/api_sensor_manager.dart' show InternalSensorData;
 import '../sensor_config.dart';
-import '../sensor_manager.dart';
+import '../sensor_manager/sensor_manager.dart';
 import '../units/unit.dart';
 import 'precision_converter.dart';
 import 'sensor_data.dart';
