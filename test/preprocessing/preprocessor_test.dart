@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sensing_plugin/src/generated/api_sensor_manager.dart';
 import 'package:sensing_plugin/src/preprocessing/preprocessor.dart';
 import 'package:sensing_plugin/src/sensor_config.dart';
-import 'package:sensing_plugin/src/sensor_manager.dart';
+import 'package:sensing_plugin/src/sensor_manager/sensor_manager.dart';
 import 'package:sensing_plugin/src/units/unit.dart';
 
 void main() {
