@@ -46,12 +46,16 @@ class SensorManager extends SensorManagerApiPlatform {
   /// Checks whether the sensor with the passed [id] is currently used.
   @override
   Future<bool> isSensorUsed(SensorId id) async =>
-      SensorManagerApiPlatform.instance.isSensorUsed(id);
+      SensorManagerApiPlatform.instance
+          .isSensorUsed(id)
+          .onError((error, stackTrace) => false);
 
   /// Checks whether the sensor with the passed [id] is available.
   @override
   Future<bool> isSensorAvailable(SensorId id) async =>
-      SensorManagerApiPlatform.instance.isSensorAvailable(id);
+      SensorManagerApiPlatform.instance
+          .isSensorAvailable(id)
+          .onError((error, stackTrace) => false);
 
   /// Changes the time interval of the sensor with the passed [id] to
   /// [timeIntervalInMilliseconds] ms.
@@ -78,11 +82,12 @@ class SensorManager extends SensorManagerApiPlatform {
       return SensorTaskResult.notTrackingSensor;
     }
 
-    var result =
-        await SensorManagerApiPlatform.instance.changeSensorTimeInterval(
-      id: id,
-      timeIntervalInMilliseconds: timeIntervalInMilliseconds,
-    );
+    var result = await SensorManagerApiPlatform.instance
+        .changeSensorTimeInterval(
+          id: id,
+          timeIntervalInMilliseconds: timeIntervalInMilliseconds,
+        )
+        .onError((error, stackTrace) => SensorTaskResult.failure);
 
     if (result == SensorTaskResult.success) {
       var oldConfig = _sensorIdToSensorConfig[id]!.sensorConfig;
@@ -144,7 +149,8 @@ class SensorManager extends SensorManagerApiPlatform {
     }
 
     var result = await SensorManagerApiPlatform.instance
-        .startSensorTracking(id: id, config: config);
+        .startSensorTracking(id: id, config: config)
+        .onError((error, stackTrace) => SensorTaskResult.failure);
 
     if (result == SensorTaskResult.success) {
       var configWrapper = SensorConfigWrapper(config);
@@ -191,7 +197,9 @@ class SensorManager extends SensorManagerApiPlatform {
       return SensorTaskResult.failure;
     }
 
-    var result = await SensorManagerApiPlatform.instance.stopSensorTracking(id);
+    var result = await SensorManagerApiPlatform.instance
+        .stopSensorTracking(id)
+        .onError((error, stackTrace) => SensorTaskResult.failure);
 
     if (result == SensorTaskResult.success) {
       _usedSensors.remove(id);
