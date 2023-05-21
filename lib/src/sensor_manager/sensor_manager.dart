@@ -78,11 +78,12 @@ class SensorManager extends SensorManagerApiPlatform {
       return SensorTaskResult.notTrackingSensor;
     }
 
-    var result =
-        await SensorManagerApiPlatform.instance.changeSensorTimeInterval(
-      id: id,
-      timeIntervalInMilliseconds: timeIntervalInMilliseconds,
-    );
+    var result = await SensorManagerApiPlatform.instance
+        .changeSensorTimeInterval(
+          id: id,
+          timeIntervalInMilliseconds: timeIntervalInMilliseconds,
+        )
+        .onError((error, stackTrace) => SensorTaskResult.failure);
 
     if (result == SensorTaskResult.success) {
       var oldConfig = _sensorIdToSensorConfig[id]!.sensorConfig;
@@ -144,7 +145,8 @@ class SensorManager extends SensorManagerApiPlatform {
     }
 
     var result = await SensorManagerApiPlatform.instance
-        .startSensorTracking(id: id, config: config);
+        .startSensorTracking(id: id, config: config)
+        .onError((error, stackTrace) => SensorTaskResult.failure);
 
     if (result == SensorTaskResult.success) {
       var configWrapper = SensorConfigWrapper(config);
@@ -191,7 +193,9 @@ class SensorManager extends SensorManagerApiPlatform {
       return SensorTaskResult.failure;
     }
 
-    var result = await SensorManagerApiPlatform.instance.stopSensorTracking(id);
+    var result = await SensorManagerApiPlatform.instance
+        .stopSensorTracking(id)
+        .onError((error, stackTrace) => SensorTaskResult.failure);
 
     if (result == SensorTaskResult.success) {
       _usedSensors.remove(id);
