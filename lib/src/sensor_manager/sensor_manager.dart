@@ -46,12 +46,16 @@ class SensorManager extends SensorManagerApiPlatform {
   /// Checks whether the sensor with the passed [id] is currently used.
   @override
   Future<bool> isSensorUsed(SensorId id) async =>
-      SensorManagerApiPlatform.instance.isSensorUsed(id);
+      SensorManagerApiPlatform.instance
+          .isSensorUsed(id)
+          .onError((error, stackTrace) => false);
 
   /// Checks whether the sensor with the passed [id] is available.
   @override
   Future<bool> isSensorAvailable(SensorId id) async =>
-      SensorManagerApiPlatform.instance.isSensorAvailable(id);
+      SensorManagerApiPlatform.instance
+          .isSensorAvailable(id)
+          .onError((error, stackTrace) => false);
 
   /// Changes the time interval of the sensor with the passed [id] to
   /// [timeIntervalInMilliseconds] ms.
